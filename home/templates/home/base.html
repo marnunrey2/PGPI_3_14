@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load bootstrap4 %}
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AesthetiCare | {% block title %}{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://bootswatch.com/5/minty/bootstrap.css" rel="stylesheet">
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">AesthetiCare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home
+                            <span class="visually-hidden">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Especialistas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sobre nosotros</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav">
+                    <a class="nav-link active" href="#">Registrarse</a>
+                    <a class="nav-link active" href="#">Iniciar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section>
+        {% block content %}
+        {% endblock %}
+    </section>
+
+    {% block extrabody %}{% endblock %}
+    
+</body>
+</html>
