@@ -2,7 +2,9 @@
 
 # Byte-compiled
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
 
 # Django stuff:
 *.log
@@ -10,6 +12,7 @@ local_settings.py
 
 # virtualenv
 .env
+env/
 pgpienv/
 
 # Else
