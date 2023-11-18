@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from citas.models import Cita
 
 
 def home(request):
@@ -6,5 +7,6 @@ def home(request):
 
 
 def perfil(request):
-    #citas = Citas.objects.filter(usuario=self.user)
-    return render(request, "home/perfil.html")
+    citas = Cita.objects.filter(usuario=request.user)
+    citas = citas.order_by("-fecha")
+    return render(request, "home/perfil.html", {"citas":citas})
