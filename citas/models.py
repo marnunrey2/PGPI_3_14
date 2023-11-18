@@ -16,7 +16,6 @@ class Servicio(models.Model):
 class Especialista(models.Model):
     nombre = models.CharField(max_length=255)
     especialidades = models.ManyToManyField("Servicio", related_name="especialistas")
-    # si quiero saber los servicios de un especialista: especialista.servicio_set.all()
 
     def __str__(self):
         return self.nombre
