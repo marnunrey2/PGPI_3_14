@@ -51,8 +51,8 @@
                 </div>
                 {% else %}
                 <div>
-                    <a href="/register/">Registrarse</a>
-                    <a href="/signin/">Iniciar Sesión</a>
+                    <a class="btn btn-primary" href="/register/">Registrarse</a>
+                    <a class="btn btn-secondary" href="/signin/">Iniciar Sesión</a>
                 </div>
             {% endif %}
             {% endif %}
@@ -62,11 +62,13 @@
     </nav>
 
     <section>
+        <div class="container">
         {% block content %}
         {% endblock %}
+        </div>
     </section>
 
     {% block extrabody %}{% endblock %}
-    
+
 </body>
 </html>

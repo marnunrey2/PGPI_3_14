@@ -19,13 +19,14 @@ class LoginForm(forms.Form):
         required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
     )
 
+
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=150, required=True)
     email = forms.EmailField(max_length=254, required=True)
 
     class Meta:
-        model= User
+        model = User
         fields = (
             'username',
             'first_name',

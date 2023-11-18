@@ -14,7 +14,7 @@ from rest_framework.status import (
 from rest_framework.views import APIView
 
 from .forms import LoginForm, RegisterForm
-from .serializers import UserSerializer
+from .serializers import UsuarioSerializer
 
 
 # Non-api view
@@ -52,7 +52,7 @@ class GetUserView(APIView):
     def post(self, request):
         key = request.data.get("token", "")
         tk = get_object_or_404(Token, key=key)
-        return Response(UserSerializer(tk.user, many=False).data)
+        return Response(UsuarioSerializer(tk.user, many=False).data)
 
 
 class LogoutView(APIView):
@@ -64,15 +64,13 @@ class LogoutView(APIView):
 
 class RegisterView(APIView):
     def post(self, request):
-        msg = None
         form = RegisterForm(request.POST)
 
         if form.is_valid():
             form.save()
             return redirect("/signin")
         else:
-            msg = form.errors
-            return render(request, "authentication/register.html", {"form": form, "msg": msg})
+            return render(request, "authentication/register.html", {"form": form})
 
     def get(self, request):
         form = RegisterForm(None)
