@@ -7,4 +7,4 @@
 
 Automatic creation:
 
-```python manage.py startapp base```
+```python manage.py startapp <nameapp>```
