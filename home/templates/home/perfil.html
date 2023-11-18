@@ -48,16 +48,34 @@
 {% block content %}
     <section class="content" style="text-align: center;">
         <h1>Welcome to your profile!</h1>
-        <p>This is a basic HTML page.</p>
+       
         <p>{{user.username}}</p>
         <p>{{user.email}}</p>
+        <div style="max-width: 400px; margin: auto;">
+            <div class ="mb-3">
+                <label for="full_name" class="form-label">Full Name:</label>
+                <input type="text" class="form-control" id="full_name" name="full_name"value="Default Full Name">
+            </div>
+
+            <div class ="mb-3">
+                <label for="telephone_number" class="form-label">Telephone Number:</label>
+                <input type="text" class= "form-control" id="telephone_number" name="telephone_number" value="Default Telephone Number">
+            </div>
+
+            
+        </div>
+        <div class="my-5"></div>
+        <p class="lead"><strong>Your Appointments</strong></p>
+
+        <div class="my-3"></div>
+
         <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col"></th>
                 <th scope="col">Servicio</th>
                 <th scope="col">Especialista</th>
-                <th scope="col">Fecha</th>
+                <th scope="col"style="padding-left: 42px;">Fecha</th>
               </tr>
             </thead>
             {% for cita in citas %}
@@ -70,8 +88,17 @@
               </tr>
             </tbody>
             {% endfor %}
-          </table> 
+        </table> 
+          <div class="fixed-bottom text-center mb-5">
+            <button class="btn btn-primary" id="add_payment_button">Add Payment Method</button>
+          </div>
+ 
+          <div class="fixed-bottom text-center mb-2">
+            <button class="btn btn-danger" id="delete_account_button">Delete Account</button>
+        </div>
+
     </section> 
+
 {% endblock %}
 
 {% block extrabody %}{% endblock %}
