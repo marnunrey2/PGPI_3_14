@@ -49,6 +49,28 @@
     <section class="content" style="text-align: center;">
         <h1>Welcome to your profile!</h1>
         <p>This is a basic HTML page.</p>
+        <p>{{user.username}}</p>
+        <p>{{user.email}}</p>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Servicio</th>
+                <th scope="col">Especialista</th>
+                <th scope="col">Fecha</th>
+              </tr>
+            </thead>
+            {% for cita in citas %}
+            <tbody>
+              <tr class="table-active">
+                <th scope="row">{{cita.id}}</th>
+                <td>{{cita.servicio}}</td>
+                <td>{{cita.especialista}}</td>
+                <td>{{cita.fecha}}</td>
+              </tr>
+            </tbody>
+            {% endfor %}
+          </table> 
     </section> 
 {% endblock %}
 

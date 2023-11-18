@@ -6,4 +6,5 @@ def home(request):
 
 
 def perfil(request):
+    #citas = Citas.objects.filter(usuario=self.user)
     return render(request, "home/perfil.html")
