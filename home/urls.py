@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HomeView
+from .views import HomeView, servicios, especialistas
 from django.views.generic import TemplateView
 from . import views
 
@@ -11,4 +11,6 @@ urlpatterns = [
         name="about",
     ),
     path("perfil/", views.perfil, name="perfil")
+    path("servicios/", servicios, name="servicios"),
+    path("especialistas/", especialistas, name="especialistas"),
 ]

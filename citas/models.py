@@ -47,12 +47,25 @@ class Cita(models.Model):
     )
     servicio = models.ForeignKey("Servicio", on_delete=models.CASCADE)
     especialista = models.ForeignKey("Especialista", on_delete=models.CASCADE)
-    fecha = models.DateTimeField()
+    fecha = models.DateField()
+    hora = models.TimeField()
 
     def clean(self):
         # Check if the selected servicio is offered by the chosen especialista
         if self.servicio not in self.especialista.especialidades.all():
             raise ValidationError("El servicio no es ofrecido por el especialista.")
+
+        existing_appointments = Cita.objects.filter(
+            especialista=self.especialista,
+            fecha=self.fecha,
+            hora=self.hora,
+        ).exclude(
+            pk=self.pk
+        )  # Exclude the current appointment if it's an update
+        if existing_appointments.exists():
+            raise ValidationError(
+                "Ya hay una cita programada con este especialista en este horario."
+            )
 
     def save(self, *args, **kwargs):
         # Run the clean method before saving
