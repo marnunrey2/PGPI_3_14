@@ -10,7 +10,8 @@ urlpatterns = [
         TemplateView.as_view(template_name="home/about.html"),
         name="about",
     ),
-    path("perfil/", views.perfil, name="perfil")
+    path("perfil/", views.perfil, name="perfil"),
     path("servicios/", servicios, name="servicios"),
     path("especialistas/", especialistas, name="especialistas"),
+    path("citas/<int:cita_id>/delete/", views.citaDelete),
 ]
