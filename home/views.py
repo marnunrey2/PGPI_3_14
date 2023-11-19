@@ -2,7 +2,7 @@ from django.shortcuts import render
 from citas.models import Cita
 
 
-def home(request):
+def HomeView(request):
     return render(request, "home/home.html")
 
 
