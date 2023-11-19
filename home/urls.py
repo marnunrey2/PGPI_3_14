@@ -14,4 +14,5 @@ urlpatterns = [
     path("servicios/", servicios, name="servicios"),
     path("especialistas/", especialistas, name="especialistas"),
     path("citas/<int:cita_id>/delete/", views.citaDelete),
+    path("perfil/update_profile/", views.update_profile, name="update_profile"),
 ]
