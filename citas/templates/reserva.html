@@ -16,7 +16,7 @@
 <div class="container">
     <div class="login-container">
         <h1>Select Service and Specialist</h1>
-        <form method="post">
+        <form method="POST">
             {% csrf_token %}
             {% if form.errors %}
                 <div class="alert alert-danger" role="alert">
