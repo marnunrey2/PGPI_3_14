@@ -1,6 +1,11 @@
-.content {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    margin-top: 60px;
+.btn-primary {
+    margin-top: 10px;
+    margin-bottom: 30px; 
+}
+h1, p {
+    margin: 15px;
+}
+.btn-secondary {
+    margin: 30px; 
+    width: 30%;
 }
