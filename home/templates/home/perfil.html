@@ -31,36 +31,14 @@
             
         </div>
         <div class="my-5"></div>
-        <p class="lead"><strong>Tus citas:</strong></p>
 
         <div class="my-3"></div>
-
-        <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Servicio</th>
-                <th scope="col">Especialista</th>
-                <th scope="col"style="padding-left: 42px;">Fecha</th>
-              </tr>
-            </thead>
-            {% for cita in citas %}
-            <tbody>
-              <tr class="table-active">
-                <th scope="row">{{cita.id}}</th>
-                <td>{{cita.servicio}}</td>
-                <td>{{cita.especialista}}</td>
-                <td>{{cita.fecha}}</td>
-              </tr>
-            </tbody>
-            {% endfor %}
-        </table> 
           <div class="fixed-bottom text-center mb-5">
             <button class="btn btn-primary" id="add_payment_button">Añadir método de pago</button>
           </div>
  
           <div class="fixed-bottom text-center mb-2">
-            <button class="btn btn-danger" id="delete_account_button">Borrar cuenta</button>
+            <a class="btn btn-danger" href="/delete/">Borrar cuenta</a>
         </div>
 
     </section> 
