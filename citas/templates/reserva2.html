@@ -1,0 +1,97 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Reserva{% endblock %}
+
+{% block extrahead %}
+{% endblock %}
+
+{% block content %}
+<section>
+    <div id="step-1">
+        <h2>Seleccionar Servicio y Especialista</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_servicio">Seleccionar Servicio:</label>
+            <select id="id_servicio" name="servicio">
+                {% for choice in form.servicio.field.choices %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
+        </form>    
+        <button type="submit">Submit</button>
+    </div>
+
+    <div id="step-2" style="display: none;">
+        <h2>Seleccionar Fecha y Hora</h2>
+        <div id="calendar"></div>
+        <div id="time-slots"></div>
+        <button id="next-step-3" type="button">Siguiente</button>
+    </div>
+
+    <div id="step-3" style="display: none;">
+        <h2>Información del Cliente</h2>
+        <form id="client-info-form" method="post">
+            {% csrf_token %}
+            {{ client_form.as_p }}
+            <button type="submit">Confirmar Cita</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        // JavaScript for handling steps and interactions
+        $(function() {
+            // Step 1 to Step 2 transition
+            $('#next-step-2').on('click', function() {
+                // Process Step 1 form submission or validation if needed
+                // Show Step 2 and hide Step 1
+                $('#step-1').hide();
+                $('#step-2').show();
+            });
+
+            // Step 2 to Step 3 transition
+            $('#next-step-3').on('click', function() {
+                // Process Step 2 actions or validation if needed
+                // Show Step 3 and hide Step 2
+                $('#step-2').hide();
+                $('#step-3').show();
+            });
+
+            // Initialize date picker for Step 2
+            $('#calendar').datepicker({
+                onSelect: function(dateText) {
+                    const selectedDate = new Date(dateText);
+                    // Populate available time slots for the selected date
+                    // ... Your logic here to populate time slots
+                    populateTimeSlots(selectedDate);
+                }
+            });
+
+            // Function to populate time slots based on selected date
+            function populateTimeSlots(selectedDate) {
+                // Dummy implementation for available time slots (replace with your logic)
+                const availableTimeSlots = [
+                    '09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '03:00 PM', '04:00 PM'
+                ];
+
+                const timeSlotsContainer = $('#time-slots');
+                timeSlotsContainer.empty();
+
+                const slotsList = $('<ul>');
+
+                availableTimeSlots.forEach(slot => {
+                    const listItem = $('<li>').text(slot);
+                    slotsList.append(listItem);
+                });
+
+                timeSlotsContainer.append(slotsList);
+            }
+        });
+    </script>
+</section>
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Reserva{% endblock %}
+
+{% block extrahead %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Select Service and Specialist</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="service">Select Service:</label>
+        <select name="service" id="service">
+            {% for service in services %}
+                <option value="{{ service.id }}">{{ service.name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="specialist">Select Specialist:</label>
+        <select name="specialist" id="specialist">
+            {% for specialist in specialists %}
+                <option value="{{ specialist.id }}">{{ specialist.name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Check Available Timeslots">
+    </form>
+</div>
+{% endblock %}
+
+{% block extrabody %}{% endblock %}

@@ -74,3 +74,15 @@ class Cita(models.Model):
 
     def __str__(self):
         return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre} el {self.fecha}"
+
+
+class TimeSlot(models.Model):
+    specialist = models.ForeignKey(Especialista, on_delete=models.CASCADE)
+    service = models.ForeignKey(Servicio, on_delete=models.CASCADE)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    # Other timeslot details
+
+    def __str__(self):
+        return f"{self.specialist.name} - {self.service.name} - {self.date} - {self.start_time} to {self.end_time}"
