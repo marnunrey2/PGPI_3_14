@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from .forms import ServicioEspecialistaForm
 from rest_framework.views import APIView
 from citas.models import Servicio, Especialista
@@ -11,11 +11,12 @@ class ReservaView(APIView):
         if form.is_valid():
             servicio = form.cleaned_data.get("servicio")
             especialista = form.cleaned_data.get("especialista")
-            form.save()
+            print(servicio)
+            print(especialista)
             return render(
                 request,
                 "calendario.html",
-                {"servicio": servicio, "especialista": especialista},
+                {"form": form, "servicio": servicio, "especialista": especialista},
             )
         else:
             msg = "Error en el formulario"
@@ -32,7 +33,7 @@ class ReservaView(APIView):
         )
 
 
-class GetCalendarioView(APIView):
+class CalendarioView(APIView):
     def post(self, request):
         servicio = request.data.get("servicio")
         especialista = request.data.get("especialista")

@@ -12,13 +12,13 @@
     <div id="calendar"></div>
     <div id="time-slots"></div>
     <button id="next-step-3" type="button">Siguiente</button>
-
+</div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         // JavaScript for handling steps and interactions
         $(function() {
-            
+
             // Initialize date picker for Step 2
             $('#calendar').datepicker({
                 onSelect: function(dateText) {
@@ -50,7 +50,6 @@
             }
         });
     </script>
-</div>
 {% endblock %}
 
 {% block extrabody %}{% endblock %}
