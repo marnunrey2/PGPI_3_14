@@ -10,7 +10,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<a class="btn btn-primary" href="/elige_servicios/">Reservar cita</a>
+<a class="btn btn-primary" href="/cita/">Reservar cita</a>
     {% if user.citas.exists %}
         <table class="table">
             <thead>

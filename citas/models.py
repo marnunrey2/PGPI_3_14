@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 from django.conf import settings
@@ -67,6 +68,9 @@ class Cita(models.Model):
                 "Ya hay una cita programada con este especialista en este horario."
             )
 
+        if self.fecha < datetime.today() and self.hora < datetime.now().time():
+            raise ValidationError("La fecha no puede ser anterior a la actual.")
+
     def save(self, *args, **kwargs):
         # Run the clean method before saving
         self.clean()
@@ -86,3 +90,20 @@ class TimeSlot(models.Model):
 
     def __str__(self):
         return f"{self.specialist.name} - {self.service.name} - {self.date} - {self.start_time} to {self.end_time}"
+
+
+class Apertura(models.Model):
+    dia = models.CharField(
+        choices=(
+            ("Lunes", "Lunes"),
+            ("Martes", "Martes"),
+            ("Miercoles", "Miercoles"),
+            ("Jueves", "Jueves"),
+            ("Viernes", "Viernes"),
+            ("Sabado", "Sabado"),
+            ("Domingo", "Domingo"),
+        ),
+        max_length=10,
+    )
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
