@@ -14,7 +14,7 @@ class ServicioEspecialistaForm(forms.Form):
 
 
 class ClientInfoForm(forms.Form):
-    name = forms.CharField(max_length=255)
+    nombre = forms.CharField(max_length=255)
     email = forms.EmailField()
-    phone = forms.CharField(max_length=255)
+    telefono = forms.CharField(max_length=255)
     # Add more fields if required
