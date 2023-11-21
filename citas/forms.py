@@ -29,7 +29,12 @@ class CitaForm(forms.Form):
     )
     hora = forms.ChoiceField(choices=[])
 
+    nombre = forms.CharField(max_length=100, required=False)
+    email = forms.EmailField(required=False)
+    telefono = forms.CharField(max_length=20, required=False)
+
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         if "servicio" in self.data:
@@ -45,6 +50,11 @@ class CitaForm(forms.Form):
                 for hour in calculate_available_hours(fecha, especialista_id)
             ]
             self.fields["hora"].choices = available_hours
+
+        if user and user.is_authenticated:
+            del self.fields["nombre"]
+            del self.fields["email"]
+            del self.fields["telefono"]
 
 
 class CitaUsuario(forms.Form):

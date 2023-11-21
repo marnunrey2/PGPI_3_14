@@ -18,7 +18,7 @@ class CitaView(APIView):
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
             user_id = request.user.id
-            if user_id == "None":
+            if user_id is None:
                 nombre = request.data.get("nombre")
                 email = request.data.get("email")
                 telefono = request.data.get("telefono")
@@ -44,25 +44,16 @@ class CitaView(APIView):
             return render(request, "home/home.html")
 
         else:
-            print("Form Errors:", form.errors)
-            print("Non-Field Errors:", form.non_field_errors())
             msg = "Error en el formulario"
             return render(request, "home/home.html", {"form": form, "msg": msg})
 
     def get(self, request):
-        form = CitaForm()
-        if request.user.is_authenticated:
-            return render(
-                request,
-                "crear_cita_usuario.html",
-                {"form": form},
-            )
-        else:
-            return render(
-                request,
-                "crear_cita_invitado.html",
-                {"form": form},
-            )
+        form = CitaForm(user=request.user)
+        return render(
+            request,
+            "crear_cita.html",
+            {"form": form},
+        )
 
 
 def get_especialistas_por_servicio(request):
