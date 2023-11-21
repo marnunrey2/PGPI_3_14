@@ -1,8 +1,9 @@
 from django import forms
 from .models import Servicio, Especialista
+from .utils import calculate_available_hours
 
 
-class SerEspForm(forms.Form):
+class CitaForm(forms.Form):
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.all(),
         widget=forms.Select(
@@ -19,19 +20,14 @@ class SerEspForm(forms.Form):
         widget=forms.DateInput(
             attrs={
                 "hx-get": "/horas_disponibles/",
+                "hx-include": "#id_especialista",
                 "hx-target": "#id_hora",
                 "placeholder": "YYYY-mm-dd",
                 "pattern": "\d{4}-\d{2}-\d{2}",
-                "hx-vals": {
-                    "especialista": "#id_especialista",
-                },
             }
         )
     )
     hora = forms.ChoiceField(choices=[])
-
-    def set_hora_choices(self, choices):
-        self.fields["hora"].choices = choices
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -41,6 +37,14 @@ class SerEspForm(forms.Form):
             self.fields["especialista"].queryset = Especialista.objects.filter(
                 especialidades__id=servicio_id
             )
+        if "fecha" in self.data and "especialista" in self.data:
+            fecha = self.data.get("fecha")
+            especialista_id = int(self.data.get("especialista"))
+            available_hours = [
+                (hour, hour)
+                for hour in calculate_available_hours(fecha, especialista_id)
+            ]
+            self.fields["hora"].choices = available_hours
 
 
 class CitaUsuario(forms.Form):

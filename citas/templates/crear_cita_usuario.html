@@ -20,41 +20,9 @@
         <form class="form-group" id="cita-form" hx-post="{% url 'cita' %}">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Submit">Reservar</input>
+            <input type="submit" value="Submit">
         </form>
     </div>
 </div>
 {% endblock %}
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Attach an event listener to the fecha field
-        console.log("ready!");
-        $("#id_fecha").change(function () {
-            // Get the selected fecha value
-            var fecha = $(this).val();
-    
-            // Make an Ajax request to get horas disponibles
-            $.ajax({
-                url: "/horas_disponibles/",
-                data: {
-                    fecha: fecha,
-                    especialista: $("#id_especialista").val(),  // Get the selected especialista value
-                    servicio: $("#id_servicio").val(),  // Get the selected servicio value
-                },
-                success: function (data) {
-                    // Update the options for the hora field
-                    $("#id_hora").empty();
-                    $.each(data.horas, function (key, value) {
-                        $("#id_hora").append($('<option>').text(value).attr('value', key));
-                    });
-                },
-                error: function () {
-                    // Handle errors if necessary
-                }
-            });
-        });
-    });
-</script>
-    
