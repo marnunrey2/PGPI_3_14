@@ -1,11 +1,13 @@
 from django.urls import path
-from .views import ReservaView, ServiciosView, CalendarioView, CitaView
+from .views import ServiciosView, CitaView, get_especialistas_por_servicio
 
 
 urlpatterns = [
-    path("elige_servicios/", ServiciosView.as_view(), name="servicios"),
-    path("calendario/", CalendarioView.as_view(), name="calendario"),
-    path("reserva/", ReservaView.as_view(), name="reserva"),
+    path("elige/", ServiciosView.as_view(), name="servicios"),
     path("cita/", CitaView.as_view(), name="cita"),
-    # Add more URLs as needed
+    path(
+        "especialistas_opciones/",
+        get_especialistas_por_servicio,
+        name="especialistas_opciones",
+    ),
 ]

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from django.db import models
 
 from django.conf import settings
@@ -68,7 +68,11 @@ class Cita(models.Model):
                 "Ya hay una cita programada con este especialista en este horario."
             )
 
-        if self.fecha < datetime.today() and self.hora < datetime.now().time():
+        cita_date = datetime.strptime(self.fecha, "%Y-%m-%d").date()
+
+        if cita_date < datetime.today().date() or (
+            cita_date == datetime.today().date() and self.hora < datetime.now().time()
+        ):
             raise ValidationError("La fecha no puede ser anterior a la actual.")
 
     def save(self, *args, **kwargs):

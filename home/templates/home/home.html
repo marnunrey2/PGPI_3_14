@@ -10,7 +10,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<a class="btn btn-primary" href="/cita/">Reservar cita</a>
+<a class="btn btn-primary" href="/elige/">Reservar cita</a>
     {% if user.citas.exists %}
         <table class="table">
             <thead>
@@ -40,7 +40,7 @@
     <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
         <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
         <strong><a href="/especialistas">especialistas</a></strong>.</p>
-    <a class="btn btn-secondary" href="/elige_servicios/">Reservar una cita ahora</a>
+    <a class="btn btn-secondary" href="/elige/">Reservar una cita ahora</a>
 
     
 {% endif %}

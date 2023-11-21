@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import ServicioEspecialistaForm, ClientInfoForm
+from .forms import SerEspForm
 from rest_framework.views import APIView
 from citas.models import Servicio, Especialista, Invitado, Cita
 from django.http import JsonResponse
@@ -7,125 +7,83 @@ from django.http import JsonResponse
 
 class ServiciosView(APIView):
     def post(self, request):
-        form = ServicioEspecialistaForm(request.POST)
+        form = SerEspForm(request.POST)
         if form.is_valid():
-            servicio = form.cleaned_data.get("servicio")
-            especialista = form.cleaned_data.get("especialista")
+            servicio = form.cleaned_data["servicio"]
+            especialista = form.cleaned_data["especialista"]
             context = {"servicio": servicio, "especialista": especialista}
             return render(
                 request,
-                "calendario.html",
+                "cita.html",
                 context,
             )
         else:
             msg = "Error en el formulario"
             return render(request, "home/home.html", {"form": form, "msg": msg})
-        """
-        if form.is_valid():
-            servicio = form.cleaned_data.get("servicio")
-            especialista = form.cleaned_data.get("especialista")
-            print(servicio)
-            print(especialista)
-            return render(
-                request,
-                "calendario.html",
-                {"form": form, "servicio": servicio, "especialista": especialista},
-            )
-        else:
-            msg = "Error en el formulario"
-            return render(request, "reserva.html", {"form": form, "msg": msg})
-        """
 
     def get(self, request):
-        servicios = Servicio.objects.all()
-        especialistas = Especialista.objects.all()
-        form = ServicioEspecialistaForm(None)
+        form = SerEspForm()
         return render(
             request,
-            "elige_servicios.html",
-            {"form": form, "servicios": servicios, "especialistas": especialistas},
-        )
-
-
-class CalendarioView(APIView):
-    def post(self, request):
-        form = request.data.get("form")
-        return render(
-            request,
-            "reserva.html",
-            {"form": form},
-        )
-
-    def get(self, request):
-        form = request.data.get("form")
-        return render(
-            request,
-            "calendario.html",
+            "elige.html",
             {"form": form},
         )
 
 
-class ReservaView(APIView):
-    def post(self, request):
-        form = ClientInfoForm(request.POST)
-        if form.is_valid():
-            # If the form is valid, create an Invitado instance
-            nombre = form["nombre"]
-            email = form["email"]
-            telefono = form["telefono"]
-
-            invitado = Invitado.objects.create(
-                nombre=nombre, email=email, telefono=telefono
-            )
-
-            form.save()
-
-            return redirect("/")
-        else:
-            form = ClientInfoForm()
-            msg = "Error de formulario"
-            return render(
-                request,
-                "reserva.html",
-                {"form": form, "msg": msg},
-            )
-
-    def get(self, request):
-        form = ClientInfoForm(None)
-        return render(
-            request,
-            "reserva.html",
-            {"form": form},
-        )
+def get_especialistas_por_servicio(request):
+    servicio_id = request.GET.get("servicio")
+    especialistas = Especialista.objects.filter(especialidades__id=servicio_id)
+    return render(
+        request, "especialistas_opciones.html", {"especialistas": especialistas}
+    )
 
 
 class CitaView(APIView):
     def post(self, request):
         """
         user_id: id
+        nombre: nombre
+        email: email
+        telefono: telefono
         selected_date: fecha
         selected_time_slot: hora
         servicio: nombre
         especialista: nombre
         """
-        user_id = request.data.get("user_id")
         fecha = request.data.get("selected_date")
         hora = request.data.get("selected_time_slot")
         servicio_nombre = request.data.get("servicio")
+        servicio_id = Servicio.objects.get(nombre=servicio_nombre).id
         especialista_nombre = request.data.get("especialista")
-        cita = Cita.objects.create(
-            usuario_id=user_id,
-            fecha=fecha,
-            hora=hora,
-            servicio_id=servicio_nombre,
-            especialista_id=especialista_nombre,
-        )
-        return JsonResponse(
-            {"status": "success", "message": "Cita created successfully"}
-        )
+        especialista_id = Especialista.objects.get(nombre=especialista_nombre).id
+        user_id = request.data.get("user_id")
+        if user_id == "None":
+            nombre = request.data.get("nombre")
+            email = request.data.get("email")
+            telefono = request.data.get("telefono")
+            invitado = Invitado.objects.create(
+                nombre=nombre, email=email, telefono=telefono
+            )
+            cita = Cita.objects.create(
+                invitado_id=invitado.id,
+                fecha=fecha,
+                hora=hora,
+                servicio_id=servicio_id,
+                especialista_id=especialista_id,
+            )
+        else:
+            cita = Cita.objects.create(
+                usuario=user_id,
+                fecha=fecha,
+                hora=hora,
+                servicio_id=servicio_id,
+                especialista_id=especialista_id,
+            )
+
+        return render(request, "home.html")
 
     def get(self, request):
         return render(
             request,
-            "calendario.html",
+            "cita.html",
         )

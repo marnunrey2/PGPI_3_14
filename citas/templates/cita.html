@@ -14,11 +14,7 @@
         <div id="time-slots"></div>
         <div id="invitado"></div>
         <section class="form-confirmation">
-            {% if user.is_authenticated %}
             <button class="btn btn-primary" id="crearCita">Continuar</button>
-            {% else %}
-            <button class="btn btn-primary" id="crearCitaInvitado">Continuar</button>
-            {% endif %}
         </section>
     </div>
 </div>
@@ -69,10 +65,11 @@
         $('#crearCita').click(function() {
             // Get the data to be sent
             const userId = "{{ user.id }}"; 
-            const servicio = "Corte de pelo"; 
-            const especialista = "María Bollicao"; 
-            let selectedDate = "2023-12-01";
-            let selectedTimeSlot = "09:00 AM";
+            const servicio = "{{ servicio }}"; 
+            const especialista = "{{ especialista }}"; 
+
+            let selectedDate = "2023-12-03";
+            let selectedTimeSlot = "11:00";
 
             // Check if a date and time slot are selected
                 // Make an AJAX request to the CitaView
@@ -82,6 +79,9 @@
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     user_id: userId,
+                    nombre: null,
+                    email: null,
+                    telefono: null,
                     selected_date: selectedDate,
                     selected_time_slot: selectedTimeSlot,
                     servicio: servicio,
@@ -97,10 +97,6 @@
                 }
             });
            
-        });
-
-        $('#crearCitaInvitado').click(function() {
-            // Code to execute when the button is clicked
         });
 
 
