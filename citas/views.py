@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import SerEspForm
+from .forms import SerEspForm, CitaUsuario, CitaInvitado
 from rest_framework.views import APIView
 from citas.models import Servicio, Especialista, Invitado, Cita
 from django.http import JsonResponse
@@ -11,12 +11,22 @@ class ServiciosView(APIView):
         if form.is_valid():
             servicio = form.cleaned_data["servicio"]
             especialista = form.cleaned_data["especialista"]
-            context = {"servicio": servicio, "especialista": especialista}
-            return render(
-                request,
-                "cita.html",
-                context,
-            )
+            if request.user.is_authenticated:
+                form = CitaUsuario()
+                context = {
+                    "servicio": servicio,
+                    "especialista": especialista,
+                    "form": form,
+                }
+                return render(request, "crear_cita_usuario.html", context)
+            else:
+                form = CitaInvitado()
+                context = {
+                    "servicio": servicio,
+                    "especialista": especialista,
+                    "form": form,
+                }
+                return render(request, "crear_cita_invitado.html", context)
         else:
             msg = "Error en el formulario"
             return render(request, "home/home.html", {"form": form, "msg": msg})
@@ -83,7 +93,4 @@ class CitaView(APIView):
         return render(request, "home.html")
 
     def get(self, request):
-        return render(
-            request,
-            "cita.html",
-        )
+        pass
