@@ -15,6 +15,23 @@ class SerEspForm(forms.Form):
     especialista = forms.ModelChoiceField(
         queryset=Especialista.objects.none(),
     )
+    fecha = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "hx-get": "/horas_disponibles/",
+                "hx-target": "#id_hora",
+                "placeholder": "YYYY-mm-dd",
+                "pattern": "\d{4}-\d{2}-\d{2}",
+                "hx-vals": {
+                    "especialista": "#id_especialista",
+                },
+            }
+        )
+    )
+    hora = forms.ChoiceField(choices=[])
+
+    def set_hora_choices(self, choices):
+        self.fields["hora"].choices = choices
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
