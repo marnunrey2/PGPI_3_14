@@ -44,18 +44,52 @@
 
             
         </div>
-        <div class="my-5"></div>
+        
 
-        <div class="my-3"></div>
-          <div class="fixed-bottom text-center mb-5">
-            <button class="btn btn-primary" id="add_payment_button">Añadir método de pago</button>
-          </div>
- 
-          <div class="fixed-bottom text-center mb-2">
+    
+        <div class="fixed-bottom text-center mb-5">
+            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#creditCardModal">Modificar tarjeta de crédito</a>
+        </div>
+        <div class="fixed-bottom text-center mb-2">
             <a class="btn btn-danger" href="/delete/">Borrar cuenta</a>
         </div>
-
     </section> 
+    <!-- Add this code inside the <body> tag -->
+    <div class="modal fade" id="creditCardModal" tabindex="-1" role="dialog" aria-labelledby="creditCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="creditCardModalLabel">Modificar tarjeta de crédito</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your credit card form here -->
+                    <!-- Example: -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <!-- Add your credit card form fields -->
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Número de tarjeta:</label>
+                            <input type="number" class="form-control" id="cardNumber" name="card_number">
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardDate" class="form-label">Fecha de Caducidad:</label>
+                            <input type="date" class="form-control" id="cardDate" name="card_date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="securityNumber" class="form-label">Número de seguridad:</label>
+                            <input type="number" class="form-control" id="securityNumber" name="security_number">
+                        </div>
+                        <!-- Add other credit card fields as needed -->
+                        <button type="submit" class="btn btn-primary">Guardar tarjeta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        
     
   
 
