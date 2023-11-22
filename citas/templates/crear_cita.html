@@ -1,0 +1,28 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Reserva{% endblock %}
+
+{% block extrahead %}
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.8"></script>
+    <style>
+        .custom-dropdown {
+            width: 300px; 
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-container">
+        <h1>Seleccione la fecha y la hora de la cita</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

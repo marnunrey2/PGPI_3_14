@@ -10,7 +10,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<a class="btn btn-primary" href="/reserva/">Reservar cita</a>
+<a class="btn btn-primary" href="/cita/">Reservar cita</a>
     {% if user.citas.exists %}
         <table class="table">
             <thead>
@@ -30,6 +30,9 @@
                     <td>{{ cita.servicio }}</td>
                     <td>{{ cita.especialista }}</td>
                     <td><a href="citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                    <td>{{ cita.servicio.nombre }}</td>
+                    <td>{{ cita.especialista.nombre }}</td>
+                    <td><a href="citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -42,7 +45,7 @@
     <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
         <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
         <strong><a href="/especialistas">especialistas</a></strong>.</p>
-    <a class="btn btn-secondary" href="/invitado/">Reservar una cita ahora</a>
+    <a class="btn btn-secondary" href="/cita/">Reservar una cita ahora</a>
 
     
 {% endif %}

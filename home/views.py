@@ -29,7 +29,6 @@ def especialistas(request):
     context = {"especialistas": especialistas}
     return render(request, "home/especialistas.html", context)
 
-
 def citaDelete(request, cita_id):
     Cita.objects.filter(id=cita_id).delete()
     return redirect("/")
@@ -61,3 +60,4 @@ def update_profile(request):
         return redirect("perfil")
 
     return render(request, "home/perfil.html")
+
