@@ -70,7 +70,7 @@ class Cita(models.Model):
         if type(self.fecha) == str:
             self.fecha = datetime.strptime(self.fecha, "%Y-%m-%d").date()
 
-        if self.fecha < str(datetime.today().date()) or (
+        if str(self.fecha) < str(datetime.today().date()) or (
             self.fecha == datetime.today().date() and self.hora < datetime.now().time()
         ):
             raise ValidationError("La fecha no puede ser anterior a la actual.")
