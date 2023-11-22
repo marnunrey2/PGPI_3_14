@@ -67,11 +67,11 @@ class Cita(models.Model):
             raise ValidationError(
                 "Ya hay una cita programada con este especialista en este horario."
             )
+        if self.fecha is str:
+            self.fecha = datetime.strptime(self.fecha, "%Y-%m-%d").date()
 
-        cita_date = datetime.strptime(self.fecha, "%Y-%m-%d").date()
-
-        if cita_date < datetime.today().date() or (
-            cita_date == datetime.today().date() and self.hora < datetime.now().time()
+        if self.fecha < datetime.today().date() or (
+            self.fecha == datetime.today().date() and self.hora < datetime.now().time()
         ):
             raise ValidationError("La fecha no puede ser anterior a la actual.")
 
