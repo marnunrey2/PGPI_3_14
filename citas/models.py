@@ -67,7 +67,7 @@ class Cita(models.Model):
             raise ValidationError(
                 "Ya hay una cita programada con este especialista en este horario."
             )
-        if self.fecha is str:
+        if type(self.fecha) == str:
             self.fecha = datetime.strptime(self.fecha, "%Y-%m-%d").date()
 
         if self.fecha < datetime.today().date() or (
