@@ -16,25 +16,28 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">AesthetiCare</a>
+            <a class="navbar-brand" href="/" style="background-color: transparent;">
+                <img src="{% static '/home/images/logo-removed.png' %}" alt="AesthetiCare Logo" style="height: 100px;">
+            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home
+                        <a class="nav-link" href="/">Home
                             <span class="visually-hidden">(current)</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="/servicios">Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Especialistas</a>
+                        <a class="nav-link" href="/especialistas">Especialistas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Sobre nosotros</a>
+                        <a class="nav-link" href="/about">Sobre nosotros</a>
                     </li>
                 </ul>
                 {% if not request.path == '/signin/' %}
@@ -54,9 +57,9 @@
                     <a class="btn btn-primary" href="/register/">Registrarse</a>
                     <a class="btn btn-secondary" href="/signin/">Iniciar Sesión</a>
                 </div>
-            {% endif %}
-            {% endif %}
-            {% endif %}
+                {% endif %}
+                {% endif %}
+                {% endif %}
             </div>
         </div>
     </nav>

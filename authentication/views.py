@@ -1,16 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.status import (
-    HTTP_201_CREATED,
-    HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-)
 from rest_framework.views import APIView
 
 from .forms import LoginForm, RegisterForm
