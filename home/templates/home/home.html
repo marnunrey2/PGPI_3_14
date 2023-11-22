@@ -27,9 +27,6 @@
                 <tr>
                     <th scope="row">{{ cita.fecha }}</th>
                     <td>{{ cita.hora }}</td>
-                    <td>{{ cita.servicio }}</td>
-                    <td>{{ cita.especialista }}</td>
-                    <td><a href="citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
                     <td><a href="citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
