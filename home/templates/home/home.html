@@ -4,15 +4,46 @@
 {% block title %}Home{% endblock %}
 
 {% block extrahead %}
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static "home/home.css" %}">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static "home/home.css" %}">
 {% endblock %}
 
 {% block content %}
-    <section class="content">
-        <h1>Welcome to AesthetiCare!</h1>
-        <p>This is a basic HTML page.</p>
-    </section> 
+{% if user.is_authenticated %}
+<a class="btn btn-primary" href="/cita/">Reservar cita</a>
+    {% if user.citas.exists %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Especialista</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in user.citas.all %}
+                <tr>
+                    <th scope="row">{{ cita.fecha }}</th>
+                    <td>{{ cita.hora }}</td>
+                    <td>{{ cita.servicio.nombre }}</td>
+                    <td>{{ cita.especialista.nombre }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay citas.</p>
+    {% endif %}
+{% else %}
+    <h1>Bienvenidos a AesthetiCare</h1>
+    <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
+        <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
+        <strong><a href="/especialistas">especialistas</a></strong>.</p>
+    <a class="btn btn-secondary" href="/cita/">Reservar una cita ahora</a>
+
+    
+{% endif %}
 {% endblock %}
 
 {% block extrabody %}{% endblock %}

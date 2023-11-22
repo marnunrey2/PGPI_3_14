@@ -1,0 +1,40 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Nosotros{% endblock %}
+
+{% block extrahead %}
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static "home/about.css" %}">
+{% endblock %}
+
+{% block content %}
+<h1>Acerca de AesthetiCare</h1>
+<p>Bienvenido a <strong>Aestheticare</strong>, tu empresa para servicios de
+    cosmética
+    personalizados y de alta calidad. Fundada en el año <strong>2023</strong>,
+    nuestra misión
+    en Aestheticare es realzar tu <strong>belleza natural</strong> y brindarte
+    una experiencia única en <strong>cuidado personal</strong>.</p>
+
+<p>Nuestro equipo de <strong><a href="/especialistas">especialistas</a></strong>
+    altamente
+    capacitados se
+    dedica a
+    proporcionar <strong><a href="/servicios">servicios de cosmética</a></strong>
+    adaptados a tus necesidades individuales. Ya sea que busques un
+    rejuvenecimiento facial,
+    tratamientos de cuidado de la piel o asesoramiento en productos de
+    belleza.</p>
+
+<p>En AesthetiCare, entendemos la importancia de la confianza y la comodidad
+    en tus servicios de belleza. Es por eso que hemos creado esta plataforma
+    en línea para que puedas <strong><a href="/">programar citas</a></strong>
+    con nuestros especialistas. Estamos comprometidos a brindarte resultados
+    excepcionales mientras te ofrecemos un ambiente relajado y acogedor.</p>
+
+<p>Gracias por elegir Aestheticare. Esperamos ser parte de tu viaje hacia
+    una apariencia y sensación mejoradas. ¡Programa tu cita hoy mismo y
+    descubre el arte de la belleza con Aestheticare!</p>
+
+{% endblock %}
