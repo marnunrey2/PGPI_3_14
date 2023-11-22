@@ -17,35 +17,32 @@ class CitaView(APIView):
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
-            user_id = request.user.id
-            if user_id is None:
-                nombre = request.data.get("nombre")
-                email = request.data.get("email")
-                telefono = request.data.get("telefono")
+
+            usuario = request.user if request.user.is_authenticated else None
+            invitado = None
+
+            if usuario is None:
+                nombre = form.cleaned_data["nombre"]
+                email = form.cleaned_data["email"]
+                telefono = form.cleaned_data["telefono"]
+
                 invitado = Invitado.objects.create(
                     nombre=nombre, email=email, telefono=telefono
                 )
-                cita = Cita.objects.create(
-                    invitado_id=invitado.id,
-                    fecha=fecha,
-                    hora=hora,
-                    servicio_id=servicio_id,
-                    especialista_id=especialista_id,
-                )
-            else:
-                user_instance = User.objects.get(pk=user_id)
-                cita = Cita.objects.create(
-                    usuario=user_instance,
-                    fecha=fecha,
-                    hora=hora,
-                    servicio_id=servicio_id,
-                    especialista_id=especialista_id,
-                )
-            return render(request, "home/home.html")
+
+            cita = Cita.objects.create(
+                usuario=usuario,
+                invitado=invitado,
+                servicio_id=servicio_id,
+                especialista_id=especialista_id,
+                fecha=fecha,
+                hora=hora,
+            )
+            return render(request, "home/home.html", {"cita": cita})
 
         else:
             msg = "Error en el formulario"
-            return render(request, "home/home.html", {"form": form, "msg": msg})
+            return render(request, "crear_cita.html", {"form": form, "msg": msg})
 
     def get(self, request):
         form = CitaForm(user=request.user)

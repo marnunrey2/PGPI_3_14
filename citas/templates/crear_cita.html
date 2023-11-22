@@ -17,10 +17,23 @@
 <div class="container">
     <div class="login-container">
         <h1>Seleccione la fecha y la hora de la cita</h1>
-        <form class="form-group" id="cita-form" hx-post="{% url 'cita' %}">
+        <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Submit">
+        
+            {% if not request.user.is_authenticated %}
+            <!-- Fields for non-logged-in users -->
+            <label for="id_name">Name:</label>
+            <input type="text" name="name" id="id_name">
+        
+            <label for="id_email">Email:</label>
+            <input type="email" name="email" id="id_email">
+        
+            <label for="id_phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" id="id_phone_number">
+            {% endif %}
+        
+            <button type="submit">Submit</button>
         </form>
     </div>
 </div>
