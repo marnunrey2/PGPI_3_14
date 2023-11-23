@@ -69,3 +69,13 @@ class RegisterView(APIView):
         return render(
             request, "authentication/register.html", {"form": form, "msg": None}
         )
+      
+class DeleteView(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            request.session.flush()
+            userToDelete = User.objects.filter(id=request.user.id)
+            userToDelete.delete()
+            return redirect("/")
+        return redirect("/perfil")
+
