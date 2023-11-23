@@ -1,7 +1,7 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Citas{% endblock %}
 
 {% block extrahead %}
 <!-- Custom CSS -->
@@ -9,9 +9,7 @@
 {% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-<a class="btn btn-primary" href="/cita/">Reservar cita</a>
-    {% if user.citas.exists %}
+
         <table class="table">
             <thead>
                 <tr class="table-secondary">
@@ -22,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cita in user.citas.all %}
+                {% for cita in citas %}
                 <tr>
                     <th scope="row">{{ cita.fecha }}</th>
                     <td>{{ cita.hora }}</td>
@@ -32,19 +30,7 @@
                 {% endfor %}
             </tbody>
         </table>
-    {% else %}
-        <p>No hay citas.</p>
-    {% endif %}
-{% else %}
-    <h1>Bienvenidos a AesthetiCare</h1>
-    <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
-        <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
-        <strong><a href="/especialistas">especialistas</a></strong>.</p>
-    <a class="btn btn-secondary" href="/cita/">Reservar una cita ahora</a>
-    <a class="btn btn-secondary" href="/consulta/">Consulta tus citas</a>
 
-    
-{% endif %}
 {% endblock %}
 
 {% block extrabody %}{% endblock %}

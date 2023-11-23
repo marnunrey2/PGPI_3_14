@@ -3,6 +3,7 @@ from .views import (
     CitaView,
     get_especialistas_por_servicio,
     get_horas_disponibles,
+    consultar_citas_invitado,
 )
 
 
@@ -14,4 +15,5 @@ urlpatterns = [
     ),
     path("horas_disponibles/", get_horas_disponibles, name="horas_disponibles"),
     path("cita/", CitaView.as_view(), name="cita"),
+    path("consulta/", consultar_citas_invitado, name="consulta_citas"),
 ]

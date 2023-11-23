@@ -27,6 +27,9 @@ class Invitado(models.Model):
     email = models.EmailField()
     telefono = models.CharField(max_length=255)
 
+    def obtener_citas(self):
+        return Cita.objects.filter(invitado=self)
+
     def __str__(self):
         return self.nombre
 
