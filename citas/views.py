@@ -53,6 +53,30 @@ class CitaView(APIView):
         )
 
 
+class ConsultaView(APIView):
+    def post(self, request):
+        nombre = request.POST.get("nombre", None)
+        email = request.POST.get("email", None)
+
+        if nombre:
+            invitado = Invitado.objects.filter(nombre=nombre).first()
+        elif email:
+            invitado = Invitado.objects.filter(email=email).first()
+        else:
+            msg = "Rellene el formulario"
+            return render(request, "consulta_citas.html", {"msg": msg})
+
+        if invitado:
+            return render(request, "citas_invitado.html", {"invitado": invitado})
+        else:
+            # Manejar el caso de invitado no existente
+            msg = "No hay ninguna cita con ese nombre o email"
+            return render(request, "consulta_citas.html", {"msg": msg})
+
+    def get(self, request):
+        return render(request, "consulta_citas.html")
+
+
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")
     especialistas = Especialista.objects.filter(especialidades__id=servicio_id)
@@ -66,30 +90,3 @@ def get_horas_disponibles(request):
     especialista_id = request.GET.get("especialista")
     horas = calculate_available_hours(fecha, especialista_id)
     return render(request, "horas_disponibles.html", {"horas": horas})
-
-
-def consultar_citas_invitado(request):
-    if request.method == "POST":
-        nombre = request.POST.get("nombre", None)
-        email = request.POST.get("email", None)
-
-        # Buscar invitado por nombre o email
-        if nombre:
-            invitado = Invitado.objects.filter(nombre=nombre).first()
-        elif email:
-            invitado = Invitado.objects.filter(email=email).first()
-        else:
-            # Manejar el caso de datos faltantes
-            msg = "Error al proporcionar los datos"
-            return render(request, "consulta_citas.html", {"msg": msg})
-
-        if invitado:
-            citas = invitado.obtener_citas()
-            print(invitado)
-            print(citas)
-            return render(request, "citas_invitado.html", {"citas": citas})
-        else:
-            msg = "No hay ninguna cita con ese nombre o email"
-            return render(request, "consulta_citas.html", {"msg": msg})
-
-    return render(request, "consulta_citas.html")

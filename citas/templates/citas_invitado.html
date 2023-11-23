@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-
+    
         <table class="table">
             <thead>
                 <tr class="table-secondary">
@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cita in citas %}
+                {% for cita in invitado.citas.all %}
                 <tr>
                     <th scope="row">{{ cita.fecha }}</th>
                     <td>{{ cita.hora }}</td>
