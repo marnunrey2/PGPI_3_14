@@ -7,8 +7,16 @@
     <section class="content" style="text-align: center;">
         <h1>Bienvenido a tu perfil, {{user.username}}!</h1>
         <div style="max-width: 400px; margin: auto;">
-            <form method="post" action="{% url 'update_profile' %}"onsubmit="return confirmSubmit()">
+            <form method="post" action="{% url 'update_profile' %}">
                 {% csrf_token %}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
                 {% if form.errors %}
                 <div class="alert alert-danger" role="alert">
                     {% if form.username.errors %}
@@ -22,11 +30,8 @@
                         <span>Correo: </span>{{ form.email.errors.0 }}
                     </div>
                 {% endif %}
-                {% if form.password2.errors %}
-                <div class="form-errors">
-                    <span>Contraseña: </span>{{ form.password2.errors.0 }}
-                </div>
-            {% endif %}
+                
+                
                 </div>
             {% endif %}
                 
@@ -40,29 +45,68 @@
                 </div>
                 <div class ="mb-3">
                     <label for="Nombre completo" class="form-label">Usuario:</label>
-                    <input type="text" class="form-control" id="username" name="username"value="{{user.username}}" oninput="toggleConfirmButton()" >
+                    <input type="text" class="form-control" id="username" name="username"value="{{user.username}}" >
                 </div>
                 <div class ="mb-3">
                     <label for="email" class="form-label">Email:</label>
                     <input type="text" class= "form-control" id="email" name="email" value="{{user.email}}" >
                 </div>
-                <div class="mb-3">
-                    <label for="new_password1" class="form-label">New Password:</label>
-                    <input type="password" class="form-control" id="new_password1" name="new_password1">
-                </div>
+                
+                
                 <button type="submit" class="btn btn-primary" id=" confirmButton">Confirmar cambios</button>
             </form>
-        </div>
+
+            <form method="post" action="{% url 'update_password' %}">
+                {% csrf_token %}
+                <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="passwordModal">Modificar contraseña</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Add your credit card form here -->
+                                <!-- Example: -->
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="new_password1" class="form-label">New Password:</label>
+                                        <input type="password" class="form-control" id="new_password1" name="new_password1">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_password2" class="form-label">Confirm Password:</label>
+                                        <input type="password" class="form-control" id="new_password2" name="new_password2">
+                                    </div>
+                                    <!-- Add other credit card fields as needed -->
+                                    <button type="submit" class="btn btn-primary">Guardar contraseña</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="text-center mb-10">
+                    <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">Cambiar contraseña</a>
+                </div>
+                
+            </form>
+
+
+
 
         <div class="fixed-bottom text-center mb-5">
             <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#creditCardModal">Modificar tarjeta de crédito</a>
         </div>
+
 
         <div class="fixed-bottom text-center mb-2">
             <a class="btn btn-danger" href="/delete/">Borrar cuenta</a>
         </div>
     </section> 
 
+
+    
 
 
     <div class="modal fade" id="creditCardModal" tabindex="-1" role="dialog" aria-labelledby="creditCardModalLabel" aria-hidden="true">
@@ -98,21 +142,7 @@
         </div>
     </div>
 
-    <script>
-        function confirmSubmit() {
-            var newPassword = document.getElementById('new_password1').value;
-    
-            if (newPassword.trim() !== '') {
-                var isConfirmed = confirm('Are you sure you want to change your password?');
-                
-                if (!isConfirmed) {
-                    return false;
-                }
-            }
-    
-            return true;
-        }
-    </script>
+
 
 {% endblock %}
 

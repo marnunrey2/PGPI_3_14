@@ -46,16 +46,28 @@ def update_profile(request):
         form = UpdateProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            # Set the password manually if it's provided in the form
-            new_password = request.POST.get("new_password1", None)
-            if new_password:
-                request.user.set_password(new_password)
-                request.user.save()
-                # Update session to avoid log out after password change
-                update_session_auth_hash(request, request.user)
 
-            messages.success(request, "Perfil actualizado correctamente.")
+        else:
+            messages.error(request, "Error al actualizar perfil.")
 
     else:
         form = UpdateProfileForm(instance=request.user)
     return render(request, "home/perfil.html", {"form": form})
+
+
+def update_password(request):
+    if request.method == "POST":
+        # Set the password manually if it's provided in the form
+        new_password = request.POST.get("new_password1", None)
+        confirm_new_password = request.POST.get("new_password2", None)
+        if new_password:
+            if new_password == confirm_new_password:
+                request.user.set_password(new_password)
+                request.user.save()
+                # Update session to avoid log out after password change
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Perfil actualizado correctamente.")
+            else:
+                messages.error(request, "Las contraseñas no coinciden.")
+
+    return render(request, "home/perfil.html")

@@ -1,5 +1,13 @@
 from django.urls import path
-from .views import HomeView, servicios, especialistas, perfil, citaDelete, update_profile
+from .views import (
+    HomeView,
+    servicios,
+    especialistas,
+    perfil,
+    citaDelete,
+    update_password,
+    update_profile,
+)
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -14,4 +22,5 @@ urlpatterns = [
     path("especialistas/", especialistas, name="especialistas"),
     path("citas/<int:cita_id>/delete/", citaDelete),
     path("perfil/update_profile/", update_profile, name="update_profile"),
+    path("perfil/update_password/", update_password, name="update_password"),
 ]
