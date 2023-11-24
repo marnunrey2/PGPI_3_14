@@ -7,7 +7,13 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib import messages
 from django.shortcuts import redirect, render
-from django.contrib.auth import update_session_auth_hash
+from authentication.forms import (
+    LoginForm,
+    RegisterForm,
+    UpdateProfileForm,
+)
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import get_object_or_404, redirect, render
 
 
 def HomeView(request):
@@ -29,6 +35,7 @@ def especialistas(request):
     context = {"especialistas": especialistas}
     return render(request, "home/especialistas.html", context)
 
+
 def citaDelete(request, cita_id):
     Cita.objects.filter(id=cita_id).delete()
     return redirect("/")
@@ -36,28 +43,19 @@ def citaDelete(request, cita_id):
 
 def update_profile(request):
     if request.method == "POST":
-        new_username = request.POST.get("new_username")
-        new_email = request.POST.get("new_email")
-        new_password = request.POST.get("new_password")
+        form = UpdateProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            # Set the password manually if it's provided in the form
+            new_password = request.POST.get("new_password1", None)
+            if new_password:
+                request.user.set_password(new_password)
+                request.user.save()
+                # Update session to avoid log out after password change
+                update_session_auth_hash(request, request.user)
 
-        if not new_username:
-            messages.error(request, "New username cannot be empty.")
-            return redirect("perfil")
+            messages.success(request, "Perfil actualizado correctamente.")
 
-        # Update the username and email
-        request.user.username = new_username
-        request.user.email = new_email
-        request.user.save()
-
-        if new_password:
-            # Update the password
-            request.user.set_password(new_password)
-            request.user.save()
-            update_session_auth_hash(request, request.user)  # Keep the user logged in
-            messages.success(request, "Password updated successfully.")
-
-        messages.success(request, "Profile updated successfully.")
-        return redirect("perfil")
-
-    return render(request, "home/perfil.html")
-
+    else:
+        form = UpdateProfileForm(instance=request.user)
+    return render(request, "home/perfil.html", {"form": form})
