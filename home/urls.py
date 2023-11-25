@@ -4,7 +4,6 @@ from .views import (
     servicios,
     especialistas,
     perfil,
-    citaDelete,
     update_profile,
 )
 from django.views.generic import TemplateView
@@ -21,6 +20,5 @@ urlpatterns = [
     path("perfil/", perfil, name="perfil"),
     path("servicios/", servicios, name="servicios"),
     path("especialistas/", especialistas, name="especialistas"),
-    path("citas/<int:cita_id>/delete/", citaDelete),
     path("perfil/update_profile/", update_profile, name="update_profile"),
 ]

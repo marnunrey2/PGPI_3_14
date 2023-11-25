@@ -1,13 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from citas.models import Cita
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from citas.models import Servicio, Especialista
-from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.contrib import messages
-from django.shortcuts import redirect, render
-from django.contrib.auth import update_session_auth_hash
 
 
 def HomeView(request):
@@ -28,10 +23,6 @@ def especialistas(request):
     especialistas = Especialista.objects.all()
     context = {"especialistas": especialistas}
     return render(request, "home/especialistas.html", context)
-
-def citaDelete(request, cita_id):
-    Cita.objects.filter(id=cita_id).delete()
-    return redirect("/")
 
 
 def update_profile(request):
@@ -60,4 +51,3 @@ def update_profile(request):
         return redirect("perfil")
 
     return render(request, "home/perfil.html")
-

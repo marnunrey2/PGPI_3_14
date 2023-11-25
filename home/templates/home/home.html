@@ -29,7 +29,7 @@
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
-                    <td><a href="citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                    <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
