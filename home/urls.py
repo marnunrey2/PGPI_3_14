@@ -1,6 +1,15 @@
 from django.urls import path
-from .views import HomeView, servicios, especialistas, perfil, citaDelete, update_profile
+from .views import (
+    HomeView,
+    servicios,
+    especialistas,
+    perfil,
+    citaDelete,
+    update_profile,
+)
 from django.views.generic import TemplateView
+
+app_name = "home"
 
 urlpatterns = [
     path("", HomeView, name="home"),

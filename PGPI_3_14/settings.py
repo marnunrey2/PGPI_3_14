@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "bootstrap4",
     "citas",
     "authentication",
-    "administrador" "django_bootstrap_icons",
+    "administrador",
+    "django_bootstrap_icons",
 ]
 
 MIDDLEWARE = [
