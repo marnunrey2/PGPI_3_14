@@ -11,6 +11,7 @@ class Servicio(models.Model):
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField()
     imagen = models.ImageField(upload_to="servicios", null=True, blank=True)
+    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.nombre
