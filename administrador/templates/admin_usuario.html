@@ -1,0 +1,47 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+{% load bootstrap_icons %}
+{% block title %}Usuarios{% endblock %}
+
+{% block extrahead %}
+<!-- Custom CSS -->
+{% endblock %}
+
+{% block content %}
+<a class="btn btn-primary" href="/admin_view/usuarios/add">Añadir usuario</a>
+    {% if usuarios %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Email</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellidos</th>
+                    <th scope="col">Trabajador</th>
+                    <th scope="col">Fecha de creación</th>
+                    <th scope="col">Eliminar especialista</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.first_name }}</td>
+                    <td>{{ usuario.last_name }}</td>
+                    {% if usuario.is_staff %}
+                    <td>Sí</td> 
+                    {% else %}
+                    <td>No</td> 
+                    {% endif %}
+                    <td>{{ usuario.date_joined }}</td>
+                    <td><a href="/usuarios/{{usuario.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay usuarios.</p>
+    {% endif %}
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}

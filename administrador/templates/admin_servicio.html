@@ -1,0 +1,45 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+{% load bootstrap_icons %}
+{% block title %}Servicios{% endblock %}
+
+{% block extrahead %}
+<!-- Custom CSS -->
+{% endblock %}
+
+{% block content %}
+<a class="btn btn-primary" href="/admin_view/servicios/add">Añadir servicio</a>
+    {% if servicios %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Eliminar servicio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for servicio in servicios %}
+                <tr>
+                    <td>{{ servicio.nombre }}</td>
+                    <td>{{ servicio.descripcion }}</td>
+                    {% if servicio.imagen %}
+                    <td>{{ servicio.imagen }}</td> 
+                    {% else %}
+                    <td>No tiene</td> 
+                    {% endif %}
+                    <td>{{ servicio.precio }}</td>
+                    <td><a href="/servicios/{{servicio.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay servicios.</p>
+    {% endif %}
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}
