@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "bootstrap4",
     "citas",
     "authentication",
-    'django_bootstrap_icons',
+    "administrador" "django_bootstrap_icons",
 ]
 
 MIDDLEWARE = [
@@ -128,4 +128,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MODULES = ["authentication", "citas", "home"]
+MODULES = ["authentication", "citas", "home", "administrador"]
