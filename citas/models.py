@@ -3,6 +3,8 @@ from django.db import models
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 
 class Servicio(models.Model):
@@ -79,6 +81,13 @@ class Cita(models.Model):
         # Run the clean method before saving
         self.clean()
         super().save(*args, **kwargs)
+
+
+@receiver(post_delete, sender=Cita)
+def delete_invitado_if_no_citas(sender, instance, **kwargs):
+    # Check if the deleted Cita's Invitado has no more citas
+    if instance.invitado and instance.invitado.citas.count() == 0:
+        instance.invitado.delete()
 
     def __str__(self):
         return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre} el {self.fecha}"
