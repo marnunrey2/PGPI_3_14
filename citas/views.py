@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CitaForm
 from rest_framework.views import APIView
-from citas.models import Especialista, Invitado, Cita
+from citas.models import Especialista, Invitado, Cita, Servicio
 from .utils import calculate_available_hours
 from datetime import datetime
 from django.http import HttpResponseForbidden
@@ -79,6 +79,12 @@ def get_especialistas_por_servicio(request):
     return render(
         request, "especialistas_opciones.html", {"especialistas": especialistas}
     )
+
+
+def get_servicios_por_especialista(request):
+    especialista_id = request.GET.get("especialista")
+    servicios = Servicio.objects.filter(especialistas=especialista_id)
+    return render(request, "servicios_opciones.html", {"servicios": servicios})
 
 
 def get_horas_disponibles(request):

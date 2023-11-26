@@ -9,6 +9,7 @@ from .forms import (
     UsuarioAddForm,
     InvitadoAddForm,
     CitaServicioAddForm,
+    CitaEspecialistaAddForm,
 )
 
 
@@ -135,9 +136,33 @@ class AdminCitaServicioAdd(APIView):
 
 
 class AdminCitaEspecialistaAdd(APIView):
+    def post(self, request):
+        form = CitaServicioAddForm(request.POST)
+        if form.is_valid() and request.user.is_staff:
+            usuario = form.cleaned_data["usuario"]
+            invitado = form.cleaned_data["invitado"]
+            servicio_id = form.cleaned_data["servicio"].id
+            especialista_id = form.cleaned_data["especialista"].id
+            fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
+            hora = form.cleaned_data["hora"]
+
+            Cita.objects.create(
+                usuario=usuario,
+                invitado=invitado,
+                servicio_id=servicio_id,
+                especialista_id=especialista_id,
+                fecha=fecha,
+                hora=hora,
+            )
+            return redirect("/admin_view/citas")
+        else:
+            msg = "Error en el formulario"
+            return render(request, "admin_cita.html", {"form": form, "msg": msg})
+
     def get(self, request):
         if request.user.is_staff:
-            return render(request, "admin_cita_add.html", {"form": form})
+            form = CitaEspecialistaAddForm()
+            return render(request, "admin_cita_especialista_add.html", {"form": form})
         else:
             return redirect("home:home")
 

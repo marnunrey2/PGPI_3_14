@@ -5,6 +5,7 @@ from .views import (
     get_especialistas_por_servicio,
     get_horas_disponibles,
     cita_delete,
+    get_servicios_por_especialista,
 )
 
 
@@ -13,6 +14,11 @@ urlpatterns = [
         "especialistas_opciones/",
         get_especialistas_por_servicio,
         name="especialistas_opciones",
+    ),
+    path(
+        "servicios_opciones/",
+        get_servicios_por_especialista,
+        name="servicios_opciones",
     ),
     path("horas_disponibles/", get_horas_disponibles, name="horas_disponibles"),
     path("cita/", CitaView.as_view(), name="cita"),
