@@ -4,8 +4,12 @@
 {% block title %}Perfil{% endblock %}
 
 {% block content %}
+    <div class="text-right">
+        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">Cambiar contraseña</a>
+    </div>
     <section class="content" style="text-align: center;">
         <h1>Bienvenido a tu perfil, {{user.username}}!</h1>
+        
         <div style="max-width: 400px; margin: auto;">
             <form method="post" action="{% url 'update_profile' %}">
                 {% csrf_token %}
@@ -71,26 +75,26 @@
                                 <form method="post">
                                     {% csrf_token %}
                                     <div class="mb-3">
-                                        <label for="new_password1" class="form-label">New Password:</label>
+                                        <label for="new_password1" class="form-label">Nueva Contraseña:</label>
                                         <input type="password" class="form-control" id="new_password1" name="new_password1">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="new_password2" class="form-label">Confirm Password:</label>
+                                        <label for="new_password2" class="form-label">Confirmar Contraseña:</label>
                                         <input type="password" class="form-control" id="new_password2" name="new_password2">
                                     </div>
                                     <!-- Add other credit card fields as needed -->
-                                    <button type="submit" class="btn btn-primary">Guardar contraseña</button>
+                                    <button type="submit" class="btn btn-primary"id= "enablepassword" >Guardar contraseña</button>
+
                                 </form>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
                 </div>
-                <div class="text-center mb-10">
-                    <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">Cambiar contraseña</a>
-                </div>
-                
+                                
             </form>
+        
 
 
 
@@ -104,6 +108,7 @@
             <a class="btn btn-danger" href="/delete/">Borrar cuenta</a>
         </div>
     </section> 
+
 
 
     
@@ -141,6 +146,10 @@
             </div>
         </div>
     </div>
+
+    
+
+    
 
 
 
