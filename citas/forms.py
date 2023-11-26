@@ -18,14 +18,15 @@ class CitaForm(forms.Form):
     )
     fecha = forms.DateField(
         widget=forms.DateInput(
+            format="%Y-%m-%d",
             attrs={
+                "type": "date",
                 "hx-get": "/horas_disponibles/",
                 "hx-include": "#id_especialista",
                 "hx-target": "#id_hora",
-                "placeholder": "YYYY-mm-dd",
-                "pattern": "\d{4}-\d{2}-\d{2}",
-            }
-        )
+            },
+        ),
+        input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
 
