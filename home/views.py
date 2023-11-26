@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth import update_session_auth_hash
+import datetime
 
 
 def HomeView(request):
@@ -29,7 +30,17 @@ def especialistas(request):
     context = {"especialistas": especialistas}
     return render(request, "home/especialistas.html", context)
 
+
 def citaDelete(request, cita_id):
+    citaToDelete = Cita.objects.get(id=cita_id)
+    if citaToDelete.fecha <= datetime.datetime.now().date() + datetime.timedelta(
+        days=1
+    ):
+        return render(
+            request,
+            "home/home.html",
+            {"message": "No puedes cancelar citas que se vayan a dar en 1 día"},
+        )
     Cita.objects.filter(id=cita_id).delete()
     return redirect("/")
 
@@ -60,4 +71,3 @@ def update_profile(request):
         return redirect("perfil")
 
     return render(request, "home/perfil.html")
-

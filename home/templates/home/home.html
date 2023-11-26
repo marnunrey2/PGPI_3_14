@@ -9,6 +9,12 @@
 {% endblock %}
 
 {% block content %}
+<section class="hero">
+    {% if message %}
+    <ul class="message">
+        <li class="info">{{ message }}</li>
+    </ul>
+{% endif %}
 {% if user.is_authenticated %}
 <a class="btn btn-primary" href="/cita/">Reservar cita</a>
     {% if user.citas.exists %}
