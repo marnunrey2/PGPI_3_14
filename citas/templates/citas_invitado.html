@@ -1,0 +1,38 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Citas{% endblock %}
+
+{% block extrahead %}
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static "home/home.css" %}">
+{% endblock %}
+
+{% block content %}
+    
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Especialista</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in invitado %}
+                    {% for cita in inv.citas.all %}
+                    <tr>
+                        <th scope="row">{{ cita.fecha }}</th>
+                        <td>{{ cita.hora }}</td>
+                        <td>{{ cita.servicio.nombre }}</td>
+                        <td>{{ cita.especialista.nombre }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}
