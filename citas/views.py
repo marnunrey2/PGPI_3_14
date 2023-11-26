@@ -38,7 +38,7 @@ class CitaView(APIView):
                 fecha=fecha,
                 hora=hora,
             )
-            return render(request, "home/home.html", {"cita": cita})
+            return redirect("/")
 
         else:
             msg = "Error en el formulario"
