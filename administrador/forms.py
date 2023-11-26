@@ -1,12 +1,22 @@
 from django import forms
-from citas.models import Servicio, Especialista
+from citas.models import Servicio, Especialista, Invitado
 from citas.utils import calculate_available_hours
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
-"""
-class CitaAddForm(forms.Form):
+class CitaServicioAddForm(forms.Form):
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select", "id": "usuario_select"}),
+    )
+    invitado = forms.ModelChoiceField(
+        queryset=Invitado.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select", "id": "invitado_select"}),
+    )
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.all(),
         widget=forms.Select(
@@ -32,12 +42,7 @@ class CitaAddForm(forms.Form):
     )
     hora = forms.ChoiceField(choices=[])
 
-    nombre = forms.CharField(max_length=100, required=False)
-    email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
-
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         if "servicio" in self.data:
@@ -53,7 +58,18 @@ class CitaAddForm(forms.Form):
                 for hour in calculate_available_hours(fecha, especialista_id)
             ]
             self.fields["hora"].choices = available_hours
-"""
+
+    def clean(self):
+        cleaned_data = super().clean()
+        usuario = cleaned_data.get("usuario")
+        invitado = cleaned_data.get("invitado")
+
+        if usuario and invitado:
+            raise ValidationError(
+                "Both usuario and invitado cannot be filled. Please choose only one."
+            )
+
+        return cleaned_data
 
 
 class ServicioAddForm(forms.Form):

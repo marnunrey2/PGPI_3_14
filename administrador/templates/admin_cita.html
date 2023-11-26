@@ -8,7 +8,24 @@
 {% endblock %}
 
 {% block content %}
-<a class="btn btn-primary" href="/admin_view/citas/add">Crear cita</a>
+<!-- Button trigger modal -->
+<a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal">Crear cita</a>
+
+<!-- Modal -->
+<div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="citaModalLabel">Crear Cita</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <a href="{% url 'cita_servicio_add' %}" class="btn btn-primary">Crear según servicio</a>        
+        <a href="{% url 'cita_especialista_add' %}" class="btn btn-secondary">Crear según especialista</a>
+      </div>
+    </div>
+  </div>
+</div>
     {% if citas %}
         <table class="table">
             <thead>

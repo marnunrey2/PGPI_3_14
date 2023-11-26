@@ -28,7 +28,7 @@ class CitaView(APIView):
                     nombre=nombre, email=email, telefono=telefono
                 )
 
-            cita = Cita.objects.create(
+            Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
