@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from citas.models import Cita, Servicio, Especialista, Invitado
 from django.http import HttpResponseForbidden
 from django.contrib.auth.models import User
-from .forms import ServicioAddForm, EspecialistaAddForm, UsuarioAddForm
+from .forms import ServicioAddForm, EspecialistaAddForm, UsuarioAddForm, InvitadoAddForm
 
 
 class AdminCitaView(APIView):
@@ -96,15 +96,20 @@ def invitado_delete(request, invitado_id):
         return HttpResponseForbidden()
 
 
-"""
-class AdminCitaAddView(APIView):
+class AdminCitaServicioAdd(APIView):
     def get(self, request):
         if request.user.is_staff:
-            form = CitaAddForm()
             return render(request, "admin_cita_add.html", {"form": form})
         else:
             return redirect("home:home")
-"""
+
+
+class AdminCitaEspecialistaAdd(APIView):
+    def get(self, request):
+        if request.user.is_staff:
+            return render(request, "admin_cita_add.html", {"form": form})
+        else:
+            return redirect("home:home")
 
 
 class AdminServicioAddView(APIView):
@@ -146,7 +151,6 @@ class AdminEspecialistaAddView(APIView):
             especialista = Especialista.objects.create(nombre=nombre)
 
             for servicio in especialidades:
-                print(servicio)
                 especialista.especialidades.add(servicio)
 
             return redirect("/admin_view/especialistas")
@@ -193,5 +197,32 @@ class AdminUsuarioAddView(APIView):
         if request.user.is_staff:
             form = UsuarioAddForm()
             return render(request, "admin_usuario_add.html", {"form": form})
+        else:
+            return redirect("home:home")
+
+
+class AdminInvitadoAddView(APIView):
+    def post(self, request):
+        form = InvitadoAddForm(request.POST)
+        if form.is_valid() and request.user.is_staff:
+            nombre = form.cleaned_data["nombre"]
+            email = form.cleaned_data["email"]
+            telefono = form.cleaned_data["telefono"]
+
+            Invitado.objects.create(
+                nombre=nombre,
+                email=email,
+                telefono=telefono,
+            )
+
+            return redirect("/admin_view/invitados")
+        else:
+            msg = "Error en el formulario"
+            return render(request, "admin_invitado.html", {"form": form, "msg": msg})
+
+    def get(self, request):
+        if request.user.is_staff:
+            form = InvitadoAddForm()
+            return render(request, "admin_invitado_add.html", {"form": form})
         else:
             return redirect("home:home")

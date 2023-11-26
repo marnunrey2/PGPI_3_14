@@ -86,3 +86,9 @@ class UsuarioAddForm(UserCreationForm):
             "password1",
             "password2",
         )
+
+
+class InvitadoAddForm(forms.Form):
+    nombre = forms.CharField(max_length=255, required=True)
+    email = forms.EmailField(max_length=254, required=True)
+    telefono = forms.CharField(max_length=20, required=True)
