@@ -20,13 +20,15 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cita in invitado.citas.all %}
-                <tr>
-                    <th scope="row">{{ cita.fecha }}</th>
-                    <td>{{ cita.hora }}</td>
-                    <td>{{ cita.servicio.nombre }}</td>
-                    <td>{{ cita.especialista.nombre }}</td>
-                </tr>
+                {% for inv in invitado %}
+                    {% for cita in inv.citas.all %}
+                    <tr>
+                        <th scope="row">{{ cita.fecha }}</th>
+                        <td>{{ cita.hora }}</td>
+                        <td>{{ cita.servicio.nombre }}</td>
+                        <td>{{ cita.especialista.nombre }}</td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>

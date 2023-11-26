@@ -58,10 +58,8 @@ class ConsultaView(APIView):
         nombre = request.POST.get("nombre", None)
         email = request.POST.get("email", None)
 
-        if nombre:
-            invitado = Invitado.objects.filter(nombre=nombre).first()
-        elif email:
-            invitado = Invitado.objects.filter(email=email).first()
+        if email:
+            invitado = Invitado.objects.filter(email=email)
         else:
             msg = "Rellene el formulario"
             return render(request, "consulta_citas.html", {"msg": msg})
