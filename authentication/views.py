@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.models import User
 
 from .forms import LoginForm, RegisterForm
 from .serializers import UsuarioSerializer
@@ -73,9 +74,9 @@ class RegisterView(APIView):
 class DeleteView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            request.session.flush()
             userToDelete = User.objects.filter(id=request.user.id)
             userToDelete.delete()
+            request.session.flush()
             return redirect("/")
         return redirect("/perfil")
 
