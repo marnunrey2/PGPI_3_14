@@ -53,6 +53,28 @@ class CitaView(APIView):
         )
 
 
+class ConsultaView(APIView):
+    def post(self, request):
+        nombre = request.POST.get("nombre", None)
+        email = request.POST.get("email", None)
+
+        if email:
+            invitado = Invitado.objects.filter(email=email)
+        else:
+            msg = "Rellene el formulario"
+            return render(request, "consulta_citas.html", {"msg": msg})
+
+        if invitado:
+            return render(request, "citas_invitado.html", {"invitado": invitado})
+        else:
+            # Manejar el caso de invitado no existente
+            msg = "No hay ninguna cita con ese nombre o email"
+            return render(request, "consulta_citas.html", {"msg": msg})
+
+    def get(self, request):
+        return render(request, "consulta_citas.html")
+
+
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")
     especialistas = Especialista.objects.filter(especialidades__id=servicio_id)
