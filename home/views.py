@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth import update_session_auth_hash
+import datetime
 
 
 def HomeView(request):
@@ -30,6 +31,11 @@ def especialistas(request):
     return render(request, "home/especialistas.html", context)
 
 def citaDelete(request, cita_id):
+    citaToDelete = Cita.objects.get(id=cita_id)
+    format = '%H:%M:%S'
+    timeDiff =citaToDelete.hora.hour*60+citaToDelete.hora.minute -datetime.datetime.now().time().hour*60-datetime.datetime.now().time().minute
+    if citaToDelete.fecha==datetime.datetime.now().date() and timeDiff<60:
+        return render(request, "home/home.html", {"message":"No puedes cancelar citas que se vayan a dar en 1 hora"})
     Cita.objects.filter(id=cita_id).delete()
     return redirect("/")
 
