@@ -105,13 +105,25 @@
 
 
         <div class="fixed-bottom text-center mb-2">
-            <a class="btn btn-danger" href="/delete/">Borrar cuenta</a>
+            <a class="btn btn-danger" href="/delete/"id="deleteAccountBtn">Borrar cuenta</a>
         </div>
     </section> 
 
+    <script>
+        document.getElementById('deleteAccountBtn').addEventListener('click', function () {
+            var isConfirmed = confirm('¿Estás seguro de que quieres borrar tu cuenta?');
+
+            if (isConfirmed) {
+                // Redirect to the delete view or perform the delete action
+                window.location.href = "/delete/";
+            }
+        });
+    </script>
 
 
     
+  
+
 
 
     <div class="modal fade" id="creditCardModal" tabindex="-1" role="dialog" aria-labelledby="creditCardModalLabel" aria-hidden="true">

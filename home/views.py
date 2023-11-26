@@ -38,6 +38,7 @@ def especialistas(request):
 
 def citaDelete(request, cita_id):
     Cita.objects.filter(id=cita_id).delete()
+    messages.success(request, "¡Cuenta eliminada exitosamente!")
     return redirect("/")
 
 
