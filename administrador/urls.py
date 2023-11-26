@@ -11,11 +11,15 @@ from .views import (
     invitado_delete,
     AdminServicioAddView,
     AdminEspecialistaAddView,
+    AdminUsuarioAddView,
 )
 
 urlpatterns = [
     path("admin_view/citas", AdminCitaView.as_view(), name="admin_cita"),
     path("admin_view/servicios", AdminServicioView.as_view(), name="admin_servicio"),
+    path(
+        "admin_view/servicios/add", AdminServicioAddView.as_view(), name="servicio_add"
+    ),
     path(
         "servicios/<int:servicio_id>/delete/", servicio_delete, name="servicio_delete"
     ),
@@ -23,6 +27,11 @@ urlpatterns = [
         "admin_view/especialistas",
         AdminEspecialistaView.as_view(),
         name="admin_especialista",
+    ),
+    path(
+        "admin_view/especialistas/add",
+        AdminEspecialistaAddView.as_view(),
+        name="especialista_add",
     ),
     path(
         "especialistas/<int:especialista_id>/delete/",
@@ -33,6 +42,11 @@ urlpatterns = [
         "admin_view/usuarios",
         AdminUsuarioView.as_view(),
         name="admin_usuario",
+    ),
+    path(
+        "admin_view/usuarios/add",
+        AdminUsuarioAddView.as_view(),
+        name="usuario_add",
     ),
     path(
         "usuarios/<int:usuario_id>/delete/",
@@ -48,14 +62,6 @@ urlpatterns = [
         "invitados/<int:invitado_id>/delete/",
         invitado_delete,
         name="invitado_delete",
-    ),
-    path(
-        "admin_view/servicios/add", AdminServicioAddView.as_view(), name="servicio_add"
-    ),
-    path(
-        "admin_view/especialistas/add",
-        AdminEspecialistaAddView.as_view(),
-        name="especialista_add",
     ),
     path("", include(("home.urls", "home"), namespace="home")),
 ]

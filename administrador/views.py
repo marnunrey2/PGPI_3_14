@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from citas.models import Cita, Servicio, Especialista, Invitado
 from django.http import HttpResponseForbidden
 from django.contrib.auth.models import User
-from .forms import ServicioAddForm, EspecialistaAddForm
+from .forms import ServicioAddForm, EspecialistaAddForm, UsuarioAddForm
 
 
 class AdminCitaView(APIView):
@@ -152,11 +152,46 @@ class AdminEspecialistaAddView(APIView):
             return redirect("/admin_view/especialistas")
         else:
             msg = "Error en el formulario"
-            return render(request, "admin_servicio.html", {"form": form, "msg": msg})
+            return render(
+                request, "admin_especialista.html", {"form": form, "msg": msg}
+            )
 
     def get(self, request):
         if request.user.is_staff:
             form = EspecialistaAddForm()
             return render(request, "admin_especialista_add.html", {"form": form})
+        else:
+            return redirect("home:home")
+
+
+class AdminUsuarioAddView(APIView):
+    def post(self, request):
+        form = UsuarioAddForm(request.POST)
+        if form.is_valid() and request.user.is_staff:
+            username = form.cleaned_data["username"]
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password1"]
+            is_staff = True
+
+            user = User.objects.create_user(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password,
+                is_staff=is_staff,
+            )
+
+            return redirect("/admin_view/usuarios")
+        else:
+            msg = "Error en el formulario"
+            return render(request, "admin_usuario.html", {"form": form, "msg": msg})
+
+    def get(self, request):
+        if request.user.is_staff:
+            form = UsuarioAddForm()
+            return render(request, "admin_usuario_add.html", {"form": form})
         else:
             return redirect("home:home")
