@@ -1,12 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CitaForm
 from rest_framework.views import APIView
-from citas.models import Servicio, Especialista, Invitado, Cita
-from django.http import JsonResponse
-from datetime import datetime, timedelta
+from citas.models import Especialista, Invitado, Cita, Servicio
 from .utils import calculate_available_hours
-from django.contrib.auth.models import User
 from datetime import datetime
+from django.http import HttpResponseForbidden
 
 
 class CitaView(APIView):
@@ -30,7 +28,7 @@ class CitaView(APIView):
                     nombre=nombre, email=email, telefono=telefono
                 )
 
-            cita = Cita.objects.create(
+            Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
@@ -83,8 +81,27 @@ def get_especialistas_por_servicio(request):
     )
 
 
+def get_servicios_por_especialista(request):
+    especialista_id = request.GET.get("especialista")
+    servicios = Servicio.objects.filter(especialistas=especialista_id)
+    return render(request, "servicios_opciones.html", {"servicios": servicios})
+
+
 def get_horas_disponibles(request):
     fecha = request.GET.get("fecha")
     especialista_id = request.GET.get("especialista")
     horas = calculate_available_hours(fecha, especialista_id)
     return render(request, "horas_disponibles.html", {"horas": horas})
+
+
+def cita_delete(request, cita_id):
+    cita = get_object_or_404(Cita, pk=cita_id)
+
+    if request.user == cita.usuario:
+        cita.delete()
+        return redirect("/")
+    elif request.user.is_staff:
+        cita.delete()
+        return redirect("/admin_view/citas")
+    else:
+        return HttpResponseForbidden()

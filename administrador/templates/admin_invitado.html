@@ -1,0 +1,39 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+{% load bootstrap_icons %}
+{% block title %}Invitados{% endblock %}
+
+{% block extrahead %}
+<!-- Custom CSS -->
+{% endblock %}
+
+{% block content %}
+<a class="btn btn-primary" href="/admin_view/invitados/add">Añadir invitado</a>
+    {% if invitados %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Eliminar especialista</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invitado in invitados %}
+                <tr>
+                    <td>{{ invitado.nombre }}</td>
+                    <td>{{ invitado.email }}</td>
+                    <td>{{ invitado.telefono }}</td>
+                    <td><a href="/invitados/{{invitado.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay invitados.</p>
+    {% endif %}
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}

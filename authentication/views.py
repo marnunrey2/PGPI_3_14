@@ -26,8 +26,10 @@ class LoginView(TemplateView):
                 login(request, user)
                 if not remember_me:
                     request.session.set_expiry(0)
-
-                return redirect("/")
+                if request.user.is_staff:
+                    return redirect("/admin_view/citas")
+                else:
+                    return redirect("/")
             else:
                 msg = "Credenciales incorrectas"
         else:
@@ -70,7 +72,8 @@ class RegisterView(APIView):
         return render(
             request, "authentication/register.html", {"form": form, "msg": None}
         )
-      
+
+
 class DeleteView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
@@ -79,4 +82,3 @@ class DeleteView(APIView):
             request.session.flush()
             return redirect("/")
         return redirect("/perfil")
-
