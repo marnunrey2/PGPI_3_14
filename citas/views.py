@@ -17,6 +17,7 @@ class CitaView(APIView):
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
+            contrarembolso = form.cleaned_data["contrarembolso"]
 
             usuario = request.user if request.user.is_authenticated else None
             invitado = None
@@ -37,6 +38,8 @@ class CitaView(APIView):
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
+                contrarembolso=contrarembolso,
+                pagado=False
             )
             return render(request, "home/home.html", {"cita": cita})
 

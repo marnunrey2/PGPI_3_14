@@ -28,7 +28,7 @@ class CitaForm(forms.Form):
         )
     )
     hora = forms.ChoiceField(choices=[])
-
+    contrarembolso = forms.BooleanField(required=False)
     nombre = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(required=False)
     telefono = forms.CharField(max_length=20, required=False)

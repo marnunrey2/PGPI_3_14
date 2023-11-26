@@ -53,6 +53,8 @@ class Cita(models.Model):
     especialista = models.ForeignKey("Especialista", on_delete=models.CASCADE)
     fecha = models.DateField()
     hora = models.TimeField()
+    contrarembolso = models.BooleanField()
+    pagado = models.BooleanField()
 
     def clean(self):
         # Check if the selected servicio is offered by the chosen especialista
