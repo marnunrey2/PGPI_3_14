@@ -32,10 +32,8 @@ def especialistas(request):
 
 def citaDelete(request, cita_id):
     citaToDelete = Cita.objects.get(id=cita_id)
-    format = '%H:%M:%S'
-    timeDiff =citaToDelete.hora.hour*60+citaToDelete.hora.minute -datetime.datetime.now().time().hour*60-datetime.datetime.now().time().minute
-    if citaToDelete.fecha==datetime.datetime.now().date() and timeDiff<60:
-        return render(request, "home/home.html", {"message":"No puedes cancelar citas que se vayan a dar en 1 hora"})
+    if citaToDelete.fecha<=datetime.datetime.now().date()+ datetime.timedelta(days=1):
+        return render(request, "home/home.html", {"message":"No puedes cancelar citas que se vayan a dar en 1 día"})
     Cita.objects.filter(id=cita_id).delete()
     return redirect("/")
 
