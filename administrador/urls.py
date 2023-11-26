@@ -10,6 +10,7 @@ from .views import (
     AdminInvitadoView,
     invitado_delete,
     AdminServicioAddView,
+    AdminEspecialistaAddView,
 )
 
 urlpatterns = [
@@ -50,6 +51,11 @@ urlpatterns = [
     ),
     path(
         "admin_view/servicios/add", AdminServicioAddView.as_view(), name="servicio_add"
+    ),
+    path(
+        "admin_view/especialistas/add",
+        AdminEspecialistaAddView.as_view(),
+        name="especialista_add",
     ),
     path("", include(("home.urls", "home"), namespace="home")),
 ]

@@ -58,3 +58,11 @@ class ServicioAddForm(forms.Form):
     descripcion = forms.CharField(widget=forms.Textarea)
     imagen = forms.ImageField(required=False)
     precio = forms.DecimalField(max_digits=10, decimal_places=2)
+
+
+class EspecialistaAddForm(forms.Form):
+    nombre = forms.CharField(max_length=255)
+    especialidades = forms.ModelMultipleChoiceField(
+        queryset=Servicio.objects.all(),
+        widget=forms.SelectMultiple(attrs={"class": "form-select"}),
+    )

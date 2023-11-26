@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from citas.models import Cita, Servicio, Especialista, Invitado
 from django.http import HttpResponseForbidden
 from django.contrib.auth.models import User
-from .forms import ServicioAddForm
+from .forms import ServicioAddForm, EspecialistaAddForm
 
 
 class AdminCitaView(APIView):
@@ -133,5 +133,30 @@ class AdminServicioAddView(APIView):
         if request.user.is_staff:
             form = ServicioAddForm()
             return render(request, "admin_servicio_add.html", {"form": form})
+        else:
+            return redirect("home:home")
+
+
+class AdminEspecialistaAddView(APIView):
+    def post(self, request):
+        form = EspecialistaAddForm(request.POST)
+        if form.is_valid() and request.user.is_staff:
+            nombre = form.cleaned_data["nombre"]
+            especialidades = form.cleaned_data["especialidades"]
+            especialista = Especialista.objects.create(nombre=nombre)
+
+            for servicio in especialidades:
+                print(servicio)
+                especialista.especialidades.add(servicio)
+
+            return redirect("/admin_view/especialistas")
+        else:
+            msg = "Error en el formulario"
+            return render(request, "admin_servicio.html", {"form": form, "msg": msg})
+
+    def get(self, request):
+        if request.user.is_staff:
+            form = EspecialistaAddForm()
+            return render(request, "admin_especialista_add.html", {"form": form})
         else:
             return redirect("home:home")
