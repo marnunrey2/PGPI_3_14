@@ -38,6 +38,8 @@
         <p>No hay citas.</p>
     {% endif %}
 {% else %}
+
+        
     <h1>Bienvenidos a AesthetiCare</h1>
     <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
         <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
@@ -46,6 +48,14 @@
     <a class="btn btn-secondary" href="/consulta/">Consulta tus citas</a>
 
     
+{% endif %}
+
+{% if success_message %}
+<div class="mt-3">
+    <div class="alert alert-success" role="alert">
+        {{ success_message }}
+    </div>
+</div>
 {% endif %}
 {% endblock %}
 
