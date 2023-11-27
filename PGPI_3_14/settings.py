@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "citas",
     "authentication",
     'django_bootstrap_icons',
+    "payments",
 ]
 
 MIDDLEWARE = [
