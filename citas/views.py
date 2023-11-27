@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CitaForm
+from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
 from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from .utils import calculate_available_hours
@@ -7,9 +7,9 @@ from datetime import datetime
 from django.http import HttpResponseForbidden
 
 
-class CitaView(APIView):
+class CitaServicioAddView(APIView):
     def post(self, request):
-        form = CitaForm(request.POST)
+        form = CitaServicioAddForm(request.POST)
         if form.is_valid():
             servicio_id = form.cleaned_data["servicio"].id
             especialista_id = form.cleaned_data["especialista"].id
@@ -40,13 +40,60 @@ class CitaView(APIView):
 
         else:
             msg = "Error en el formulario"
-            return render(request, "crear_cita.html", {"form": form, "msg": msg})
+            return render(request, "cita_servicio_add.html", {"form": form, "msg": msg})
 
     def get(self, request):
-        form = CitaForm(user=request.user)
+        form = CitaServicioAddForm(user=request.user)
         return render(
             request,
-            "crear_cita.html",
+            "cita_servicio_add.html",
+            {"form": form},
+        )
+
+
+class CitaEspecialistaAddView(APIView):
+    def post(self, request):
+        form = CitaEspecialistaAddForm(request.POST)
+        if form.is_valid():
+            servicio_id = form.cleaned_data["servicio"].id
+            especialista_id = form.cleaned_data["especialista"].id
+            fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
+            hora = form.cleaned_data["hora"]
+
+            usuario = request.user if request.user.is_authenticated else None
+            invitado = None
+
+            if usuario is None:
+                nombre = form.cleaned_data["nombre"]
+                email = form.cleaned_data["email"]
+                telefono = form.cleaned_data["telefono"]
+
+                invitado = Invitado.objects.create(
+                    nombre=nombre, email=email, telefono=telefono
+                )
+
+            Cita.objects.create(
+                usuario=usuario,
+                invitado=invitado,
+                servicio_id=servicio_id,
+                especialista_id=especialista_id,
+                fecha=fecha,
+                hora=hora,
+            )
+            return redirect("/")
+
+        else:
+            msg = "Error en el formulario"
+            print(form.errors)
+            return render(
+                request, "cita_especialista_add.html", {"form": form, "msg": msg}
+            )
+
+    def get(self, request):
+        form = CitaEspecialistaAddForm(user=request.user)
+        return render(
+            request,
+            "cita_especialista_add.html",
             {"form": form},
         )
 

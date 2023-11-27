@@ -15,8 +15,22 @@
         <li class="info">{{ message }}</li>
     </ul>
 {% endif %}
+<div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="citaModalLabel">Desea reservar la cita según</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+          <a href="{% url 'cita_servicio_add' %}" class="btn btn-primary">Servicio</a>        
+          <a href="{% url 'cita_especialista_add' %}" class="btn btn-secondary">Especialista</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% if user.is_authenticated %}
-<a class="btn btn-primary" href="/cita/">Reservar cita</a>
+<a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin-top: 10px; margin-bottom: 30px;">Reservar cita</a>
     {% if user.citas.exists %}
         <table class="table">
             <thead>
@@ -48,8 +62,8 @@
     <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
         <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
         <strong><a href="/especialistas">especialistas</a></strong>.</p>
-    <a class="btn btn-secondary" href="/cita/">Reservar una cita ahora</a>
-    <a class="btn btn-secondary" href="/consulta/">Consulta tus citas</a>
+        <a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin: 30px; width: 30%;">Reservar una cita ahora</a>
+        <a class="btn btn-secondary" href="/consulta/" style="margin: 30px; width: 30%;">Consulta tus citas</a>
 
     
 {% endif %}
