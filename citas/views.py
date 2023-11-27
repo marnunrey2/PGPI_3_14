@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect
 from .forms import CitaForm
 from rest_framework.views import APIView
 from citas.models import Servicio, Especialista, Invitado, Cita
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from datetime import datetime, timedelta
 from .utils import calculate_available_hours
 from django.contrib.auth.models import User
 from datetime import datetime
-
+from payments import views
 
 class CitaView(APIView):
     def post(self, request):
@@ -41,6 +41,11 @@ class CitaView(APIView):
                 contrarembolso=contrarembolso,
                 pagado=False
             )
+            if(not cita.contrarembolso):
+                servicio = Servicio.objects.get(pk=servicio_id)
+                cita.pagado=True
+                cita.save()
+                return views.create_custom_checkout_session(request, servicio.precio)
             return render(request, "home/home.html", {"cita": cita})
 
         else:
