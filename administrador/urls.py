@@ -22,12 +22,12 @@ urlpatterns = [
     path(
         "admin_view/citas/servicios/add",
         AdminCitaServicioAdd.as_view(),
-        name="cita_servicio_add",
+        name="admin_cita_servicio_add",
     ),
     path(
         "admin_view/citas/especialistas/add",
         AdminCitaEspecialistaAdd.as_view(),
-        name="cita_especialista_add",
+        name="admin_cita_especialista_add",
     ),
     path("admin_view/servicios", AdminServicioView.as_view(), name="admin_servicio"),
     path(
