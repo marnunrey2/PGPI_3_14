@@ -38,10 +38,8 @@ def especialistas(request):
 
 def citaDelete(request, cita_id):
     Cita.objects.filter(id=cita_id).delete()
-    success_message = "¡Cuenta eliminada exitosamente!"
 
-    # Assuming your home page URL is named 'home'
-    return render(request, "home/home.html", {"success_message": success_message})
+    return render(request, "home/home.html")
 
 
 def update_profile(request):

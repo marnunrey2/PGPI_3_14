@@ -78,5 +78,8 @@ class DeleteView(APIView):
             userToDelete = User.objects.filter(id=request.user.id)
             userToDelete.delete()
             request.session.flush()
-            return redirect("/")
+            success_message = "Su cuenta ha sido eliminada correctamente"
+            return render(
+                request, "home/home.html", {"success_message": success_message}
+            )
         return redirect("/perfil")
