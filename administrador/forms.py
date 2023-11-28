@@ -1,10 +1,22 @@
 from django import forms
-from .models import Servicio, Especialista, Invitado
+from citas.models import Servicio, Especialista, Invitado
+from citas.utils import calculate_available_hours
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .utils import calculate_available_hours
+from django.core.exceptions import ValidationError
 
 
 class CitaServicioAddForm(forms.Form):
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select", "id": "usuario_select"}),
+    )
+    invitado = forms.ModelChoiceField(
+        queryset=Invitado.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select", "id": "invitado_select"}),
+    )
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.all(),
         widget=forms.Select(
@@ -31,12 +43,7 @@ class CitaServicioAddForm(forms.Form):
     )
     hora = forms.ChoiceField(choices=[])
 
-    nombre = forms.CharField(max_length=100, required=False)
-    email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
-
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         if "servicio" in self.data:
@@ -53,13 +60,30 @@ class CitaServicioAddForm(forms.Form):
             ]
             self.fields["hora"].choices = available_hours
 
-        if user and user.is_authenticated:
-            del self.fields["nombre"]
-            del self.fields["email"]
-            del self.fields["telefono"]
+    def clean(self):
+        cleaned_data = super().clean()
+        usuario = cleaned_data.get("usuario")
+        invitado = cleaned_data.get("invitado")
+
+        if usuario and invitado:
+            raise ValidationError(
+                "Both usuario and invitado cannot be filled. Please choose only one."
+            )
+
+        return cleaned_data
 
 
 class CitaEspecialistaAddForm(forms.Form):
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select", "id": "usuario_select"}),
+    )
+    invitado = forms.ModelChoiceField(
+        queryset=Invitado.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select", "id": "invitado_select"}),
+    )
     especialista = forms.ModelChoiceField(
         queryset=Especialista.objects.all(),
         widget=forms.Select(
@@ -86,12 +110,7 @@ class CitaEspecialistaAddForm(forms.Form):
     )
     hora = forms.ChoiceField(choices=[])
 
-    nombre = forms.CharField(max_length=100, required=False)
-    email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
-
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         if "especialista" in self.data:
@@ -108,7 +127,52 @@ class CitaEspecialistaAddForm(forms.Form):
             ]
             self.fields["hora"].choices = available_hours
 
-        if user and user.is_authenticated:
-            del self.fields["nombre"]
-            del self.fields["email"]
-            del self.fields["telefono"]
+    def clean(self):
+        cleaned_data = super().clean()
+        usuario = cleaned_data.get("usuario")
+        invitado = cleaned_data.get("invitado")
+
+        if usuario and invitado:
+            raise ValidationError(
+                "Both usuario and invitado cannot be filled. Please choose only one."
+            )
+
+        return cleaned_data
+
+
+class ServicioAddForm(forms.Form):
+    nombre = forms.CharField(max_length=255)
+    descripcion = forms.CharField(widget=forms.Textarea)
+    imagen = forms.ImageField(required=False)
+    precio = forms.DecimalField(max_digits=10, decimal_places=2)
+
+
+class EspecialistaAddForm(forms.Form):
+    nombre = forms.CharField(max_length=255)
+    especialidades = forms.ModelMultipleChoiceField(
+        queryset=Servicio.objects.all(),
+        widget=forms.SelectMultiple(attrs={"class": "form-select"}),
+    )
+
+
+class UsuarioAddForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=150, required=True)
+    email = forms.EmailField(max_length=254, required=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        )
+
+
+class InvitadoAddForm(forms.Form):
+    nombre = forms.CharField(max_length=255, required=True)
+    email = forms.EmailField(max_length=254, required=True)
+    telefono = forms.CharField(max_length=20, required=True)

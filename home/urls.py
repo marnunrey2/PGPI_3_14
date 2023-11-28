@@ -4,11 +4,12 @@ from .views import (
     servicios,
     especialistas,
     perfil,
-    citaDelete,
     update_password,
     update_profile,
 )
 from django.views.generic import TemplateView
+
+app_name = "home"
 
 urlpatterns = [
     path("", HomeView, name="home"),
@@ -20,7 +21,6 @@ urlpatterns = [
     path("perfil/", perfil, name="perfil"),
     path("servicios/", servicios, name="servicios"),
     path("especialistas/", especialistas, name="especialistas"),
-    path("citas/<int:cita_id>/delete/", citaDelete),
     path("perfil/update_profile/", update_profile, name="update_profile"),
     path("perfil/update_password/", update_password, name="update_password"),
 ]

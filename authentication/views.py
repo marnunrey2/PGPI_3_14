@@ -26,8 +26,10 @@ class LoginView(TemplateView):
                 login(request, user)
                 if not remember_me:
                     request.session.set_expiry(0)
-
-                return redirect("/")
+                if request.user.is_staff:
+                    return redirect("/admin_view/citas")
+                else:
+                    return redirect("/")
             else:
                 msg = "Credenciales incorrectas"
         else:

@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("home.urls")),
     path("", include("authentication.urls")),  # Authentication routes
     path("", include("citas.urls")),  # Citas routes
+    path("", include("administrador.urls")),  # Administrador routes
 ]
