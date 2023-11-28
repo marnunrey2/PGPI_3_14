@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import path
 from .views import (
     HomeView,
@@ -22,3 +23,7 @@ urlpatterns = [
     path("especialistas/", especialistas, name="especialistas"),
     path("perfil/update_profile/", update_profile, name="update_profile"),
 ]
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
