@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.models import User
 
 from .forms import LoginForm, RegisterForm
 from .serializers import UsuarioSerializer
@@ -25,8 +26,10 @@ class LoginView(TemplateView):
                 login(request, user)
                 if not remember_me:
                     request.session.set_expiry(0)
-
-                return redirect("/")
+                if request.user.is_staff:
+                    return redirect("/admin_view/citas")
+                else:
+                    return redirect("/")
             else:
                 msg = "Credenciales incorrectas"
         else:
@@ -69,3 +72,16 @@ class RegisterView(APIView):
         return render(
             request, "authentication/register.html", {"form": form, "msg": None}
         )
+
+
+class DeleteView(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            userToDelete = User.objects.filter(id=request.user.id)
+            userToDelete.delete()
+            request.session.flush()
+            success_message = "Su cuenta ha sido eliminada correctamente"
+            return render(
+                request, "home/home.html", {"success_message": success_message}
+            )
+        return redirect("/perfil")

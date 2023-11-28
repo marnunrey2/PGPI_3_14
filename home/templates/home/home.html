@@ -1,6 +1,6 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
-
+{% load bootstrap_icons %}
 {% block title %}Home{% endblock %}
 
 {% block extrahead %}
@@ -9,8 +9,28 @@
 {% endblock %}
 
 {% block content %}
+<section class="hero">
+    {% if message %}
+    <ul class="message">
+        <li class="info">{{ message }}</li>
+    </ul>
+{% endif %}
+<div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="citaModalLabel">Desea reservar la cita según</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+          <a href="{% url 'cita_servicio_add' %}" class="btn btn-primary">Servicio</a>        
+          <a href="{% url 'cita_especialista_add' %}" class="btn btn-secondary">Especialista</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% if user.is_authenticated %}
-<a class="btn btn-primary" href="/cita/">Reservar cita</a>
+<a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin-top: 10px; margin-bottom: 30px;">Reservar cita</a>
     {% if user.citas.exists %}
         <table class="table">
             <thead>
@@ -19,6 +39,7 @@
                     <th scope="col">Hora</th>
                     <th scope="col">Servicio</th>
                     <th scope="col">Especialista</th>
+                    <th scope="col">Eliminar cita</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +49,7 @@
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
+                    <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -36,13 +58,24 @@
         <p>No hay citas.</p>
     {% endif %}
 {% else %}
+
+        
     <h1>Bienvenidos a AesthetiCare</h1>
     <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
         <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
         <strong><a href="/especialistas">especialistas</a></strong>.</p>
-    <a class="btn btn-secondary" href="/cita/">Reservar una cita ahora</a>
+        <a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin: 30px; width: 30%;">Reservar una cita ahora</a>
+        <a class="btn btn-secondary" href="/consulta/" style="margin: 30px; width: 30%;">Consulta tus citas</a>
 
     
+{% endif %}
+
+{% if success_message %}
+<div class="mt-3">
+    <div class="alert alert-success" role="alert">
+        {{ success_message }}
+    </div>
+</div>
 {% endif %}
 {% endblock %}
 
