@@ -21,16 +21,21 @@ class LoginView(TemplateView):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             remember_me = form.cleaned_data.get("remember_me")
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                if not remember_me:
-                    request.session.set_expiry(0)
-                if request.user.is_staff:
-                    return redirect("/admin_view/citas")
+
+            try:
+                user = User.objects.get(email=username)
+                if user.check_password(password):
+                    login(request, user)
+                    if not remember_me:
+                        request.session.set_expiry(0)
+                    if request.user.is_staff:
+                        return redirect("/admin_view/citas")
+                    else:
+                        return redirect("/")
                 else:
-                    return redirect("/")
-            else:
+                    msg = "Contraseña incorrecta"
+
+            except User.DoesNotExist:
                 msg = "Credenciales incorrectas"
         else:
             msg = "Error en el formulario"
