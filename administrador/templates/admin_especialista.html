@@ -15,6 +15,7 @@
                 <tr class="table-secondary">
                     <th scope="col">Nombre</th>
                     <th scope="col">Especialidades</th>
+                    <th scope="col">Imagen</th>
                     <th scope="col">Eliminar especialista</th>
                 </tr>
             </thead>
@@ -22,6 +23,11 @@
                 {% for especialista in especialistas %}
                 <tr>
                     <td>{{ especialista.nombre }}</td>
+                    {% if servicio.imagen %}
+                    <td>Sí</td> 
+                    {% else %}
+                    <td>No tiene</td> 
+                    {% endif %}
                     <td>
                     {% for servicio in especialista.especialidades.all %}
                         {{ servicio.nombre }}

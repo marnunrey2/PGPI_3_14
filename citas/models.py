@@ -20,6 +20,7 @@ class Servicio(models.Model):
 class Especialista(models.Model):
     nombre = models.CharField(max_length=255)
     especialidades = models.ManyToManyField("Servicio", related_name="especialistas")
+    imagen = models.ImageField(upload_to="especialistas", null=True, blank=True)
 
     def __str__(self):
         return self.nombre

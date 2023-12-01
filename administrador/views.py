@@ -203,7 +203,11 @@ class AdminEspecialistaAddView(APIView):
         if form.is_valid() and request.user.is_staff:
             nombre = form.cleaned_data["nombre"]
             especialidades = form.cleaned_data["especialidades"]
-            especialista = Especialista.objects.create(nombre=nombre)
+            if "imagen" in request.FILES:
+                imagen = request.FILES["imagen"]
+            else:
+                imagen = None
+            especialista = Especialista.objects.create(nombre=nombre, imagen=imagen)
 
             for servicio in especialidades:
                 especialista.especialidades.add(servicio)
