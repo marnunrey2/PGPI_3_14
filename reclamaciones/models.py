@@ -1,3 +1,8 @@
 from django.db import models
+from django.conf import settings
 
-# Create your models here.
+
+class Reclamacion(models.Model):
+    cita = models.ForeignKey("citas.Cita", on_delete=models.CASCADE)
+    mensaje = models.TextField()
+    fecha = models.DateField()

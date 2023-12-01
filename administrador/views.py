@@ -1,6 +1,8 @@
+from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.views import APIView
 from citas.models import Cita, Servicio, Especialista, Invitado
+from reclamaciones.models import Reclamacion
 from django.http import HttpResponseForbidden
 from django.contrib.auth.models import User
 from .forms import (
@@ -10,6 +12,7 @@ from .forms import (
     InvitadoAddForm,
     CitaServicioAddForm,
     CitaEspecialistaAddForm,
+    ReclamacionAddForm,
 )
 
 
@@ -59,6 +62,26 @@ def especialista_delete(request, especialista_id):
     if request.user.is_staff:
         especialista.delete()
         return redirect("/admin_view/especialistas")
+    else:
+        return HttpResponseForbidden()
+
+
+class AdminReclamacionView(APIView):
+    def get(self, request):
+        if request.user.is_staff:
+            reclamaciones = Reclamacion.objects.all()
+            context = {"reclamaciones": reclamaciones}
+            return render(request, "admin_reclamacion.html", context)
+        else:
+            return redirect("home:home")
+
+
+def reclamacion_delete(request, reclamacion_id):
+    reclamacion = get_object_or_404(Reclamacion, pk=reclamacion_id)
+
+    if request.user.is_staff:
+        reclamacion.delete()
+        return redirect("/admin_view/reclamaciones")
     else:
         return HttpResponseForbidden()
 
@@ -219,6 +242,35 @@ class AdminEspecialistaAddView(APIView):
         if request.user.is_staff:
             form = EspecialistaAddForm()
             return render(request, "admin_especialista_add.html", {"form": form})
+        else:
+            return redirect("home:home")
+
+
+class AdminReclamacionAddView(APIView):
+    def post(self, request, cita_id):
+        form = ReclamacionAddForm(request.POST)
+        if form.is_valid() and request.user.is_staff:
+            cita = get_object_or_404(Cita, pk=cita_id)
+            mensaje = form.cleaned_data["mensaje"]
+            Reclamacion.objects.create(
+                cita=cita,
+                mensaje=mensaje,
+                fecha=date.today(),
+            )
+            return redirect("/admin_view/reclamaciones")
+        else:
+            msg = "Error en el formulario"
+            return render(
+                request, "admin_reclamacion_add.html", {"form": form, "msg": msg}
+            )
+
+    def get(self, request, cita_id):
+        if request.user.is_staff:
+            cita = get_object_or_404(Cita, pk=cita_id)
+            form = ReclamacionAddForm()
+            return render(
+                request, "admin_reclamacion_add.html", {"form": form, "cita": cita}
+            )
         else:
             return redirect("home:home")
 

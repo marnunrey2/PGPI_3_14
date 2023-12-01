@@ -36,6 +36,7 @@
                     <th scope="col">Hora</th>
                     <th scope="col">Servicio</th>
                     <th scope="col">Especialista</th>
+                    <th scope="col">Poner reclamación</th>
                     <th scope="col">Eliminar cita</th>
                 </tr>
             </thead>
@@ -56,6 +57,11 @@
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
+                    <td class="text-center align-middle">
+                      <a href="/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
+                          {% bs_icon 'plus-circle' %}
+                      </a>
+                  </td>
                     <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}

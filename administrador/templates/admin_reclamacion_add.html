@@ -1,0 +1,25 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Reclamaciones{% endblock %}
+
+{% block extrahead %}
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label mt-4" for="{{ form.mensaje.id_for_label }}">Motivo de la reclamación</label>
+                <textarea name="{{ form.mensaje.name }}" id="{{ form.mensaje.id_for_label }}" 
+                class="form-control" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Crear reclamación</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

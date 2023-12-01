@@ -15,7 +15,11 @@ from .views import (
     AdminCitaServicioAdd,
     AdminCitaEspecialistaAdd,
     AdminInvitadoAddView,
+    AdminReclamacionView,
+    AdminReclamacionAddView,
+    reclamacion_delete,
 )
+
 
 urlpatterns = [
     path("admin_view/citas", AdminCitaView.as_view(), name="admin_cita"),
@@ -50,6 +54,21 @@ urlpatterns = [
         "especialistas/<int:especialista_id>/delete/",
         especialista_delete,
         name="especialista_delete",
+    ),
+    path(
+        "admin_view/reclamaciones",
+        AdminReclamacionView.as_view(),
+        name="admin_reclamacion",
+    ),
+    path(
+        "reclamaciones/<int:cita_id>/add",
+        AdminReclamacionAddView.as_view(),
+        name="reclamacion_add",
+    ),
+    path(
+        "reclamaciones/<int:reclamacion_id>/delete/",
+        reclamacion_delete,
+        name="reclamacion_delete",
     ),
     path(
         "admin_view/usuarios",
