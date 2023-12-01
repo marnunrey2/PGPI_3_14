@@ -82,6 +82,9 @@ def reclamacion_delete(request, reclamacion_id):
     if request.user.is_staff:
         reclamacion.delete()
         return redirect("/admin_view/reclamaciones")
+    elif reclamacion.cita.usuario == request.user:
+        reclamacion.delete()
+        return redirect("/reclamaciones")
     else:
         return HttpResponseForbidden()
 

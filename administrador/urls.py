@@ -61,7 +61,7 @@ urlpatterns = [
         name="admin_reclamacion",
     ),
     path(
-        "reclamaciones/<int:cita_id>/add",
+        "admin_view/reclamaciones/<int:cita_id>/add",
         AdminReclamacionAddView.as_view(),
         name="reclamacion_add",
     ),
