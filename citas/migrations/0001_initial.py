@@ -64,14 +64,14 @@ class Migration(migrations.Migration):
                 ),
                 ("nombre", models.CharField(max_length=255)),
                 (
+                    "imagen",
+                    models.ImageField(blank=True, null=True, upload_to="especialistas"),
+                ),
+                (
                     "especialidades",
                     models.ManyToManyField(
                         related_name="especialistas", to="citas.servicio"
                     ),
-                ),
-                (
-                    "imagen",
-                    models.ImageField(blank=True, null=True, upload_to="especialistas"),
                 ),
             ],
         ),
