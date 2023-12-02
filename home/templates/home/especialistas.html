@@ -11,15 +11,30 @@
 {% block content %}
 {% for especialista in especialistas %}
 <div class="card border-primary mb-3" style="max-width: 20rem;">
+        {% if especialista.imagen %}
+        <img src="{{ MEDIA_URL }}{{ especialista.imagen.url }}" class="card-img-top" alt="{{ especialista.nombre }}">
+        {% endif %}
         <div class="card-header">{{ especialista.nombre }}</div>
         <div class="card-body">
             <h4 class="card-title">Especialidades:</h4>
-        <ul>
-            {% for servicio in especialista.especialidades.all %}
-                <li>{{ servicio.nombre }}</li>
-            {% endfor %}
-        </ul>
+            <ul>
+                {% for servicio in especialista.especialidades.all %}
+                    <li>{{ servicio.nombre }}</li>
+                {% endfor %}
+            </ul>
         </div>
 </div>
 {% endfor %}
 {% endblock %}
+
+
+<!-- from citas.models import Especialista
+
+especialista = Especialista.objects.create(
+    nombre="Example Especialista 1",
+    imagen="especialistas/masseuse.jpg",  # Adjust the path accordingly
+)
+
+especialidades = ["3", "5"]
+especialista.especialidades.set(especialidades) -->
+
