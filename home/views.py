@@ -3,6 +3,11 @@ from citas.models import Cita
 from django.contrib.auth import update_session_auth_hash
 from citas.models import Servicio, Especialista
 from django.contrib import messages
+from authentication.forms import (
+    UpdateProfileForm,
+)
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import get_object_or_404, redirect, render
 
 
 def HomeView(request):
@@ -27,27 +32,31 @@ def especialistas(request):
 
 def update_profile(request):
     if request.method == "POST":
-        new_username = request.POST.get("new_username")
-        new_email = request.POST.get("new_email")
-        new_password = request.POST.get("new_password")
+        form = UpdateProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
 
-        if not new_username:
-            messages.error(request, "New username cannot be empty.")
-            return redirect("perfil")
+        else:
+            messages.error(request, "Error al actualizar perfil.")
 
-        # Update the username and email
-        request.user.username = new_username
-        request.user.email = new_email
-        request.user.save()
+    else:
+        form = UpdateProfileForm(instance=request.user)
+    return render(request, "home/perfil.html", {"form": form})
 
+
+def update_password(request):
+    if request.method == "POST":
+        # Set the password manually if it's provided in the form
+        new_password = request.POST.get("new_password1", None)
+        confirm_new_password = request.POST.get("new_password2", None)
         if new_password:
-            # Update the password
-            request.user.set_password(new_password)
-            request.user.save()
-            update_session_auth_hash(request, request.user)  # Keep the user logged in
-            messages.success(request, "Password updated successfully.")
-
-        messages.success(request, "Profile updated successfully.")
-        return redirect("perfil")
+            if new_password == confirm_new_password:
+                request.user.set_password(new_password)
+                request.user.save()
+                # Update session to avoid log out after password change
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Perfil actualizado correctamente.")
+            else:
+                messages.error(request, "Las contraseñas no coinciden.")
 
     return render(request, "home/perfil.html")
