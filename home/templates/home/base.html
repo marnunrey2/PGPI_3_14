@@ -38,6 +38,9 @@
                         <a class="nav-link" href="/admin_view/especialistas">Especialistas</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/reclamaciones">Reclamaciones</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/admin_view/usuarios">Usuarios</a>
                     </li>
                     <li class="nav-item">
@@ -58,6 +61,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/especialistas">Especialistas</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reclamaciones">Reclamaciones</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/about">Sobre nosotros</a>
                     </li>
