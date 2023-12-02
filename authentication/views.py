@@ -18,19 +18,24 @@ class LoginView(TemplateView):
         msg = None
 
         if form.is_valid():
-            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
             remember_me = form.cleaned_data.get("remember_me")
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                if not remember_me:
-                    request.session.set_expiry(0)
-                if request.user.is_staff:
-                    return redirect("/admin_view/citas")
+
+            try:
+                user = User.objects.get(email=email)
+                if user.check_password(password):
+                    login(request, user)
+                    if not remember_me:
+                        request.session.set_expiry(0)
+                    if request.user.is_staff:
+                        return redirect("/admin_view/citas")
+                    else:
+                        return redirect("/")
                 else:
-                    return redirect("/")
-            else:
+                    msg = "Contraseña incorrecta"
+
+            except User.DoesNotExist:
                 msg = "Credenciales incorrectas"
         else:
             msg = "Error en el formulario"
@@ -80,5 +85,8 @@ class DeleteView(APIView):
             userToDelete = User.objects.filter(id=request.user.id)
             userToDelete.delete()
             request.session.flush()
-            return redirect("/")
+            success_message = "Su cuenta ha sido eliminada correctamente"
+            return render(
+                request, "home/home.html", {"success_message": success_message}
+            )
         return redirect("/perfil")

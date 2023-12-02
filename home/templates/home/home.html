@@ -39,6 +39,7 @@
                     <th scope="col">Hora</th>
                     <th scope="col">Servicio</th>
                     <th scope="col">Especialista</th>
+                    <th scope="col">Poner reclamación</th>
                     <th scope="col">Eliminar cita</th>
                 </tr>
             </thead>
@@ -49,6 +50,11 @@
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
+                    <td class="text-center align-middle">
+                        <a href="/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
+                            {% bs_icon 'plus-circle' %}
+                        </a>
+                    </td>
                     <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
@@ -58,6 +64,8 @@
         <p>No hay citas.</p>
     {% endif %}
 {% else %}
+
+        
     <h1>Bienvenidos a AesthetiCare</h1>
     <p>Descubra sobre <strong><a href="/about">nuestra empresa</a></strong>, nuestros
         <strong><a href="/servicios">servicios de cosmética</a></strong> y nuestros
@@ -66,6 +74,14 @@
         <a class="btn btn-secondary" href="/consulta/" style="margin: 30px; width: 30%;">Consulta tus citas</a>
 
     
+{% endif %}
+
+{% if success_message %}
+<div class="mt-3">
+    <div class="alert alert-success" role="alert">
+        {{ success_message }}
+    </div>
+</div>
 {% endif %}
 {% endblock %}
 

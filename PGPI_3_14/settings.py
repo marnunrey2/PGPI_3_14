@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "citas",
     "authentication",
     "administrador",
+    "reclamaciones",
     "django_bootstrap_icons",
 ]
 
@@ -131,5 +132,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MODULES = ["authentication", "citas", "home", "administrador"]
-# Media settings
+MODULES = ["authentication", "citas", "home", "administrador", "reclamaciones"]
