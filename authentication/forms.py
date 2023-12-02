@@ -12,16 +12,11 @@ class LoginForm(forms.Form):
         )
     )
 
-    remember_me = forms.BooleanField(
-        required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
-    )
-
 
 class UpdateProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = (
-            "username",
             "first_name",
             "last_name",
             "email",
@@ -32,13 +27,40 @@ class RegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=150, required=True)
     email = forms.EmailField(max_length=254, required=True)
+    phone_number = forms.CharField(max_length=10, required=True)
 
     class Meta:
         model = User
-        fields = (
+        fields = [
             "first_name",
             "last_name",
             "email",
+            "phone_number",
             "password1",
             "password2",
-        )
+        ]
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Usuario con este email ya existe")
+        return email
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        # Derive username from email
+        email = self.cleaned_data["email"]
+        username = email.split("@")[0]
+        i = 1
+
+        while User.objects.filter(username=username).exists():
+            username = username.split("_")[0]
+            username = username + "_" + str(i)
+            i += 1
+
+        user.username = username
+
+        if commit:
+            user.save()
+        return user
