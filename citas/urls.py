@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import path
 from .views import (
     ConsultaView,
@@ -35,3 +36,8 @@ urlpatterns = [
         name="cita_especialista_add",
     ),
 ]
+
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
