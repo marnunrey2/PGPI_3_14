@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
@@ -67,8 +68,17 @@ class RegisterView(APIView):
         form = RegisterForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect("/signin")
+            try:
+                form.save()
+                return redirect("/signin")
+            except IntegrityError:
+                # Handle the case where the user already exists
+                error_message = "Usuario con este email ya existe"
+                return render(
+                    request,
+                    "authentication/register.html",
+                    {"form": form, "error_message": error_message},
+                )
         else:
             return render(request, "authentication/register.html", {"form": form})
 
