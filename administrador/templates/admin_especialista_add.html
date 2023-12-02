@@ -1,7 +1,7 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
 
-{% block title %}Servicios{% endblock %}
+{% block title %}Especialistas{% endblock %}
 
 {% block extrahead %}
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css" rel="stylesheet">
@@ -11,19 +11,23 @@
 {% block content %}
 <div class="container">
     <div class="login-container">
-        <form method="post">
+        <form method="post"enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label class="form-label mt-4" for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
                 <input type="text" name="{{ form.nombre.name }}" id="{{ form.nombre.id_for_label }}" 
                 class="form-control">
             </div>
+            <div class="form-group">
+                <label class="form-label mt-4" for="{{ form.imagen.id_for_label }}">{{ form.imagen.label }}</label>
+                <input type="file" class="form-control" name="{{ form.imagen.name }}" accept="image/*">
+            </div>
 
             <div class="form-group">
                 <label class="form-label mt-4" for="{{ form.especialidades.id_for_label }}">Especialidades</label>
                 {{ form.especialidades }}
             </div>
-            <button class="btn btn-primary" type="submit">Crear servicio</button>
+            <button class="btn btn-primary" type="submit">Crear Especialista</button>
         </form>
     </div>
 </div>

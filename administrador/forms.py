@@ -149,10 +149,16 @@ class ServicioAddForm(forms.Form):
 
 class EspecialistaAddForm(forms.Form):
     nombre = forms.CharField(max_length=255)
+    imagen = forms.ImageField(required=False)
+
     especialidades = forms.ModelMultipleChoiceField(
         queryset=Servicio.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "form-select"}),
     )
+
+
+class ReclamacionAddForm(forms.Form):
+    mensaje = forms.CharField(widget=forms.Textarea)
 
 
 class UsuarioAddForm(UserCreationForm):

@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,40 +14,113 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Invitado',
+            name="Invitado",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nombre', models.CharField(max_length=255)),
-                ('email', models.EmailField(max_length=254)),
-                ('telefono', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nombre", models.CharField(max_length=255)),
+                ("email", models.EmailField(max_length=254)),
+                ("telefono", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='Servicio',
+            name="Servicio",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nombre', models.CharField(max_length=255)),
-                ('descripcion', models.TextField()),
-                ('imagen', models.ImageField(blank=True, null=True, upload_to='servicios')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nombre", models.CharField(max_length=255)),
+                ("descripcion", models.TextField()),
+                (
+                    "imagen",
+                    models.ImageField(blank=True, null=True, upload_to="servicios"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Especialista',
+            name="Especialista",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nombre', models.CharField(max_length=255)),
-                ('especialidades', models.ManyToManyField(related_name='especialistas', to='citas.servicio')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nombre", models.CharField(max_length=255)),
+                (
+                    "imagen",
+                    models.ImageField(blank=True, null=True, upload_to="especialistas"),
+                ),
+                (
+                    "especialidades",
+                    models.ManyToManyField(
+                        related_name="especialistas", to="citas.servicio"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Cita',
+            name="Cita",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('fecha', models.DateTimeField()),
-                ('especialista', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='citas.especialista')),
-                ('invitado', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='citas', to='citas.invitado')),
-                ('servicio', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='citas.servicio')),
-                ('usuario', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='citas', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("fecha", models.DateTimeField()),
+                (
+                    "especialista",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="citas.especialista",
+                    ),
+                ),
+                (
+                    "invitado",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="citas",
+                        to="citas.invitado",
+                    ),
+                ),
+                (
+                    "servicio",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="citas.servicio"
+                    ),
+                ),
+                (
+                    "usuario",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="citas",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

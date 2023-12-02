@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
@@ -18,19 +20,21 @@ class LoginView(TemplateView):
         msg = None
 
         if form.is_valid():
-            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
-            remember_me = form.cleaned_data.get("remember_me")
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                if not remember_me:
-                    request.session.set_expiry(0)
-                if request.user.is_staff:
-                    return redirect("/admin_view/citas")
+
+            try:
+                user = User.objects.get(email=email)
+                if user.check_password(password):
+                    login(request, user)
+                    if request.user.is_staff:
+                        return redirect("/admin_view/citas")
+                    else:
+                        return redirect("/")
                 else:
-                    return redirect("/")
-            else:
+                    msg = "Contraseña incorrecta"
+
+            except User.DoesNotExist:
                 msg = "Credenciales incorrectas"
         else:
             msg = "Error en el formulario"
@@ -62,8 +66,18 @@ class RegisterView(APIView):
         form = RegisterForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect("/signin")
+            try:
+                # Handle the case where the user already exists
+                email = form.clean_email()
+                form.save()
+                return redirect("/signin")
+
+            except ValidationError:
+                return render(
+                    request,
+                    "authentication/register.html",
+                    {"form": form, "msg": "Usuario con este email ya existe"},
+                )
         else:
             return render(request, "authentication/register.html", {"form": form})
 
