@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='servicio',
-            name='precio',
+            name='precio.html',
             field=models.TextField(default=''),
         ),
     ]

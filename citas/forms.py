@@ -10,6 +10,7 @@ class CitaForm(forms.Form):
             attrs={
                 "hx-get": "/especialistas_opciones/",
                 "hx-target": "#id_especialista",
+                "class": "service-select",
             }
         ),
     )
@@ -28,10 +29,14 @@ class CitaForm(forms.Form):
         )
     )
     hora = forms.ChoiceField(choices=[])
-    contrarembolso = forms.BooleanField(required=False)
     nombre = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(required=False)
     telefono = forms.CharField(max_length=20, required=False)
+    metodo_pago = forms.ChoiceField(
+        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
+        widget=forms.RadioSelect(attrs={"class": "payment-method"},),
+        initial="EF",
+    )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -55,3 +60,4 @@ class CitaForm(forms.Form):
             del self.fields["nombre"]
             del self.fields["email"]
             del self.fields["telefono"]
+

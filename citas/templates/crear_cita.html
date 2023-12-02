@@ -1,5 +1,6 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
+ {% load static %}
 
 {% block title %}Reserva{% endblock %}
 
@@ -24,12 +25,64 @@
 <div class="container">
     <div class="login-container">
         <h1>Seleccione la fecha y la hora de la cita</h1>
-        <form method="post">
+        <form id="citaForm" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Submit</button>
+            <br>
+            <div id="precio-display">
+                Precio: <span id="precio-span">{{ form.precio.value }}</span>
+            </div>
+            <br>
+            <button id="submit" type="submit">Pagar en efectivo</button>
         </form>
     </div>
 </div>
-{% endblock %}
 
+<script>
+    // Add JavaScript to update the price display dynamically when the service selection changes
+    const serviceSelect = document.querySelector('.service-select');
+    const precioSpan = document.getElementById('precio-span');
+    var selectedPriceId = "";
+
+    serviceSelect.addEventListener('change', async (e) => {
+    const selectedServiceId = e.target.value;
+    try {
+        const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
+        const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
+        const data = await response.text(); // Retrieve response as text
+        selectedPriceId = await responseId.text();
+        precioSpan.textContent = data.trim(); // Set the text content of precioSpan
+    } catch (error) {
+        console.error('Error fetching price:', error);
+    }
+});
+
+     function updateButtonText() {
+        paymentMethodRadios.forEach(radio => {
+            if (radio.checked) {
+                const selectedValue = radio.value;
+                if (selectedValue === 'EF') {
+                    paymentButton.textContent = 'Pagar en efectivo';
+                } else if (selectedValue === 'TA') {
+                    paymentButton.textContent = 'Pagar con tarjeta';
+                }
+            }
+        });
+    }
+
+    // Get all radio buttons within the payment method group
+    const paymentMethodRadios = document.querySelectorAll('.payment-method');
+
+    // Get the payment button
+    const paymentButton = document.querySelector('#submit');
+
+    // Event listeners for radio buttons change
+    paymentMethodRadios.forEach(radio => {
+        radio.addEventListener('change', updateButtonText);
+    });
+
+    // Call the function initially to set the button text based on the initial value
+    updateButtonText();
+</script>
+
+{% endblock %}

@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="servicio",
-            name="precio",
+            name="precio.html",
             field=models.DecimalField(decimal_places=2, default=10, max_digits=10),
             preserve_default=False,
         ),
