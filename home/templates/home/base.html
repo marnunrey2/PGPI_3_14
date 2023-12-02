@@ -68,7 +68,7 @@
                 {% if user.is_authenticated %}
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ user.email }}
+                        {{ user.username }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="/perfil">Perfil</a></li>
@@ -93,19 +93,6 @@
         {% endblock %}
         </div>
     </section>
-
-    <!-- Script to display username in dropdown -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var email = "{{ user.email }}"; // Get the email address from Django template
-    
-            // Split the email address at the "@" symbol
-            var username = email.split('@')[0];
-    
-            // Update the button text with the extracted username
-            document.getElementById('dropdownMenuButton').innerText = username;
-        });
-    </script>
 
     {% block extrabody %}{% endblock %}
 

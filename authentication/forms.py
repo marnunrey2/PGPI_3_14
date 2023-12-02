@@ -35,11 +35,36 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = (
+        fields = [
             "first_name",
             "last_name",
             "email",
             "phone_number",
             "password1",
             "password2",
-        )
+        ]
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Usuario con este email ya existe")
+        return email
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        # Derive username from email
+        email = self.cleaned_data["email"]
+        username = email.split("@")[0]
+        i = 1
+
+        while User.objects.filter(username=username).exists():
+            username = username.split("_")[0]
+            username = username + "_" + str(i)
+            i += 1
+
+        user.username = username
+
+        if commit:
+            user.save()
+        return user

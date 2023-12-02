@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
@@ -21,14 +22,11 @@ class LoginView(TemplateView):
         if form.is_valid():
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
-            remember_me = form.cleaned_data.get("remember_me")
 
             try:
                 user = User.objects.get(email=email)
                 if user.check_password(password):
                     login(request, user)
-                    if not remember_me:
-                        request.session.set_expiry(0)
                     if request.user.is_staff:
                         return redirect("/admin_view/citas")
                     else:
@@ -69,15 +67,16 @@ class RegisterView(APIView):
 
         if form.is_valid():
             try:
+                # Handle the case where the user already exists
+                email = form.clean_email()
                 form.save()
                 return redirect("/signin")
-            except IntegrityError:
-                # Handle the case where the user already exists
-                error_message = "Usuario con este email ya existe"
+
+            except ValidationError:
                 return render(
                     request,
                     "authentication/register.html",
-                    {"form": form, "error_message": error_message},
+                    {"form": form, "msg": "Usuario con este email ya existe"},
                 )
         else:
             return render(request, "authentication/register.html", {"form": form})
