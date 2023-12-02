@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from citas.models import Cita
 from django.contrib.auth import update_session_auth_hash
 from citas.models import Servicio, Especialista
 from django.contrib import messages
