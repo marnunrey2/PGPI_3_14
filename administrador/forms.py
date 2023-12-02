@@ -157,6 +157,10 @@ class EspecialistaAddForm(forms.Form):
     )
 
 
+class ReclamacionAddForm(forms.Form):
+    mensaje = forms.CharField(widget=forms.Textarea)
+
+
 class UsuarioAddForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=150, required=True)
