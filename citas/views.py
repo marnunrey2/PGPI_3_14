@@ -150,7 +150,7 @@ def consulta_email(request,  **kwargs):
     decode =base64.b64decode(str(encoded)).decode('utf-8')
     citaId =decode.replace("salt", "")
     cita = Cita.objects.get(pk=citaId)
-    return render(request, "citas_invitado.html", {"cita": cita})
+    return render(request, "citas_invitado.html", {"cita": cita, "hash":encoded})
 
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")

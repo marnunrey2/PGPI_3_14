@@ -25,7 +25,7 @@ class ReclamacionAddView(APIView):
         citaId =decode.replace("salt", "")
         print(citaId)
         cita = get_object_or_404(Cita, pk=citaId)
-        if form.is_valid() and cita.usuario == request.user:
+        if form.is_valid():
             mensaje = form.cleaned_data["mensaje"]
             Reclamacion.objects.create(
                 cita=cita,
@@ -44,5 +44,5 @@ class ReclamacionAddView(APIView):
             cita = get_object_or_404(Cita, pk=citaId)
             form = ReclamacionAddForm()
             return render(
-                request, "reclamaciones_add.html", {"form": form, "cita": cita}
+                request, "reclamacion_add.html", {"form": form, "cita": cita}
             )
