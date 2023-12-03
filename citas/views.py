@@ -2,8 +2,16 @@ import base64
 import os
 from django.shortcuts import render, redirect, get_object_or_404
 from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
+import stripe
+from django.shortcuts import render, redirect
+
+import payments.views
+from PGPI_3_14 import settings
 from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
+from citas.models import Servicio, Especialista, Invitado, Cita
+from django.http import HttpResponseRedirect, JsonResponse
+from datetime import datetime, timedelta
 from .utils import calculate_available_hours
 from datetime import datetime
 from django.http import HttpResponseForbidden
@@ -12,6 +20,8 @@ from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
 import os
 
+from payments import views
+from django.views.generic.base import TemplateView
 
 
 class CitaServicioAddView(APIView):
@@ -22,6 +32,7 @@ class CitaServicioAddView(APIView):
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
+            metodo_pago = form.cleaned_data["metodo_pago"]
 
             usuario = request.user if request.user.is_authenticated else None
             invitado = None
@@ -34,13 +45,16 @@ class CitaServicioAddView(APIView):
                 invitado = Invitado.objects.create(
                     nombre=nombre, email=email, telefono=telefono
                 )
-            citaCreada = Cita.objects.create(
+
+            cita = Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
+                pagado=False,
+                metodo_pago=metodo_pago
             )
             if usuario is not None:
                 email = usuario.email
@@ -48,7 +62,7 @@ class CitaServicioAddView(APIView):
                 from_email='aestheticarepgpi@gmail.com',
                 to_emails=email,
                 )
-            idEncode = f'salt{citaCreada.pk}'
+            idEncode = f'salt{cita.pk}'
             encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
             urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
             mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
@@ -59,10 +73,11 @@ class CitaServicioAddView(APIView):
             print(os.getenv("SENDGRID_API_KEY"))
             sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             response = sg.send(mailMessage)
-            #print(response.status_code)
-            #print(response.body)
-            #print(response.headers)
-            return redirect("/")
+            if metodo_pago == "TA":
+                priceId = get_precio_id_por_servicio_string(servicio_id)
+                return render(request, "pay.html", {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+            else:
+                return render(request, "home/home.html", {"cita": cita})
 
         else:
             msg = "Error en el formulario"
@@ -85,6 +100,7 @@ class CitaEspecialistaAddView(APIView):
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
+            metodo_pago = form.cleaned_data["metodo_pago"]
 
             usuario = request.user if request.user.is_authenticated else None
             invitado = None
@@ -98,13 +114,15 @@ class CitaEspecialistaAddView(APIView):
                     nombre=nombre, email=email, telefono=telefono
                 )
 
-            citaCreada = Cita.objects.create(
+            cita = Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
+                pagado=False,
+                metodo_pago=metodo_pago
             )
             if usuario is not None:
                 email = usuario.email
@@ -112,7 +130,7 @@ class CitaEspecialistaAddView(APIView):
                 from_email='aestheticarepgpi@gmail.com',
                 to_emails=email,
                 )
-            idEncode = f'salt{citaCreada.pk}'
+            idEncode = f'salt{cita.pk}'
             encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
             urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
             mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
@@ -123,10 +141,12 @@ class CitaEspecialistaAddView(APIView):
             print(os.getenv("SENDGRID_API_KEY"))
             sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             response = sg.send(mailMessage)
-            #print(response.status_code)
-            #print(response.body)
-            #print(response.headers)
-            return redirect("/")
+            if metodo_pago == "TA":
+                priceId = get_precio_id_por_servicio_string(servicio_id)
+                return render(request, "pay.html",
+                              {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+            else:
+                return render(request, "home/home.html", {"cita": cita})
 
         else:
             msg = "Error en el formulario"
@@ -158,6 +178,55 @@ def get_especialistas_por_servicio(request):
     return render(
         request, "especialistas_opciones.html", {"especialistas": especialistas}
     )
+
+def format_price(price_amount):
+    try:
+        # Convert the price amount to a string
+        price_str = str(price_amount)
+
+        # Separate the first two digits from the last two digits with a comma
+        formatted_price = f"{price_str[:-2]},{price_str[-2:]}"
+
+        # Append Euro symbol at the end
+        formatted_price += " €"
+    except Exception as e:
+        formatted_price = "No disponible"
+
+    return formatted_price
+
+
+def get_precio_por_servicio(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    try:
+        servicio_id = request.GET.get("servicio")
+        priceId = Servicio.objects.filter(id=servicio_id).get().precioId
+        price = stripe.Price.retrieve(priceId)
+        price_amount = price.get('unit_amount')
+        formated_price = format_price(price_amount)
+    except Exception as e:
+        formated_price = "No disponible"
+    return render(
+        request, "precio.html", {"priceId": formated_price}
+    )
+
+def get_precio_id_por_servicio(request):
+    try:
+        servicio_id = request.GET.get("servicio")
+        priceId = Servicio.objects.filter(id=servicio_id).get().precioId
+    except Exception as e:
+        priceId = "No disponible"
+    return render(
+        request, "precio_id.html", {"priceId": priceId}
+    )
+
+def get_precio_id_por_servicio_string(id):
+    try:
+        price_id = Servicio.objects.filter(id=id).get().precioId
+    except Exception as e:
+        redirect("../checkout/error")
+        return None
+    return price_id
+
 
 
 def get_servicios_por_especialista(request):

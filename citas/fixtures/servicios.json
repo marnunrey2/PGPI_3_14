@@ -2,19 +2,19 @@
     {
       "model": "citas.servicio",
       "fields": {
-        "nombre": "Masajito",
+        "nombre": "Masaje",
         "descripcion": "sammy was here",
         "imagen": "servicios/masaje.jpg",  
-        "precio": 21.99
+        "precioId": "price_1OId63EuWVOCbA5v9DPCOS1e"
       }
     },
     {
         "model": "citas.servicio",
         "fields": {
-          "nombre": "Acupunturaso",
+          "nombre": "Acupuntura",
           "descripcion": "sammy was here",
           "imagen": "servicios/acupuntura.jpg",  
-          "precio": 21.99
+          "precioId": "price_1OG1ZJEuWVOCbA5vnPPiMhSm"
         }
       }
   ]

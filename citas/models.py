@@ -11,7 +11,7 @@ class Servicio(models.Model):
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField()
     imagen = models.ImageField(upload_to="servicios", null=True, blank=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    precioId = models.TextField(default="")
 
     def __str__(self):
         return self.nombre
@@ -50,10 +50,22 @@ class Cita(models.Model):
         null=True,
         blank=True,
     )
+
+    class MetodoPago(models.TextChoices):
+        EFECTIVO = 'EF', 'Efectivo'
+        TARJETA = 'TA', 'Tarjeta'
+
     servicio = models.ForeignKey("Servicio", on_delete=models.CASCADE)
     especialista = models.ForeignKey("Especialista", on_delete=models.CASCADE)
     fecha = models.DateField()
     hora = models.TimeField()
+    metodo_pago = models.CharField(
+        max_length=2,
+        choices=MetodoPago.choices,
+        default=MetodoPago.EFECTIVO,
+    )
+    pagado = models.BooleanField()
+    check_pago = models.CharField(max_length=255, null=True, blank=True)
 
     def clean(self):
         # Check if the selected servicio is offered by the chosen especialista
