@@ -64,7 +64,9 @@
                                     {% bs_icon 'plus-circle' %}
                                 </a>
                             </td>
+                            {% if user.is_authenticated %}
                             <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
