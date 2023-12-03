@@ -76,6 +76,7 @@ class CitaEspecialistaAddView(APIView):
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
+            metodo_pago = form.cleaned_data["metodo_pago"]
 
             usuario = request.user if request.user.is_authenticated else None
             invitado = None
@@ -89,15 +90,22 @@ class CitaEspecialistaAddView(APIView):
                     nombre=nombre, email=email, telefono=telefono
                 )
 
-            Cita.objects.create(
+            cita = Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
+                pagado=False,
+                metodo_pago=metodo_pago
             )
-            return redirect("/")
+            if metodo_pago == "TA":
+                priceId = get_precio_id_por_servicio_string(servicio_id)
+                return render(request, "pay.html",
+                              {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+            else:
+                return render(request, "home/home.html", {"cita": cita})
 
         else:
             msg = "Error en el formulario"
