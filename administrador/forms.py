@@ -42,6 +42,11 @@ class CitaServicioAddForm(forms.Form):
         input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
+    metodo_pago = forms.ChoiceField(
+        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
+        widget=forms.RadioSelect(attrs={"class": "payment-method"}, ),
+        initial="EF",
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -109,6 +114,11 @@ class CitaEspecialistaAddForm(forms.Form):
         input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
+    metodo_pago = forms.ChoiceField(
+        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
+        widget=forms.RadioSelect(attrs={"class": "payment-method"}, ),
+        initial="EF",
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -144,7 +154,7 @@ class ServicioAddForm(forms.Form):
     nombre = forms.CharField(max_length=255)
     descripcion = forms.CharField(widget=forms.Textarea)
     imagen = forms.ImageField(required=False)
-    precio = forms.DecimalField(max_digits=10, decimal_places=2)
+    precioId = forms.CharField(max_length=255)
 
 
 class EspecialistaAddForm(forms.Form):

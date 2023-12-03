@@ -11,6 +11,7 @@ class CitaServicioAddForm(forms.Form):
             attrs={
                 "hx-get": "/especialistas_opciones/",
                 "hx-target": "#id_especialista",
+                "class": "service-select",
             }
         ),
     )
@@ -34,6 +35,11 @@ class CitaServicioAddForm(forms.Form):
     nombre = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(required=False)
     telefono = forms.CharField(max_length=20, required=False)
+    metodo_pago = forms.ChoiceField(
+        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
+        widget=forms.RadioSelect(attrs={"class": "payment-method"},),
+        initial="EF",
+    )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -66,11 +72,18 @@ class CitaEspecialistaAddForm(forms.Form):
             attrs={
                 "hx-get": "/servicios_opciones/",
                 "hx-target": "#id_servicio",
+                "class": "especialista-select",
             }
         ),
     )
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.none(),
+        widget=forms.Select(
+            attrs={
+                "hx-target": "#id_especialista",
+                "class": "service-select",
+            }
+        ),
     )
     fecha = forms.DateField(
         widget=forms.DateInput(
@@ -85,6 +98,11 @@ class CitaEspecialistaAddForm(forms.Form):
         input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
+    metodo_pago = forms.ChoiceField(
+        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
+        widget=forms.RadioSelect(attrs={"class": "payment-method"}, ),
+        initial="EF",
+    )
 
     nombre = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(required=False)

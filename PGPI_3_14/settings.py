@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "administrador",
     "reclamaciones",
     "django_bootstrap_icons",
+    "payments",
 ]
 
 MIDDLEWARE = [
@@ -132,4 +133,8 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MODULES = ["authentication", "citas", "home", "administrador", "reclamaciones"]
+MODULES = ["authentication", "citas", "home", "administrador", "reclamaciones", "payments"]
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51OFHhiEuWVOCbA5vAwXU4oXypAcEcn2qhZNpdhh68DTkIWSxIbTT37gYIgAR0iYukDaaSP0WY52JAuADB0CjDGW200ngjTREn5'
+STRIPE_SECRET_KEY = 'sk_test_51OFHhiEuWVOCbA5vL1GzekaWCPVzKYSizRhCosLrsZMpgxXWouLlFYAlayYBVaBpUF5YItdeXoPoka1Oh7OB7w5200HIL5ctEs'
+STRIPE_ENDPOINT_SECRET = 'whsec_3c821e66ce7dabedf1da0d8f5201806b22f69e28804a9af5f5928edb09df7675'
