@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect
 
 import payments.views
 from PGPI_3_14 import settings
-from .forms import CitaForm
 from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from citas.models import Servicio, Especialista, Invitado, Cita
@@ -40,7 +39,7 @@ class CitaServicioAddView(APIView):
                     nombre=nombre, email=email, telefono=telefono
                 )
 
-            Cita.objects.create(
+            cita = Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
