@@ -1,3 +1,5 @@
+import base64
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
 from rest_framework.views import APIView
@@ -5,6 +7,9 @@ from citas.models import Especialista, Invitado, Cita, Servicio
 from .utils import calculate_available_hours
 from datetime import datetime
 from django.http import HttpResponseForbidden
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 
 
 class CitaServicioAddView(APIView):
@@ -27,8 +32,7 @@ class CitaServicioAddView(APIView):
                 invitado = Invitado.objects.create(
                     nombre=nombre, email=email, telefono=telefono
                 )
-
-            Cita.objects.create(
+            citaCreada = Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
@@ -36,6 +40,24 @@ class CitaServicioAddView(APIView):
                 fecha=fecha,
                 hora=hora,
             )
+            if usuario is not None:
+                email = usuario.email
+            mailMessage = Mail(
+                from_email='aestheticarepgpi@gmail.com',
+                to_emails=email,
+                )
+            idEncode = f'salt{citaCreada.pk}'
+            encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
+            urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
+            mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
+                                                 "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
+                                                 }
+            mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
+            sg = SendGridAPIClient("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")
+            response = sg.send(mailMessage)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
             return redirect("/")
 
         else:
@@ -98,27 +120,13 @@ class CitaEspecialistaAddView(APIView):
         )
 
 
-class ConsultaView(APIView):
-    def post(self, request):
-        nombre = request.POST.get("nombre", None)
-        email = request.POST.get("email", None)
-
-        if email:
-            invitado = Invitado.objects.filter(email=email)
-        else:
-            msg = "Rellene el formulario"
-            return render(request, "consulta_citas.html", {"msg": msg})
-
-        if invitado:
-            return render(request, "citas_invitado.html", {"invitado": invitado})
-        else:
-            # Manejar el caso de invitado no existente
-            msg = "No hay ninguna cita con ese nombre o email"
-            return render(request, "consulta_citas.html", {"msg": msg})
-
-    def get(self, request):
-        return render(request, "consulta_citas.html")
-
+def consulta_email(request,  **kwargs):
+    encoded = kwargs.get("encoded", 0)
+    email = request.POST.get("email", None)
+    decode =base64.b64decode(str(encoded)).decode('utf-8')
+    citaId =decode.replace("salt", "")
+    cita = Cita.objects.get(pk=citaId)
+    return render(request, "citas_invitado.html", {"cita": cita})
 
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")

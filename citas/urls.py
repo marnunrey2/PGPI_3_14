@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.urls import path
 from .views import (
-    ConsultaView,
     get_especialistas_por_servicio,
     get_horas_disponibles,
     cita_delete,
     get_servicios_por_especialista,
+    consulta_email,
     CitaEspecialistaAddView,
     CitaServicioAddView,
 )
@@ -24,7 +24,6 @@ urlpatterns = [
     ),
     path("horas_disponibles/", get_horas_disponibles, name="horas_disponibles"),
     path("citas/<int:cita_id>/delete/", cita_delete, name="cita_delete"),
-    path("consulta/", ConsultaView.as_view(), name="consulta_citas"),
     path(
         "citas/servicios/add",
         CitaServicioAddView.as_view(),
@@ -35,6 +34,7 @@ urlpatterns = [
         CitaEspecialistaAddView.as_view(),
         name="cita_especialista_add",
     ),
+    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas")
 ]
 
 from django.conf.urls.static import static

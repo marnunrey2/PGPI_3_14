@@ -1,37 +1,51 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
-
-{% block title %}Citas{% endblock %}
+{% load bootstrap_icons %}
+{% block title %}Home{% endblock %}
 
 {% block extrahead %}
 <!-- Custom CSS -->
 <link rel="stylesheet" href="{% static "home/home.css" %}">
+<!-- W3 CSS -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 {% endblock %}
 
 {% block content %}
+
+    <section class="hero">
+        {% if message %}
+        <ul class="message">
+            <li class="info">{{ message }}</li>
+        </ul>
+        {% endif %}
+    </section>
     
-        <table class="table">
-            <thead>
-                <tr class="table-secondary">
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Hora</th>
-                    <th scope="col">Servicio</th>
-                    <th scope="col">Especialista</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inv in invitado %}
-                    {% for cita in inv.citas.all %}
-                    <tr>
-                        <th scope="row">{{ cita.fecha }}</th>
-                        <td>{{ cita.hora }}</td>
-                        <td>{{ cita.servicio.nombre }}</td>
-                        <td>{{ cita.especialista.nombre }}</td>
-                    </tr>
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
+<table class="table">
+    <thead>
+        <tr class="table-secondary">
+            <th scope="col">Fecha</th>
+            <th scope="col">Hora</th>
+            <th scope="col">Servicio</th>
+            <th scope="col">Especialista</th>
+            <th scope="col">Poner reclamación</th>
+            <th scope="col">Eliminar cita</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">{{ cita.fecha }}</th>
+            <td>{{ cita.hora }}</td>
+            <td>{{ cita.servicio.nombre }}</td>
+            <td>{{ cita.especialista.nombre }}</td>
+            <td class="text-center align-middle">
+                <a href="/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
+                    {% bs_icon 'plus-circle' %}
+                </a>
+            </td>
+            <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+        </tr>
+    </tbody>
+</table>
 
 {% endblock %}
 
