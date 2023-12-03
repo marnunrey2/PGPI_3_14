@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Django + Stripe Checkout</title>
+    <title>AesthetiCare Checkout</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
       <link rel="stylesheet" href="https://bootswatch.com/5/minty/bootstrap.css">
@@ -13,10 +13,10 @@
   <body>
   <section class="section">
     <div class="container">
-        <p>Proceder al pago telemático de: </p>
-        {{ priceId }}
-        {{ citaId }}
-      <button class="btn btn-primary" id="submit">Comprar ahora</button>
+        <strong><p>Proceder al pago telemático de la cita para el: </p></strong>
+        <p>{{ fecha }}</p>
+        <p>{{ hora }}</p>
+      <button class="btn btn-primary" id="submit">Pagar ahora</button>
     </div>
   </section>
   <script>

@@ -49,7 +49,7 @@ class CitaView(APIView):
             )
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(request, "pay.html", {"priceId": priceId, "citaId": cita.id})
+                return render(request, "pay.html", {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
             else:
                 return render(request, "home/home.html", {"cita": cita})
 

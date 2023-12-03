@@ -5,16 +5,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Django + Stripe Checkout</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>AesthetiCare Checkout</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/minty/bootstrap.css">
     <script defer src="https://use.fontawesome.com/releases/v6.4.0/js/all.js"></script>
   </head>
   <body>
   <section class="section">
     <div class="container">
-      <p>Su pago ha sido cancelado.</p>
-        <p>Intentelo de nuevo más tarde</p>
-    </div>
+        <br>
+      <div class="alert alert-dismissible alert-danger">
+  <strong>Su pago ha sido cancelado.</strong>  Intentelo de nuevo más tarde.
+</div>
+        <p id="result">Esta pagina se cerrará automaticamente</p>
+            </div>
   </section>
+  <script>
+      function redirect () {
+         setTimeout(myURL, 5000);
+      }
+
+      function myURL() {
+         document.location.href = '/';
+      }
+      window.onload = redirect;
+  </script>
   </body>
 </html>
