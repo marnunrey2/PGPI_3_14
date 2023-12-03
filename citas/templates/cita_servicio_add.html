@@ -1,0 +1,60 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+
+{% block title %}Invitados{% endblock %}
+
+{% block extrahead %}
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.8"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-container">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.servicio.id_for_label }}" class="form-label mt-4">{{ form.servicio.label }}</label>
+                {{ form.servicio }}
+            </div> 
+
+            <div class="form-group">
+                <label for="{{ form.especialista.id_for_label }}" class="form-label mt-4">{{ form.especialista.label }}</label>
+                {{ form.especialista }}
+            </div> 
+
+            <div class="form-group">
+                <label for="{{ form.fecha.id_for_label }}" class="form-label mt-4">{{ form.fecha.label }}</label>
+                {{ form.fecha }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.hora.id_for_label }}" class="form-label mt-4">{{ form.hora.label }}</label>
+                {{ form.hora }}
+            </div> 
+            
+            {% if form.nombre %}
+                <div class="form-group">
+                    <label class="form-label mt-4" for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+                    <input type="text" name="{{ form.nombre.name }}" id="{{ form.nombre.id_for_label }}" 
+                    class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label mt-4" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" 
+                    class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label mt-4" for="{{ form.telefono.id_for_label }}">{{ form.telefono.label }}</label>
+                    <input type="text" name="{{ form.telefono.name }}" id="{{ form.telefono.id_for_label }}" 
+                    class="form-control">
+                </div>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">Reservar cita</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

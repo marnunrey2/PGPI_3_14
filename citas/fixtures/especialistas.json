@@ -1,0 +1,11 @@
+[
+    {
+      "model": "citas.especialista",
+      "fields": {
+        "nombre": "sammy",
+        "imagen": "especialistas/masseuse.jpg",
+        "especialidades": [1]
+      }
+    }
+]
+  

@@ -1,10 +1,15 @@
+from django.conf import settings
 from django.urls import path
 from .views import (
-    CitaView,
+    ConsultaView,
     get_especialistas_por_servicio,
     get_horas_disponibles,
     get_precio_por_servicio,
     get_precio_id_por_servicio
+    cita_delete,
+    get_servicios_por_especialista,
+    CitaEspecialistaAddView,
+    CitaServicioAddView,
 )
 from payments import views as views
 
@@ -15,6 +20,11 @@ urlpatterns = [
         get_especialistas_por_servicio,
         name="especialistas_opciones",
     ),
+    path(
+        "servicios_opciones/",
+        get_servicios_por_especialista,
+        name="servicios_opciones",
+    ),
     path("horas_disponibles/", get_horas_disponibles, name="horas_disponibles"),
     path("cita/", CitaView.as_view(), name="cita"),
     path('precio_servicio/', get_precio_por_servicio, name='precio'),
@@ -24,4 +34,21 @@ urlpatterns = [
     path('cita/success/', views.SuccessView.as_view(), name='success'),  # new
     path('cita/cancelled/', views.CancelledView.as_view(), name='cancelled'),
     path('cita/webhook/', views.stripe_webhook),
+    path("citas/<int:cita_id>/delete/", cita_delete, name="cita_delete"),
+    path("consulta/", ConsultaView.as_view(), name="consulta_citas"),
+    path(
+        "citas/servicios/add",
+        CitaServicioAddView.as_view(),
+        name="cita_servicio_add",
+    ),
+    path(
+        "citas/especialistas/add",
+        CitaEspecialistaAddView.as_view(),
+        name="cita_especialista_add",
+    ),
 ]
+
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

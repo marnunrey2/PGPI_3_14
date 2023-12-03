@@ -17,12 +17,37 @@
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/" style="background-color: transparent;">
-                <img src="{% static '/home/images/logo-removed.png' %}" alt="AesthetiCare Logo" style="height: 100px;">
+                <img src="{% static '/home/images/logo-removed.png' %}" alt="AesthetiCare" style="height: 100px;">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            {% if user.is_staff %}
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/citas">Citas
+                            <span class="visually-hidden">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/servicios">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/especialistas">Especialistas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/reclamaciones">Reclamaciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/usuarios">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_view/invitados">Invitados</a>
+                    </li>
+                </ul>
+            {% else %}
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -36,16 +61,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/especialistas">Especialistas</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reclamaciones">Reclamaciones</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/about">Sobre nosotros</a>
                     </li>
                 </ul>
+            {% endif %}
                 {% if not request.path == '/signin/' %}
                 {% if not request.path == '/register/' %}
                 {% if user.is_authenticated %}
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ user.username }}
+                        {{ user.email }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="/perfil">Perfil</a></li>
@@ -70,6 +101,19 @@
         {% endblock %}
         </div>
     </section>
+
+    <!-- Script to display username in dropdown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var email = "{{ user.email }}"; // Get the email address from Django template
+    
+            // Split the email address at the "@" symbol
+            var username = email.split('@')[0];
+    
+            // Update the button text with the extracted username
+            document.getElementById('dropdownMenuButton').innerText = username;
+        });
+    </script>
 
     {% block extrabody %}{% endblock %}
 

@@ -1,0 +1,21 @@
+[
+    {
+      "model": "citas.servicio",
+      "fields": {
+        "nombre": "Masajito",
+        "descripcion": "sammy was here",
+        "imagen": "servicios/masaje.jpg",  
+        "precio": 21.99
+      }
+    },
+    {
+        "model": "citas.servicio",
+        "fields": {
+          "nombre": "Acupunturaso",
+          "descripcion": "sammy was here",
+          "imagen": "servicios/acupuntura.jpg",  
+          "precio": 21.99
+        }
+      }
+  ]
+  

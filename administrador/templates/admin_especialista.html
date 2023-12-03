@@ -1,0 +1,48 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+{% load bootstrap_icons %}
+{% block title %}Especialistas{% endblock %}
+
+{% block extrahead %}
+<!-- Custom CSS -->
+{% endblock %}
+
+{% block content %}
+<a class="btn btn-primary" href="/admin_view/especialistas/add">Añadir especialista</a>
+    {% if especialistas %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Especialidades</th>
+                    <th scope="col">Eliminar especialista</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for especialista in especialistas %}
+                <tr>
+                    <td>{{ especialista.nombre }}</td>
+                    {% if especialista.imagen %}
+                    <td>Sí</td> 
+                    {% else %}
+                    <td>No tiene</td> 
+                    {% endif %}
+                    <td>
+                    {% for servicio in especialista.especialidades.all %}
+                        {{ servicio.nombre }}
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    </td>
+                    <td><a href="/especialistas/{{especialista.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay especialistas.</p>
+    {% endif %}
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}

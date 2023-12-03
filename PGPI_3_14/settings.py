@@ -15,6 +15,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -42,7 +44,9 @@ INSTALLED_APPS = [
     "bootstrap4",
     "citas",
     "authentication",
-    'django_bootstrap_icons',
+    "administrador",
+    "reclamaciones",
+    "django_bootstrap_icons",
     "payments",
 ]
 
@@ -129,7 +133,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MODULES = ["authentication", "citas", "home", "payments"]
+MODULES = ["authentication", "citas", "home", "administrador", "reclamaciones", "payments"]
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51OFHhiEuWVOCbA5vAwXU4oXypAcEcn2qhZNpdhh68DTkIWSxIbTT37gYIgAR0iYukDaaSP0WY52JAuADB0CjDGW200ngjTREn5'
 STRIPE_SECRET_KEY = 'sk_test_51OFHhiEuWVOCbA5vL1GzekaWCPVzKYSizRhCosLrsZMpgxXWouLlFYAlayYBVaBpUF5YItdeXoPoka1Oh7OB7w5200HIL5ctEs'

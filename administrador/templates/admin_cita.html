@@ -1,0 +1,74 @@
+{% extends "home/base.html" %}
+{% load i18n static %}
+{% load bootstrap_icons %}
+{% block title %}Citas{% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+{% block content %}
+<!-- Button trigger modal -->
+<a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal">Crear cita</a>
+
+<!-- Modal -->
+<div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="citaModalLabel">Crear Cita</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <a href="{% url 'admin_cita_servicio_add' %}" class="btn btn-primary">Crear según servicio</a>        
+        <a href="{% url 'admin_cita_especialista_add' %}" class="btn btn-secondary">Crear según especialista</a>
+      </div>
+    </div>
+  </div>
+</div>
+    {% if citas %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Invitado</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Especialista</th>
+                    <th scope="col">Poner reclamación</th>
+                    <th scope="col">Eliminar cita</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    {% if cita.usuario %}
+                    <td>{{ cita.usuario.email }}</td> 
+                    {% else %}
+                    <td>No aplica</td> 
+                    {% endif %}
+                    {% if cita.invitado %}
+                    <td>{{ cita.invitado.email }}</td> 
+                    {% else %}
+                    <td>No aplica</td> 
+                    {% endif %}
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>{{ cita.servicio.nombre }}</td>
+                    <td>{{ cita.especialista.nombre }}</td>
+                    <td class="text-center align-middle">
+                      <a href="/admin_view/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
+                          {% bs_icon 'plus-circle' %}
+                      </a>
+                  </td>
+                    <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay citas.</p>
+    {% endif %}
+
+{% endblock %}
+
+{% block extrabody %}{% endblock %}

@@ -9,12 +9,27 @@
 {% endblock %}
 
 {% block content %}
+
 {% for servicio in servicios %}
 <div class="card border-primary mb-3" style="max-width: 20rem;">
-        <div class="card-header">{{ servicio.nombre }}</div>
+    <img src="{{ MEDIA_URL }}{{ servicio.imagen.url }}" class="card-img-top" alt="{{ servicio.nombre }}">    
+    <div class="card-header">{{ servicio.nombre }}</div>
         <div class="card-body">
             <p class="card-text">{{ servicio.descripcion }}</p>
+            <p class="card-text">{{ servicio.precio }}€</p>
         </div>
 </div>
 {% endfor %}
 {% endblock %}
+
+
+<!-- from citas.models import Servicio
+
+Servicio.objects.create(
+    nombre="Example Service 5",
+    descripcion="Description for Example Service 5",
+    imagen="servicios/acupuntura.jpg",  # Adjust the path accordingly
+    precio=21.99,
+) -->
+
+

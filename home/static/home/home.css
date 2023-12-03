@@ -1,11 +1,4 @@
-.btn-primary {
-    margin-top: 10px;
-    margin-bottom: 30px; 
-}
-h1, p {
-    margin: 15px;
-}
-.btn-secondary {
-    margin: 30px; 
-    width: 30%;
+
+.card {
+    margin: 10px;
 }
