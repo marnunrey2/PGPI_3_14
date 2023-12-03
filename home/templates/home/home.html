@@ -47,6 +47,8 @@
                             <th scope="col">Hora</th>
                             <th scope="col">Servicio</th>
                             <th scope="col">Especialista</th>
+                            <th scope="col">Método de pago</th>
+                            <th scope="col">Pagado</th>
                             <th scope="col">Poner reclamación</th>
                             <th scope="col">Eliminar cita</th>
                         </tr>
@@ -58,6 +60,20 @@
                             <td>{{ cita.hora }}</td>
                             <td>{{ cita.servicio.nombre }}</td>
                             <td>{{ cita.especialista.nombre }}</td>
+                            <td>
+                                {% if cita.metodo_pago == "TA" %}
+                                    Tarjeta
+                                {% else %}
+                                    Efectivo
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if cita.pagado %}
+                                    <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
+                                {% else %}
+                                    <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
+                                {% endif %}
+                            </td>
                             <td class="text-center align-middle">
                                 <a href="/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
                                     {% bs_icon 'plus-circle' %}
