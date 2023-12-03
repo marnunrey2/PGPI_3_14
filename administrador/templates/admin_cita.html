@@ -65,8 +65,20 @@
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
-                    <td>{{ cita.metodo_pago }}</td>
-                    <td>{{ cita.pagado }}</td>
+                    <td>
+                                {% if cita.metodo_pago == "TA" %}
+                                    Tarjeta
+                                {% else %}
+                                    Efectivo
+                                {% endif %}
+                            </td>
+                    <td>
+                                {% if cita.pagado %}
+                                    <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
+                                {% else %}
+                                    <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
+                                {% endif %}
+                            </td>
                     {% if cita.check_pago %}
     <!-- Use single quotes to encapsulate the value passed to displayAlert -->
     <td><button class="btn btn-primary" onclick="displayAlert('{{ cita.check_pago }}')">Checksum</button></td>
