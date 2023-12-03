@@ -30,6 +30,8 @@ urlpatterns = [
     path('precio_id_servicio/', get_precio_id_por_servicio, name='precioid'),
     path('citas/servicios/utils/config/', views.stripe_config),
     path('citas/servicios/utils/create-custom-checkout-session/<str:param>/<str:ident>', views.create_custom_checkout_session),
+    path('citas/especialistas/utils/config/', views.stripe_config),
+    path('citas/especialistas/utils/create-custom-checkout-session/<str:param>/<str:ident>', views.create_custom_checkout_session),
     path('citas/success/', views.SuccessView.as_view(), name='success'),  # new
     path('citas/cancelled/', views.CancelledView.as_view(), name='cancelled'),
     path('citas/webhook/', views.stripe_webhook),
