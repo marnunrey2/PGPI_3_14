@@ -52,14 +52,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for cita in user.citas.all %}
+                        {% for hash, cita in datosCombinados %}
+                        
                         <tr>
-                            <th scope="row">{{ cita.fecha }}</th>
+                            <th>{{ cita.fecha }}</th>
                             <td>{{ cita.hora }}</td>
                             <td>{{ cita.servicio.nombre }}</td>
                             <td>{{ cita.especialista.nombre }}</td>
                             <td class="text-center align-middle">
-                                <a href="/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
+                                <a href="/reclamaciones/{{hash}}/add" class="d-flex justify-content-center align-items-center h-100">
                                     {% bs_icon 'plus-circle' %}
                                 </a>
                             </td>

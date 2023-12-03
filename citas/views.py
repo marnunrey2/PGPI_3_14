@@ -9,6 +9,8 @@ from datetime import datetime
 from django.http import HttpResponseForbidden
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from dotenv import load_dotenv
+import os
 
 
 
@@ -53,11 +55,13 @@ class CitaServicioAddView(APIView):
                                                  "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
                                                  }
             mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
-            sg = SendGridAPIClient("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")
+            load_dotenv()
+            print(os.getenv("SENDGRID_API_KEY"))
+            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             response = sg.send(mailMessage)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
+            #print(response.status_code)
+            #print(response.body)
+            #print(response.headers)
             return redirect("/")
 
         else:
@@ -94,7 +98,7 @@ class CitaEspecialistaAddView(APIView):
                     nombre=nombre, email=email, telefono=telefono
                 )
 
-            Cita.objects.create(
+            citaCreada = Cita.objects.create(
                 usuario=usuario,
                 invitado=invitado,
                 servicio_id=servicio_id,
@@ -102,6 +106,26 @@ class CitaEspecialistaAddView(APIView):
                 fecha=fecha,
                 hora=hora,
             )
+            if usuario is not None:
+                email = usuario.email
+            mailMessage = Mail(
+                from_email='aestheticarepgpi@gmail.com',
+                to_emails=email,
+                )
+            idEncode = f'salt{citaCreada.pk}'
+            encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
+            urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
+            mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
+                                                 "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
+                                                 }
+            mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
+            load_dotenv()
+            print(os.getenv("SENDGRID_API_KEY"))
+            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+            response = sg.send(mailMessage)
+            #print(response.status_code)
+            #print(response.body)
+            #print(response.headers)
             return redirect("/")
 
         else:

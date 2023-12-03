@@ -34,7 +34,8 @@ urlpatterns = [
         CitaEspecialistaAddView.as_view(),
         name="cita_especialista_add",
     ),
-    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas")
+    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas1"),
+    path("citas/especialistas/add/<str:encoded>", consulta_email, name="consulta_citas2")
 ]
 
 from django.conf.urls.static import static
