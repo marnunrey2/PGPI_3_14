@@ -4,11 +4,14 @@ from .views import (
     ConsultaView,
     get_especialistas_por_servicio,
     get_horas_disponibles,
+    get_precio_por_servicio,
+    get_precio_id_por_servicio,
     cita_delete,
     get_servicios_por_especialista,
     CitaEspecialistaAddView,
     CitaServicioAddView,
 )
+from payments import views as views
 
 
 urlpatterns = [
@@ -23,6 +26,15 @@ urlpatterns = [
         name="servicios_opciones",
     ),
     path("horas_disponibles/", get_horas_disponibles, name="horas_disponibles"),
+    path('precio_servicio/', get_precio_por_servicio, name='precio'),
+    path('precio_id_servicio/', get_precio_id_por_servicio, name='precioid'),
+    path('citas/servicios/utils/config/', views.stripe_config),
+    path('citas/servicios/utils/create-custom-checkout-session/<str:param>/<str:ident>', views.create_custom_checkout_session),
+    path('citas/especialistas/utils/config/', views.stripe_config),
+    path('citas/especialistas/utils/create-custom-checkout-session/<str:param>/<str:ident>', views.create_custom_checkout_session),
+    path('citas/success/', views.SuccessView.as_view(), name='success'),  # new
+    path('citas/cancelled/', views.CancelledView.as_view(), name='cancelled'),
+    path('citas/webhook/', views.stripe_webhook),
     path("citas/<int:cita_id>/delete/", cita_delete, name="cita_delete"),
     path("consulta/", ConsultaView.as_view(), name="consulta_citas"),
     path(

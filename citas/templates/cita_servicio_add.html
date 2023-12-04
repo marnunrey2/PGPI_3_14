@@ -1,7 +1,7 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
 
-{% block title %}Invitados{% endblock %}
+{% block title %}Citas{% endblock %}
 
 {% block extrahead %}
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css" rel="stylesheet">
@@ -11,50 +11,64 @@
 {% block content %}
 <div class="container">
     <div class="login-container">
-        <form method="post">
+        <br>
+        <form id="citaForm" method="post">
             {% csrf_token %}
-
-            <div class="form-group">
-                <label for="{{ form.servicio.id_for_label }}" class="form-label mt-4">{{ form.servicio.label }}</label>
-                {{ form.servicio }}
-            </div> 
-
-            <div class="form-group">
-                <label for="{{ form.especialista.id_for_label }}" class="form-label mt-4">{{ form.especialista.label }}</label>
-                {{ form.especialista }}
-            </div> 
-
-            <div class="form-group">
-                <label for="{{ form.fecha.id_for_label }}" class="form-label mt-4">{{ form.fecha.label }}</label>
-                {{ form.fecha }}
+            {{ form.as_p }}
+            <br>
+            <div id="precio-display">
+                Precio: <span id="precio-span">{{ form.precio.value }}</span>
             </div>
-            
-            <div class="form-group">
-                <label for="{{ form.hora.id_for_label }}" class="form-label mt-4">{{ form.hora.label }}</label>
-                {{ form.hora }}
-            </div> 
-            
-            {% if form.nombre %}
-                <div class="form-group">
-                    <label class="form-label mt-4" for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
-                    <input type="text" name="{{ form.nombre.name }}" id="{{ form.nombre.id_for_label }}" 
-                    class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label mt-4" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" 
-                    class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label mt-4" for="{{ form.telefono.id_for_label }}">{{ form.telefono.label }}</label>
-                    <input type="text" name="{{ form.telefono.name }}" id="{{ form.telefono.id_for_label }}" 
-                    class="form-control">
-                </div>
-            {% endif %}
-            <button class="btn btn-primary" type="submit">Reservar cita</button>
+            <br>
+            <button id="submit" type="submit" class="btn btn-primary">Pagar en efectivo</button>
         </form>
     </div>
 </div>
+    <script>
+    // Add JavaScript to update the price display dynamically when the service selection changes
+    const serviceSelect = document.querySelector('.service-select');
+    const precioSpan = document.getElementById('precio-span');
+    var selectedPriceId = "";
+
+    serviceSelect.addEventListener('change', async (e) => {
+    const selectedServiceId = e.target.value;
+    try {
+        const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
+        const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
+        const data = await response.text(); // Retrieve response as text
+        selectedPriceId = await responseId.text();
+        precioSpan.textContent = data.trim(); // Set the text content of precioSpan
+    } catch (error) {
+        console.error('Error fetching price:', error);
+    }
+});
+
+     function updateButtonText() {
+        paymentMethodRadios.forEach(radio => {
+            if (radio.checked) {
+                const selectedValue = radio.value;
+                if (selectedValue === 'EF') {
+                    paymentButton.textContent = 'Pagar en efectivo';
+                } else if (selectedValue === 'TA') {
+                    paymentButton.textContent = 'Pagar con tarjeta';
+                }
+            }
+        });
+    }
+
+    // Get all radio buttons within the payment method group
+    const paymentMethodRadios = document.querySelectorAll('.payment-method');
+
+    // Get the payment button
+    const paymentButton = document.querySelector('#submit');
+
+    // Event listeners for radio buttons change
+    paymentMethodRadios.forEach(radio => {
+        radio.addEventListener('change', updateButtonText);
+    });
+
+    // Call the function initially to set the button text based on the initial value
+    updateButtonText();
+</script>
+
 {% endblock %}

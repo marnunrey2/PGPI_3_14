@@ -8,7 +8,9 @@
 {% endblock %}
 
 {% block content %}
+    <br>
 <a class="btn btn-primary" href="/admin_view/servicios/add">Añadir servicio</a>
+    <br>
     {% if servicios %}
         <table class="table">
             <thead>
@@ -16,7 +18,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Descripcion</th>
                     <th scope="col">Imagen</th>
-                    <th scope="col">Precio</th>
+                    <th scope="col">PrecioID</th>
                     <th scope="col">Eliminar servicio</th>
                 </tr>
             </thead>
@@ -30,7 +32,7 @@
                     {% else %}
                     <td>No tiene</td> 
                     {% endif %}
-                    <td>{{ servicio.precio }}</td>
+                    <td>{{ servicio.precioId }}</td>
                     <td><a href="/servicios/{{servicio.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}

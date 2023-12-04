@@ -203,12 +203,12 @@ class AdminServicioAddView(APIView):
                 imagen = request.FILES["imagen"]
             else:
                 imagen = None
-            precio = form.cleaned_data["precio"]
+            precio = form.cleaned_data["precioId"]
             Servicio.objects.create(
                 nombre=nombre,
                 descripcion=descripcion,
                 imagen=imagen,
-                precio=precio,
+                precioId=precio,
             )
             return redirect("/admin_view/servicios")
         else:

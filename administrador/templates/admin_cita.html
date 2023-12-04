@@ -6,10 +6,19 @@
 {% block extrahead %}{% endblock %}
 
 {% block content %}
+<!-- Rest of your HTML content -->
+
+<script>
+    function displayAlert(checksum) {
+        alert(checksum); // Display the passed checksum value
+    }
+</script>
 <!-- Button trigger modal -->
+    <br>
 <a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal">Crear cita</a>
 
 <!-- Modal -->
+    <br>
 <div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -34,6 +43,9 @@
                     <th scope="col">Hora</th>
                     <th scope="col">Servicio</th>
                     <th scope="col">Especialista</th>
+                    <th scope="col">Método pago</th>
+                    <th scope="col">Pagado</th>
+                    <th scope="col">Checksum</th>
                     <th scope="col">Poner reclamación</th>
                     <th scope="col">Eliminar cita</th>
                 </tr>
@@ -47,7 +59,7 @@
                     <td>No aplica</td> 
                     {% endif %}
                     {% if cita.invitado %}
-                    <td>{{ cita.invitado.email }}</td> 
+                    <td>{{ cita.invitado.email }}</td>
                     {% else %}
                     <td>No aplica</td> 
                     {% endif %}
@@ -55,6 +67,26 @@
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
+                    <td>
+                                {% if cita.metodo_pago == "TA" %}
+                                    Tarjeta
+                                {% else %}
+                                    Efectivo
+                                {% endif %}
+                            </td>
+                    <td>
+                                {% if cita.pagado %}
+                                    <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
+                                {% else %}
+                                    <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
+                                {% endif %}
+                            </td>
+                    {% if cita.check_pago %}
+    <!-- Use single quotes to encapsulate the value passed to displayAlert -->
+    <td><button class="btn btn-primary" onclick="displayAlert('{{ cita.check_pago }}')">Checksum</button></td>
+{% else %}
+    <td><a class="nav-link disabled" href="#">No checksum</a></td>
+{% endif %}
                     <td class="text-center align-middle">
                       <a href="/admin_view/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
                           {% bs_icon 'plus-circle' %}
@@ -68,6 +100,7 @@
     {% else %}
         <p>No hay citas.</p>
     {% endif %}
+
 
 {% endblock %}
 
