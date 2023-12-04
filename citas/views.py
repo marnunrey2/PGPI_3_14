@@ -4,16 +4,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
 import stripe
 from django.shortcuts import render, redirect
-
-import payments.views
 from PGPI_3_14 import settings
 from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from citas.models import Servicio, Especialista, Invitado, Cita
-from django.http import HttpResponseRedirect, JsonResponse
-from datetime import datetime, timedelta
 from .utils import calculate_available_hours
-from datetime import datetime
 from django.http import HttpResponseForbidden
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -54,20 +49,26 @@ class CitaServicioAddView(APIView):
                 fecha=fecha,
                 hora=hora,
                 pagado=False,
-                metodo_pago=metodo_pago
+                metodo_pago=metodo_pago,
             )
             if usuario is not None:
                 email = usuario.email
             mailMessage = Mail(
-                from_email='aestheticarepgpi@gmail.com',
+                from_email="aestheticarepgpi@gmail.com",
                 to_emails=email,
-                )
-            idEncode = f'salt{cita.pk}'
-            encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
-            urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
-            mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
-                                                 "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
-                                                 }
+            )
+            idEncode = f"salt{cita.pk}"
+            encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
+                "utf-8"
+            )
+            urlVerificar = f"{request.build_absolute_uri()}/{encoded}"
+            mailMessage.dynamic_template_data = {
+                "urlVerificar": urlVerificar,
+                "fecha": fecha,
+                "hora": hora,
+                "servicio": Servicio.objects.get(pk=servicio_id).nombre,
+                "especialista": Especialista.objects.get(pk=especialista_id).nombre,
+            }
             mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
             load_dotenv()
             print(os.getenv("SENDGRID_API_KEY"))
@@ -75,7 +76,16 @@ class CitaServicioAddView(APIView):
             response = sg.send(mailMessage)
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(request, "pay.html", {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+                return render(
+                    request,
+                    "pay.html",
+                    {
+                        "priceId": priceId,
+                        "citaId": cita.id,
+                        "fecha": fecha,
+                        "hora": hora,
+                    },
+                )
             else:
                 return render(request, "home/home.html", {"cita": cita})
 
@@ -122,20 +132,26 @@ class CitaEspecialistaAddView(APIView):
                 fecha=fecha,
                 hora=hora,
                 pagado=False,
-                metodo_pago=metodo_pago
+                metodo_pago=metodo_pago,
             )
             if usuario is not None:
                 email = usuario.email
             mailMessage = Mail(
-                from_email='aestheticarepgpi@gmail.com',
+                from_email="aestheticarepgpi@gmail.com",
                 to_emails=email,
-                )
-            idEncode = f'salt{cita.pk}'
-            encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
-            urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
-            mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
-                                                 "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
-                                                 }
+            )
+            idEncode = f"salt{cita.pk}"
+            encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
+                "utf-8"
+            )
+            urlVerificar = f"{request.build_absolute_uri()}/{encoded}"
+            mailMessage.dynamic_template_data = {
+                "urlVerificar": urlVerificar,
+                "fecha": fecha,
+                "hora": hora,
+                "servicio": Servicio.objects.get(pk=servicio_id).nombre,
+                "especialista": Especialista.objects.get(pk=especialista_id).nombre,
+            }
             mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
             load_dotenv()
             print(os.getenv("SENDGRID_API_KEY"))
@@ -143,8 +159,16 @@ class CitaEspecialistaAddView(APIView):
             response = sg.send(mailMessage)
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(request, "pay.html",
-                              {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+                return render(
+                    request,
+                    "pay.html",
+                    {
+                        "priceId": priceId,
+                        "citaId": cita.id,
+                        "fecha": fecha,
+                        "hora": hora,
+                    },
+                )
             else:
                 return render(request, "home/home.html", {"cita": cita})
 
@@ -164,13 +188,14 @@ class CitaEspecialistaAddView(APIView):
         )
 
 
-def consulta_email(request,  **kwargs):
+def consulta_email(request, **kwargs):
     encoded = kwargs.get("encoded", 0)
     email = request.POST.get("email", None)
-    decode =base64.b64decode(str(encoded)).decode('utf-8')
-    citaId =decode.replace("salt", "")
+    decode = base64.b64decode(str(encoded)).decode("utf-8")
+    citaId = decode.replace("salt", "")
     cita = Cita.objects.get(pk=citaId)
-    return render(request, "citas_invitado.html", {"cita": cita, "hash":encoded})
+    return render(request, "citas_invitado.html", {"cita": cita, "hash": encoded})
+
 
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")
@@ -178,6 +203,7 @@ def get_especialistas_por_servicio(request):
     return render(
         request, "especialistas_opciones.html", {"especialistas": especialistas}
     )
+
 
 def format_price(price_amount):
     try:
@@ -201,13 +227,12 @@ def get_precio_por_servicio(request):
         servicio_id = request.GET.get("servicio")
         priceId = Servicio.objects.filter(id=servicio_id).get().precioId
         price = stripe.Price.retrieve(priceId)
-        price_amount = price.get('unit_amount')
+        price_amount = price.get("unit_amount")
         formated_price = format_price(price_amount)
     except Exception as e:
         formated_price = "No disponible"
-    return render(
-        request, "precio.html", {"priceId": formated_price}
-    )
+    return render(request, "precio.html", {"priceId": formated_price})
+
 
 def get_precio_id_por_servicio(request):
     try:
@@ -215,9 +240,8 @@ def get_precio_id_por_servicio(request):
         priceId = Servicio.objects.filter(id=servicio_id).get().precioId
     except Exception as e:
         priceId = "No disponible"
-    return render(
-        request, "precio_id.html", {"priceId": priceId}
-    )
+    return render(request, "precio_id.html", {"priceId": priceId})
+
 
 def get_precio_id_por_servicio_string(id):
     try:
@@ -226,7 +250,6 @@ def get_precio_id_por_servicio_string(id):
         redirect("../checkout/error")
         return None
     return price_id
-
 
 
 def get_servicios_por_especialista(request):
