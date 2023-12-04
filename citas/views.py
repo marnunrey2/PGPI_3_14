@@ -2,19 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
 import stripe
 from django.shortcuts import render, redirect
-
-import payments.views
 from PGPI_3_14 import settings
 from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from citas.models import Servicio, Especialista, Invitado, Cita
-from django.http import HttpResponseRedirect, JsonResponse
-from datetime import datetime, timedelta
 from .utils import calculate_available_hours
-from datetime import datetime
 from django.http import HttpResponseForbidden
-from payments import views
-from django.views.generic.base import TemplateView
 
 
 class CitaServicioAddView(APIView):
@@ -47,11 +40,20 @@ class CitaServicioAddView(APIView):
                 fecha=fecha,
                 hora=hora,
                 pagado=False,
-                metodo_pago=metodo_pago
+                metodo_pago=metodo_pago,
             )
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(request, "pay.html", {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+                return render(
+                    request,
+                    "pay.html",
+                    {
+                        "priceId": priceId,
+                        "citaId": cita.id,
+                        "fecha": fecha,
+                        "hora": hora,
+                    },
+                )
             else:
                 return render(request, "home/home.html", {"cita": cita})
 
@@ -98,12 +100,20 @@ class CitaEspecialistaAddView(APIView):
                 fecha=fecha,
                 hora=hora,
                 pagado=False,
-                metodo_pago=metodo_pago
+                metodo_pago=metodo_pago,
             )
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(request, "pay.html",
-                              {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
+                return render(
+                    request,
+                    "pay.html",
+                    {
+                        "priceId": priceId,
+                        "citaId": cita.id,
+                        "fecha": fecha,
+                        "hora": hora,
+                    },
+                )
             else:
                 return render(request, "home/home.html", {"cita": cita})
 
@@ -152,6 +162,7 @@ def get_especialistas_por_servicio(request):
         request, "especialistas_opciones.html", {"especialistas": especialistas}
     )
 
+
 def format_price(price_amount):
     try:
         # Convert the price amount to a string
@@ -174,13 +185,12 @@ def get_precio_por_servicio(request):
         servicio_id = request.GET.get("servicio")
         priceId = Servicio.objects.filter(id=servicio_id).get().precioId
         price = stripe.Price.retrieve(priceId)
-        price_amount = price.get('unit_amount')
+        price_amount = price.get("unit_amount")
         formated_price = format_price(price_amount)
     except Exception as e:
         formated_price = "No disponible"
-    return render(
-        request, "precio.html", {"priceId": formated_price}
-    )
+    return render(request, "precio.html", {"priceId": formated_price})
+
 
 def get_precio_id_por_servicio(request):
     try:
@@ -188,9 +198,8 @@ def get_precio_id_por_servicio(request):
         priceId = Servicio.objects.filter(id=servicio_id).get().precioId
     except Exception as e:
         priceId = "No disponible"
-    return render(
-        request, "precio_id.html", {"priceId": priceId}
-    )
+    return render(request, "precio_id.html", {"priceId": priceId})
+
 
 def get_precio_id_por_servicio_string(id):
     try:
@@ -199,7 +208,6 @@ def get_precio_id_por_servicio_string(id):
         redirect("../checkout/error")
         return None
     return price_id
-
 
 
 def get_servicios_por_especialista(request):
