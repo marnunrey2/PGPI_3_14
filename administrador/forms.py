@@ -42,11 +42,6 @@ class CitaServicioAddForm(forms.Form):
         input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
-    metodo_pago = forms.ChoiceField(
-        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
-        widget=forms.RadioSelect(attrs={"class": "payment-method"}, ),
-        initial="EF",
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -114,11 +109,6 @@ class CitaEspecialistaAddForm(forms.Form):
         input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
-    metodo_pago = forms.ChoiceField(
-        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
-        widget=forms.RadioSelect(attrs={"class": "payment-method"}, ),
-        initial="EF",
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
