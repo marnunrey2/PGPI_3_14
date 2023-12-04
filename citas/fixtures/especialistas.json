@@ -1,11 +1,18 @@
 [
-    {
-      "model": "citas.especialista",
-      "fields": {
-        "nombre": "sammy",
-        "imagen": "especialistas/masseuse.jpg",
-        "especialidades": [1]
-      }
+  {
+    "model": "citas.especialista",
+    "fields": {
+      "nombre": "Lydia Lozano",
+      "imagen": "especialistas/masseuse.jpg",
+      "especialidades": [1,2]
     }
+  },
+  {
+    "model": "citas.especialista",
+    "fields": {
+      "nombre": "Charlie XCX",
+      "imagen": "especialistas/masseuse.jpg",
+      "especialidades": [3,4]
+    }
+  }
 ]
-  
