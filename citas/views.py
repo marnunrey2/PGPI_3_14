@@ -1,3 +1,5 @@
+import base64
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
 import stripe
@@ -13,6 +15,11 @@ from datetime import datetime, timedelta
 from .utils import calculate_available_hours
 from datetime import datetime
 from django.http import HttpResponseForbidden
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from dotenv import load_dotenv
+import os
+
 from payments import views
 from django.views.generic.base import TemplateView
 
@@ -49,6 +56,23 @@ class CitaServicioAddView(APIView):
                 pagado=False,
                 metodo_pago=metodo_pago
             )
+            if usuario is not None:
+                email = usuario.email
+            mailMessage = Mail(
+                from_email='aestheticarepgpi@gmail.com',
+                to_emails=email,
+                )
+            idEncode = f'salt{cita.pk}'
+            encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
+            urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
+            mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
+                                                 "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
+                                                 }
+            mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
+            load_dotenv()
+            print(os.getenv("SENDGRID_API_KEY"))
+            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+            response = sg.send(mailMessage)
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
                 return render(request, "pay.html", {"priceId": priceId, "citaId": cita.id, "fecha": fecha, "hora": hora})
@@ -100,6 +124,23 @@ class CitaEspecialistaAddView(APIView):
                 pagado=False,
                 metodo_pago=metodo_pago
             )
+            if usuario is not None:
+                email = usuario.email
+            mailMessage = Mail(
+                from_email='aestheticarepgpi@gmail.com',
+                to_emails=email,
+                )
+            idEncode = f'salt{cita.pk}'
+            encoded = base64.b64encode(bytes(idEncode, encoding='utf-8')).decode('utf-8')
+            urlVerificar =f"{request.build_absolute_uri()}/{encoded}"
+            mailMessage.dynamic_template_data = {"urlVerificar":urlVerificar,
+                                                 "fecha":fecha, "hora":hora, "servicio":Servicio.objects.get(pk=servicio_id).nombre, "especialista":Especialista.objects.get(pk=especialista_id).nombre
+                                                 }
+            mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
+            load_dotenv()
+            print(os.getenv("SENDGRID_API_KEY"))
+            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+            response = sg.send(mailMessage)
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
                 return render(request, "pay.html",
@@ -123,27 +164,13 @@ class CitaEspecialistaAddView(APIView):
         )
 
 
-class ConsultaView(APIView):
-    def post(self, request):
-        nombre = request.POST.get("nombre", None)
-        email = request.POST.get("email", None)
-
-        if email:
-            invitado = Invitado.objects.filter(email=email)
-        else:
-            msg = "Rellene el formulario"
-            return render(request, "consulta_citas.html", {"msg": msg})
-
-        if invitado:
-            return render(request, "citas_invitado.html", {"invitado": invitado})
-        else:
-            # Manejar el caso de invitado no existente
-            msg = "No hay ninguna cita con ese nombre o email"
-            return render(request, "consulta_citas.html", {"msg": msg})
-
-    def get(self, request):
-        return render(request, "consulta_citas.html")
-
+def consulta_email(request,  **kwargs):
+    encoded = kwargs.get("encoded", 0)
+    email = request.POST.get("email", None)
+    decode =base64.b64decode(str(encoded)).decode('utf-8')
+    citaId =decode.replace("salt", "")
+    cita = Cita.objects.get(pk=citaId)
+    return render(request, "citas_invitado.html", {"cita": cita, "hash":encoded})
 
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")
