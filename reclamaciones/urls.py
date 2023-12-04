@@ -11,7 +11,7 @@ urlpatterns = [
         name="reclamaciones",
     ),
     path(
-        "reclamaciones/<int:cita_id>/add",
+        "reclamaciones/<str:cita_encode>/add",
         ReclamacionAddView.as_view(),
         name="reclamacion_add",
     ),
