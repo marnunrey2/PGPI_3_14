@@ -1,21 +1,38 @@
 [
-    {
-      "model": "citas.servicio",
-      "fields": {
-        "nombre": "Masaje",
-        "descripcion": "sammy was here",
-        "imagen": "servicios/masaje.jpg",  
-        "precioId": "price_1OId63EuWVOCbA5v9DPCOS1e"
-      }
-    },
-    {
-        "model": "citas.servicio",
-        "fields": {
-          "nombre": "Acupuntura",
-          "descripcion": "sammy was here",
-          "imagen": "servicios/acupuntura.jpg",  
-          "precioId": "price_1OG1ZJEuWVOCbA5vnPPiMhSm"
-        }
-      }
-  ]
-  
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Masaje",
+      "descripcion": "sammy was here",
+      "imagen": "servicios/masaje.jpg",  
+      "precioId": "price_1OId63EuWVOCbA5v9DPCOS1e"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Acupuntura",
+      "descripcion": "sammy was here",
+      "imagen": "servicios/acupuntura.jpg",  
+      "precioId": "price_1OG1ZJEuWVOCbA5vnPPiMhSm"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Peinado",
+      "descripcion": "sammy was here",
+      "imagen": "servicios/depilacion-piernas.jpg",  
+      "precioId": "price_1OJNqKEuWVOCbA5v4eDnqSNQ"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Manicura de pies",
+      "descripcion": "sammy was here",
+      "imagen": "servicios/depilacion-piernas-completas.jpg",  
+      "precioId": "price_1OJNrtEuWVOCbA5vZjYRP1pu"
+    }
+  }
+]

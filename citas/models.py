@@ -3,7 +3,7 @@ from django.db import models
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
 
@@ -52,8 +52,8 @@ class Cita(models.Model):
     )
 
     class MetodoPago(models.TextChoices):
-        EFECTIVO = 'EF', 'Efectivo'
-        TARJETA = 'TA', 'Tarjeta'
+        EFECTIVO = "EF", "Efectivo"
+        TARJETA = "TA", "Tarjeta"
 
     servicio = models.ForeignKey("Servicio", on_delete=models.CASCADE)
     especialista = models.ForeignKey("Especialista", on_delete=models.CASCADE)
@@ -97,11 +97,17 @@ class Cita(models.Model):
         super().save(*args, **kwargs)
 
 
-@receiver(post_delete, sender=Cita)
-def delete_invitado_if_no_citas(sender, instance, **kwargs):
-    # Check if the deleted Cita's Invitado has no more citas
-    if instance.invitado and instance.invitado.citas.count() == 0:
-        instance.invitado.delete()
+def __str__(self):
+    return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre} el {self.fecha}"
 
-    def __str__(self):
-        return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre} el {self.fecha}"
+
+@receiver(pre_delete, sender=Cita)
+def delete_invitado_if_last_cita(sender, instance, **kwargs):
+    # Check if the deleted instance is the last Cita associated with the Invitado
+    invitado = instance.invitado
+    if invitado and invitado.citas.count() == 1:
+        # Disconnect the signal temporarily to avoid recursion
+        pre_delete.disconnect(delete_invitado_if_last_cita, sender=Cita)
+        invitado.delete()
+        # Reconnect the signal after deletion
+        pre_delete.connect(delete_invitado_if_last_cita, sender=Cita)

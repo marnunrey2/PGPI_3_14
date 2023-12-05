@@ -147,6 +147,7 @@ class AdminCitaServicioAdd(APIView):
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
+                pagado=False,
             )
             return redirect("/admin_view/citas")
         else:
@@ -179,6 +180,7 @@ class AdminCitaEspecialistaAdd(APIView):
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
+                pagado=False,
             )
             return redirect("/admin_view/citas")
         else:
