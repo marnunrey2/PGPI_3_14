@@ -1,6 +1,7 @@
+import base64
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
-from citas.models import Servicio, Especialista
+from citas.models import Cita, Servicio, Especialista
 from django.contrib import messages
 from authentication.forms import (
     UpdateProfileForm,
@@ -10,7 +11,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 
 def HomeView(request):
-    return render(request, "home/home.html")
+    hashes = []
+    usuario = request.user if request.user.is_authenticated else None
+    if usuario is not None:
+        for cita in Cita.objects.filter(usuario=usuario):
+            hashes.append(base64.b64encode(bytes(f'salt{cita.pk}', encoding='utf-8')).decode('utf-8'))
+    datosCombinados = zip(hashes,  Cita.objects.filter(usuario=usuario))
+    return render(request, "home/home.html", {"datosCombinados":datosCombinados})
 
 
 def perfil(request):

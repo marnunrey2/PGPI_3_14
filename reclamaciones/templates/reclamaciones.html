@@ -15,6 +15,7 @@
             <th scope="col">Fecha</th>
             <th scope="col">Servicio</th>
             <th scope="col">Especialista</th>
+            <th scope="col">Fecha de la cita</th>
             <th scope="col">Motivo</th>
             <th scope="col">Eliminar reclamación</th>
         </tr>
@@ -25,6 +26,7 @@
                 <td>{{ reclamacion.fecha }}</td>
                 <td>{{ reclamacion.cita.servicio.nombre }}</td>
                 <td>{{ reclamacion.cita.especialista.nombre }}</td>
+                <td>{{ reclamacion.cita.fecha }}</td>
                 <td>
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ reclamacion.id }}" aria-expanded="false" aria-controls="collapse{{ reclamacion.id }}">
                         <span style="text-decoration: underline;">Ver</span>

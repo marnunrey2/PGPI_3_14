@@ -1,21 +1,56 @@
 [
-    {
-      "model": "citas.servicio",
-      "fields": {
-        "nombre": "Masaje",
-        "descripcion": "sammy was here",
-        "imagen": "servicios/masaje.jpg",  
-        "precioId": "price_1OId63EuWVOCbA5v9DPCOS1e"
-      }
-    },
-    {
-        "model": "citas.servicio",
-        "fields": {
-          "nombre": "Acupuntura",
-          "descripcion": "sammy was here",
-          "imagen": "servicios/acupuntura.jpg",  
-          "precioId": "price_1OG1ZJEuWVOCbA5vnPPiMhSm"
-        }
-      }
-  ]
-  
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Masaje",
+      "descripcion": "Tenemos a los mejores profesionales para que te relajes y disfrutes de un buen masaje",
+      "imagen": "servicios/masaje.png",  
+      "precioId": "price_1OId63EuWVOCbA5v9DPCOS1e"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Acupuntura",
+      "descripcion": "Una de las novedades del momento, ven a probarlo",
+      "imagen": "servicios/acupuntura.png",  
+      "precioId": "price_1OK0nFEuWVOCbA5veHHsooKR"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Peinado",
+      "descripcion": "Cualquier peinado que quieras, lo hacemos",
+      "imagen": "servicios/peinado.png",  
+      "precioId": "price_1OJNqKEuWVOCbA5v4eDnqSNQ"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Manicura",
+      "descripcion": "Desde pintartes las uñas hasta hacerte una permanente, lo que quieras",
+      "imagen": "servicios/manicura.png",  
+      "precioId": "price_1OJNrtEuWVOCbA5vZjYRP1pu"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Maquillaje",
+      "descripcion": "Tratamientos como el microblading, extensiones de pestañas, etc.",
+      "imagen": "servicios/maquillaje.png",  
+      "precioId": "price_1OK0hPEuWVOCbA5vyjXlc39P"
+    }
+  },
+  {
+    "model": "citas.servicio",
+    "fields": {
+      "nombre": "Depilación",
+      "descripcion": "Depilación con cera, láser, etc.",
+      "imagen": "servicios/depilación.png",  
+      "precioId": "price_1OK0pIEuWVOCbA5vVAl6Rlah"
+    }
+  }
+]
