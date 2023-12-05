@@ -3,7 +3,7 @@
     "model": "citas.especialista",
     "fields": {
       "nombre": "Dr. Lydia Lozano",
-      "imagen": "especialistas/mujer.png",
+      "imagen": "especialistas/fem1.png",
       "especialidades": [1,2]
     }
   },
@@ -11,7 +11,7 @@
     "model": "citas.especialista",
     "fields": {
       "nombre": "Carmen Martínez-Bordiú",
-      "imagen": "especialistas/mujer.png",
+      "imagen": "especialistas/fem2.png",
       "especialidades": [4,5]
     }
   },
@@ -19,7 +19,7 @@
     "model": "citas.especialista",
     "fields": {
       "nombre": "Dr. Pablo Perez",
-      "imagen": "especialistas/hombre.png",
+      "imagen": "especialistas/mal1.png",
       "especialidades": [2,6]
     }
   },
@@ -27,7 +27,7 @@
     "model": "citas.especialista",
     "fields": {
       "nombre": "Carlos Herrera",
-      "imagen": "especialistas/hombre.png",
+      "imagen": "especialistas/mal2.png",
       "especialidades": [3,5]
     }
   }
