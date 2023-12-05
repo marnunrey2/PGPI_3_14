@@ -42,8 +42,32 @@
                 <label for="{{ form.hora.id_for_label }}" class="form-label mt-4">{{ form.hora.label }}</label>
                 {{ form.hora }}
             </div>
+            <br>
+            <div id="precio-display">
+                Precio: <span id="precio-span">{{ form.precio.value }}</span>
+            </div>
+            <br>
             <button class="btn btn-primary" type="submit">Crear cita</button>
         </form>
     </div>
 </div>
+    <script>
+    const serviceSelect = document.querySelector('.service-select'); // Selector del menú desplegable de servicio
+    const precioSpan = document.getElementById('precio-span'); // Selector del span de precio
+    const paymentMethodRadios = document.querySelectorAll('.payment-method'); // Selector de los botones de radio de método de pago
+    const paymentButton = document.querySelector('#submit'); // Selector del botón de envío
+
+    // Agregar el evento change al menú desplegable de servicio
+    serviceSelect.addEventListener('change', async (e) => {
+        const selectedServiceId = e.target.value;
+        try {
+            const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
+            const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
+            const data = await response.text();
+            precioSpan.textContent = data.trim();
+        } catch (error) {
+            console.error('Error fetching price:', error);
+        }
+    });
+    </script>
 {% endblock %}
