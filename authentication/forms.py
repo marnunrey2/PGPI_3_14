@@ -22,6 +22,12 @@ class UpdateProfileForm(UserChangeForm):
             "email",
         )
 
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if not email:
+            raise forms.ValidationError("Debe ingresar un correo electrónico")
+        return email
+
 
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)

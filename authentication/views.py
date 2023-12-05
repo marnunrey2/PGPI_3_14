@@ -93,6 +93,7 @@ class DeleteView(APIView):
         if request.user.is_authenticated:
             userToDelete = User.objects.filter(id=request.user.id)
             userToDelete.delete()
+            logout(request)
             request.session.flush()
             success_message = "Su cuenta ha sido eliminada correctamente"
             return render(
