@@ -1,6 +1,10 @@
 import base64
+
+import stripe
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
+
+from PGPI_3_14 import settings
 from citas.models import Cita, Servicio, Especialista
 from django.contrib import messages
 from authentication.forms import (
@@ -8,6 +12,8 @@ from authentication.forms import (
 )
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404, redirect, render
+
+from citas.views import format_price
 
 
 def HomeView(request):
@@ -26,6 +32,10 @@ def perfil(request):
 
 def servicios(request):
     servicios = Servicio.objects.all()
+    for servicio in servicios:
+        print(servicio)
+        servicio.precio = get_precio_por_servicio(servicio.id)
+        print(servicio.precio)
     context = {"servicios": servicios}
     return render(request, "home/servicios.html", context)
 
@@ -65,3 +75,14 @@ def update_password(request):
                 messages.error(request, "Las contraseñas no coinciden.")
 
     return render(request, "home/perfil.html")
+
+def get_precio_por_servicio(id):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    try:
+        priceId = Servicio.objects.filter(id=id).get().precioId
+        price = stripe.Price.retrieve(priceId)
+        price_amount = price.get("unit_amount")
+        formated_price = format_price(price_amount)
+    except Exception as e:
+        formated_price = "No disponible"
+    return formated_price
