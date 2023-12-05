@@ -23,6 +23,7 @@ class CitaServicioAddForm(forms.Form):
             attrs={
                 "hx-get": "/especialistas_opciones/",
                 "hx-target": "#id_especialista",
+                "class": "service-select",
             }
         ),
     )
@@ -95,6 +96,12 @@ class CitaEspecialistaAddForm(forms.Form):
     )
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.none(),
+        widget=forms.Select(
+            attrs={
+                "hx-target": "#id_especialista",
+                "class": "service-select",
+            }
+        ),
     )
     fecha = forms.DateField(
         widget=forms.DateInput(

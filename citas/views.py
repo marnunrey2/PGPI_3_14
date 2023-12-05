@@ -87,7 +87,7 @@ class CitaServicioAddView(APIView):
                     },
                 )
             else:
-                return render(request, "home/home.html", {"cita": cita})
+                return render(request, "home/home.html", {"cita": cita, "success_message": "Su cita ha sido reservada correctamente"})
 
         else:
             msg = "Error en el formulario"
