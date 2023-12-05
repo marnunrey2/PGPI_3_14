@@ -5,12 +5,21 @@
 {% block title %}Perfil{% endblock %}
 
 {% block extrahead %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
 
 {% block content %}
-    <section class="content" style="text-align: center;">
-        <h1>Bienvenido a tu perfil, {{user.username}}!</h1>
+{% load static %}
+{% csrf_token %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}" role="alert">
+        {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    <section class="content mt-3" style="text-align: center;">
+        <h1>Bienvenido a tu perfil, {{user.first_name}}!</h1>
 
         <div class="form-group">
             <label for="first_name">Nombre</label>
@@ -25,19 +34,17 @@
             <input type="text" class="form-control" id="email" name="email" placeholder="{{user.email}}" readonly>
         </div>
 
-        <div class="text-center">
+        <div class="text-center mt-3">
             <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#datosModal">Modificar datos</a>
         </div>
 
-        <div class="text-center">
+        <div class="text-center mt-3">
             <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">Cambiar contraseña</a>
         </div>
 
-        <div class="text-center">
-            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#creditCardModal">Modificar tarjeta de crédito</a>
-        </div>
+        
 
-        <div class="text-center">
+        <div class="text-center mt-3">
             <a class="btn btn-danger" id="deleteAccountBtn">Borrar cuenta</a>
         </div>
 
@@ -54,16 +61,17 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="first_name" class="form-label">Nombre:</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name">
+                                <input type="text" class="form-control" id="first_name" name="first_name"value="{{user.first_name}}">
                             </div>
                             <div class="mb-3">
                                 <label for="last_name" class="form-label">Apellidos:</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name">
+                                <input type="text" class="form-control" id="last_name" name="last_name"value="{{user.last_name}}">
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email">
+                                <input type="email" class="form-control" id="email" name="email" value="{{user.email}}">
                             </div>
+
                             <button type="submit" class="btn btn-primary" id="enablepassword">Guardar cambios</button>
                         </form>
                     </div>
@@ -78,8 +86,9 @@
                         <h5 class="modal-title" id="passwordModal">Modificar contraseña</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+
                     <div class="modal-body">
-                        <form method="post">
+                        <form method="post" action = "/perfil/update_password">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="new_password1" class="form-label">Nueva Contraseña:</label>
@@ -96,34 +105,7 @@
             </div>
         </div>
         
-        <div class="modal fade" id="creditCardModal" tabindex="-1" role="dialog" aria-labelledby="creditCardModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="creditCardModalLabel">Modificar tarjeta de crédito</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="cardNumber" class="form-label">Número de tarjeta:</label>
-                                <input type="number" class="form-control" id="cardNumber" name="card_number">
-                            </div>
-                            <div class="mb-3">
-                                <label for="cardDate" class="form-label">Fecha de Caducidad:</label>
-                                <input type="date" class="form-control" id="cardDate" name="card_date">
-                            </div>
-                            <div class="mb-3">
-                                <label for="securityNumber" class="form-label">Número de seguridad:</label>
-                                <input type="number" class="form-control" id="securityNumber" name="security_number">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Guardar tarjeta</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
         
         <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -154,10 +136,13 @@
     
         document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
             // User has confirmed, proceed with account deletion
+
             window.location.href = "/delete/";
+
         });
     </script>
 
+   
 {% endblock %}
 
 {% block extrabody %}{% endblock %}

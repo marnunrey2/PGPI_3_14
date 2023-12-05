@@ -41,9 +41,8 @@ def update_profile(request):
         form = UpdateProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-
         else:
-            messages.error(request, "Error al actualizar perfil.")
+            messages.error(request, form.errors)
 
     else:
         form = UpdateProfileForm(instance=request.user)
