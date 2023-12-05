@@ -2,17 +2,33 @@
   {
     "model": "citas.especialista",
     "fields": {
-      "nombre": "Lydia Lozano",
-      "imagen": "especialistas/masseuse.jpg",
+      "nombre": "Dr. Lydia Lozano",
+      "imagen": "especialistas/mujer.png",
       "especialidades": [1,2]
     }
   },
   {
     "model": "citas.especialista",
     "fields": {
-      "nombre": "Charlie XCX",
-      "imagen": "especialistas/masseuse.jpg",
-      "especialidades": [3,4]
+      "nombre": "Carmen Martínez-Bordiú",
+      "imagen": "especialistas/mujer.png",
+      "especialidades": [4,5]
+    }
+  },
+  {
+    "model": "citas.especialista",
+    "fields": {
+      "nombre": "Dr. Pablo Perez",
+      "imagen": "especialistas/hombre.png",
+      "especialidades": [2,6]
+    }
+  },
+  {
+    "model": "citas.especialista",
+    "fields": {
+      "nombre": "Carlos Herrera",
+      "imagen": "especialistas/hombre.png",
+      "especialidades": [3,5]
     }
   }
 ]
