@@ -5,49 +5,82 @@
 {% block title %}Perfil{% endblock %}
 
 {% block extrahead %}
+<style>
+    body {
+        background-color: rgba(255, 255, 255);
+    }
+    .login-container-usuario {
+        margin: 0 auto;
+        padding: 40px 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: 60%;
+        height: auto;
+        overflow: auto;
+    }
+    .login-container-usuario h1{
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .form {
+        flex-direction: column;
+        align-items: center;
+        width: 30 px;
+        margin-bottom: 20px;
+    }
+    .login-container-usuario a {
+        display: block;
+        flex-direction: column;
+        align-items: center;
+        width: 40%;
+        margin: 5px auto;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-{% load static %}
-{% csrf_token %}
+
+<div class="login-container-usuario">
+
+    {% csrf_token %}
     {% if messages %}
-    {% for message in messages %}
-        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}" role="alert">
-        {{ message }}
-        </div>
-    {% endfor %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}" role="alert">
+            {{ message }}
+            </div>
+        {% endfor %}
     {% endif %}
 
-    <section class="content mt-3" style="text-align: center;">
-        <h1>Bienvenido a tu perfil, {{user.first_name}}!</h1>
-
+    <h1>Bienvenido a tu perfil, {{user.first_name}}!</h1>
+    <form>
         <div class="form-group">
-            <label for="first_name">Nombre</label>
-            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="{{user.first_name}}" readonly>
-        </div>
-        <div class="form-group">
-            <label for="last_name">Apellidos</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="{{user.last_name}}" readonly>
+            <fieldset disabled="">
+                <label for="first_name">Nombre</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="{{user.first_name}}">
+            </fieldset>
         </div>
         <div class="form-group">
-            <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" name="email" placeholder="{{user.email}}" readonly>
+            <fieldset disabled="">
+                <label for="last_name">Apellidos</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="{{user.last_name}}">
+            </fieldset>
         </div>
-
-        <div class="text-center mt-3">
-            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#datosModal">Modificar datos</a>
+        <div class="form-group">
+            <fieldset disabled="">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="{{user.email}}">
+            </fieldset>
         </div>
-
-        <div class="text-center mt-3">
-            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">Cambiar contraseña</a>
-        </div>
-
-        
-
-        <div class="text-center mt-3">
-            <a class="btn btn-danger" id="deleteAccountBtn">Borrar cuenta</a>
-        </div>
-
+    </form>
+    <br>
+    <a class="btn btn-secondary" data-bs-toggle="modal" href="#datosModal">Modificar datos</a>
+    <a class="btn btn-secondary" data-bs-toggle="modal" href="#passwordModal">Cambiar contraseña</a>
+    <a class="btn btn-primary" id="deleteAccountBtn">Borrar cuenta</a>
+    
+</div>
         
         <div class="modal fade" id="datosModal" tabindex="-1" role="dialog" aria-labelledby="datosModalLabel" aria-hidden="true">
             <div class="modal-dialog">

@@ -8,51 +8,68 @@
     <title>AesthetiCare Checkout</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
-      <link rel="stylesheet" href="https://bootswatch.com/5/minty/bootstrap.css">
+    <link rel="stylesheet" href="https://bootswatch.com/5/minty/bootstrap.css">
+    <!-- Custom CSS -->
+    <style>
+      body {
+          background-color: rgba(255, 255, 255);
+      }
+      .login-container {
+          max-width: 500px;
+          margin: 0 auto;
+          padding: 40px 20px;
+          background-color: rgba(255, 255, 255, 0.8);
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          margin-top: 100px;
+          margin-bottom: 100px;
+      }
+    </style>
   </head>
   <body>
-  <section class="section">
-    <div class="container">
-        <strong><p>Proceder al pago telemático de la cita para el: </p></strong>
-        <p>{{ fecha }}</p>
-        <p>{{ hora }}</p>
-      <button class="btn btn-primary" id="submit">Pagar ahora</button>
-    </div>
-  </section>
-  <script>
+    <section class="section">
+      <div class="container">
+        <div class="login-container">
+          <strong><p>Proceder al pago telemático de la cita para el: </p></strong>
+          <p>{{ fecha }}</p>
+          <p>{{ hora }}</p>
+          <button class="btn btn-primary" id="submit">Pagar ahora</button>
+        </div>
+      </div>
+    </section>
+    <script>
       // static/main.js
+      console.log("Sanity check!");
 
-console.log("Sanity check!");
+      // Get Stripe publishable key
+      fetch("utils/config/")
+      .then((result) => { return result.json(); })
+      .then((data) => {
+        // Initialize Stripe.js
+        const stripe = Stripe(data.publicKey);
 
-// Get Stripe publishable key
-fetch("utils/config/")
-.then((result) => { return result.json(); })
-.then((data) => {
-  // Initialize Stripe.js
-  const stripe = Stripe(data.publicKey);
-
-  // new
-  // Event handler
-  document.querySelector("#submit").addEventListener("click", () => {
-    // Get Checkout Session ID
-      const priceId = "{{ priceId }}";
-      const citaId = "{{ citaId }}";
-    fetch(`utils/create-custom-checkout-session/${priceId}/${citaId}`) //This is an example. Change this to utils/create-custom-checkout-session/"id" for production
-  .then((result) => {
-    if (!result.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return result.json();
-  })
-  .then((data) => {
-    // Redirect to Stripe Checkout
-    return stripe.redirectToCheckout({ sessionId: data.sessionId });
-  })
-  .catch((error) => {
-    console.error('Fetch error:', error);
-  });
-  });
-});
-  </script>
+        // new
+        // Event handler
+        document.querySelector("#submit").addEventListener("click", () => {
+          // Get Checkout Session ID
+            const priceId = "{{ priceId }}";
+            const citaId = "{{ citaId }}";
+          fetch(`utils/create-custom-checkout-session/${priceId}/${citaId}`) //This is an example. Change this to utils/create-custom-checkout-session/"id" for production
+        .then((result) => {
+          if (!result.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return result.json();
+        })
+        .then((data) => {
+          // Redirect to Stripe Checkout
+          return stripe.redirectToCheckout({ sessionId: data.sessionId });
+        })
+        .catch((error) => {
+          console.error('Fetch error:', error);
+        });
+        });
+      });
+    </script>
   </body>
 </html>

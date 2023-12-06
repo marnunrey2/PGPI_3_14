@@ -1,13 +1,32 @@
 {% extends "home/base.html" %}
 {% load i18n static %}
 {% load bootstrap_icons %}
-{% block title %}Home{% endblock %}
+
+{% block title %}Cita{% endblock %}
 
 {% block extrahead %}
-<!-- Custom CSS -->
-<link rel="stylesheet" href="{% static "home/home.css" %}">
 <!-- W3 CSS -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+    body {
+        background-color: rgba(255, 255, 255);
+    }
+    .login-container-usuario {
+        margin: 0 auto;
+        padding: 40px 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        width: auto;
+        height: auto;
+    }
+    
+    .login-container-usuario h3, p {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -18,34 +37,65 @@
             <li class="info">{{ message }}</li>
         </ul>
         {% endif %}
+        {% if success_message %}
+        <div class="mt-3">
+            <div class="alert alert-success" role="alert">
+                {{ success_message }}
+            </div>
+        </div>
+        {% endif %}
     </section>
     
-<table class="table">
-    <thead>
-        <tr class="table-secondary">
-            <th scope="col">Fecha</th>
-            <th scope="col">Hora</th>
-            <th scope="col">Servicio</th>
-            <th scope="col">Especialista</th>
-            <th scope="col">Poner reclamación</th>
-            <th scope="col">Eliminar cita</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">{{ cita.fecha }}</th>
-            <td>{{ cita.hora }}</td>
-            <td>{{ cita.servicio.nombre }}</td>
-            <td>{{ cita.especialista.nombre }}</td>
-            <td class="text-center align-middle">
-                <a href="/reclamaciones/{{hash}}/add" class="d-flex justify-content-center align-items-center h-100">
-                    {% bs_icon 'plus-circle' %}
-                </a>
-            </td>
-            <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
-        </tr>
-    </tbody>
-</table>
+    <div class="container">
+        <div class="login-container-usuario">
+            <h3><strong>Aquí puede ver su cita</strong></h3>
+            <table class="table">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Servicio</th>
+                        <th scope="col">Especialista</th>
+                        <th scope="col">Método de pago</th>
+                        <th scope="col">Pagado</th>
+                        <th scope="col">Poner reclamación</th>
+                        <th scope="col">Eliminar cita</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hash, cita in datosCombinados %}
+                    <tr>
+                        <th scope="row">{{ cita.fecha }}</th>
+                        <td>{{ cita.hora }}</td>
+                        <td>{{ cita.servicio.nombre }}</td>
+                        <td>{{ cita.especialista.nombre }}</td>
+                        <td>
+                            {% if cita.metodo_pago == "TA" %}
+                                Tarjeta
+                            {% else %}
+                                Efectivo
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if cita.pagado %}
+                                <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
+                            {% else %}
+                                <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center align-middle">
+                            <a href="/reclamaciones/{{hash}}/add" class="d-flex justify-content-center align-items-center h-100">
+                                {% bs_icon 'plus-circle' %}
+                            </a>
+                        </td>
+                        <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
 {% endblock %}
 
