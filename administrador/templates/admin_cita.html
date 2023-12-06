@@ -84,7 +84,7 @@
                     <th scope="col">Pagado</th>
                     <th scope="col">Checksum</th>
                     <th scope="col">Poner reclamación</th>
-                    <th scope="col">Eliminar cita</th>
+                    <th scope="col" style="text-align: center;">Eliminar cita</th>
                 </tr>
             </thead>
             <tbody>
@@ -133,7 +133,7 @@
                         </a>
                     </td>
 
-                    <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                    <td style="text-align: center;"><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

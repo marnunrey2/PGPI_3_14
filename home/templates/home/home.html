@@ -33,6 +33,13 @@
         width: auto;
         height: auto;
     }
+    .login-container-usuario h3, p {
+        text-align: center;
+        margin: 30 px;
+    }
+    .boton {
+        text-align: right;
+    }
 </style>
 {% endblock %}
 
@@ -68,12 +75,14 @@
         </div>
     </div>
 
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     
 <div class="container">
     <div class="login-container-usuario">
-        <h3 style="margin: 30 px"><strong>Aquí puede ver sus citas</strong></h3>
-        <a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin-top: 10px; margin-bottom: 30px;">Reservar cita</a>
+        <h3><strong>Aquí puede ver sus citas</strong></h3>
+        <div class="boton">
+            <a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin-top: 10px; margin-bottom: 30px;">Reservar cita</a>
+        </div>
         {% if user.citas.exists %}
             <table class="table">
                 <thead>
@@ -83,9 +92,9 @@
                         <th scope="col">Servicio</th>
                         <th scope="col">Especialista</th>
                         <th scope="col">Método de pago</th>
-                        <th scope="col">Pagado</th>
-                        <th scope="col">Poner reclamación</th>
-                        <th scope="col">Eliminar cita</th>
+                        <th scope="col" style="text-align: center;">Pagado</th>
+                        <th scope="col" style="text-align: center;">Poner reclamación</th>
+                        <th scope="col" style="text-align: center;">Eliminar cita</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,20 +112,20 @@
                                 Efectivo
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="text-align: center;">
                             {% if cita.pagado %}
                                 <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
                             {% else %}
                                 <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
                             {% endif %}
                         </td>
-                        <td class="text-center align-middle">
+                        <td style="text-align: center;">
                             <a href="/reclamaciones/{{hash}}/add" class="d-flex justify-content-center align-items-center h-100">
                                 {% bs_icon 'plus-circle' %}
                             </a>
                         </td>
                         {% if user.is_authenticated %}
-                        <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                        <td style="text-align: center;"><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                         {% endif %}
                     </tr>
                     {% endfor %}
