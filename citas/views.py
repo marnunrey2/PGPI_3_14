@@ -87,7 +87,22 @@ class CitaServicioAddView(APIView):
                     },
                 )
             else:
-                return render(request, "home/home.html", {"cita": cita, "success_message": "Su cita ha sido reservada correctamente"})
+                hashes = []
+                for cita in Cita.objects.filter(usuario=usuario):
+                    hashes.append(
+                        base64.b64encode(
+                            bytes(f"salt{cita.pk}", encoding="utf-8")
+                        ).decode("utf-8")
+                    )
+                datosCombinados = zip(hashes, Cita.objects.filter(usuario=usuario))
+                return render(
+                    request,
+                    "home/home.html",
+                    {
+                        "datosCombinados": datosCombinados,
+                        "success_message": "Su cita ha sido reservada correctamente",
+                    },
+                )
 
         else:
             msg = "Error en el formulario"
@@ -170,7 +185,22 @@ class CitaEspecialistaAddView(APIView):
                     },
                 )
             else:
-                return render(request, "home/home.html", {"cita": cita})
+                hashes = []
+                for cita in Cita.objects.filter(usuario=usuario):
+                    hashes.append(
+                        base64.b64encode(
+                            bytes(f"salt{cita.pk}", encoding="utf-8")
+                        ).decode("utf-8")
+                    )
+                datosCombinados = zip(hashes, Cita.objects.filter(usuario=usuario))
+                return render(
+                    request,
+                    "home/home.html",
+                    {
+                        "datosCombinados": datosCombinados,
+                        "success_message": "Su cita ha sido reservada correctamente",
+                    },
+                )
 
         else:
             msg = "Error en el formulario"
