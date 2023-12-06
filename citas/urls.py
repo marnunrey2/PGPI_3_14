@@ -35,7 +35,7 @@ urlpatterns = [
     path('citas/success/', views.SuccessView.as_view(), name='success'),  # new
     path('citas/cancelled/', views.CancelledView.as_view(), name='cancelled'),
     path('citas/webhook/', views.stripe_webhook),
-    path("citas/<int:cita_id>/delete/", cita_delete, name="cita_delete"),
+    path("citas/<str:encoded>/delete/", cita_delete, name="cita_delete"),
     path(
         "citas/servicios/add",
         CitaServicioAddView.as_view(),

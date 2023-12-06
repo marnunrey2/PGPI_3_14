@@ -220,7 +220,6 @@ class CitaEspecialistaAddView(APIView):
 
 def consulta_email(request, **kwargs):
     encoded = kwargs.get("encoded", 0)
-    email = request.POST.get("email", None)
     decode = base64.b64decode(str(encoded)).decode("utf-8")
     citaId = decode.replace("salt", "")
     cita = Cita.objects.get(pk=citaId)
@@ -295,8 +294,10 @@ def get_horas_disponibles(request):
     return render(request, "horas_disponibles.html", {"horas": horas})
 
 
-def cita_delete(request, cita_id):
-    cita = get_object_or_404(Cita, pk=cita_id)
+def cita_delete(request, encoded):
+    decode = base64.b64decode(str(encoded)).decode("utf-8")
+    citaId = decode.replace("salt", "")
+    cita = get_object_or_404(Cita, pk=citaId)
 
     if request.user == cita.usuario:
         cita.delete()

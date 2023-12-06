@@ -125,7 +125,7 @@
                             </a>
                         </td>
                         {% if user.is_authenticated %}
-                        <td style="text-align: center;"><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                        <td style="text-align: center;"><a href="/citas/{{hash}}/delete">{% bs_icon 'trash' %}</a></td>
                         {% endif %}
                     </tr>
                     {% endfor %}
