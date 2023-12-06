@@ -42,9 +42,9 @@
                         <th scope="col">Servicio</th>
                         <th scope="col">Especialista</th>
                         <th scope="col">Método de pago</th>
-                        <th scope="col">Pagado</th>
-                        <th scope="col">Poner reclamación</th>
-                        <th scope="col">Eliminar cita</th>
+                        <th scope="col" style="text-align: center;">Pagado</th>
+                        <th scope="col" style="text-align: center;">Poner reclamación</th>
+                        <th scope="col" style="text-align: center;">Eliminar cita</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,7 +60,7 @@
                                 Efectivo
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="text-align: center;">
                             {% if cita.pagado %}
                                 <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
                             {% else %}
@@ -72,7 +72,7 @@
                                 {% bs_icon 'plus-circle' %}
                             </a>
                         </td>
-                        <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                        <td style="text-align: center;"><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                     </tr>
                 </tbody>
             </table>
