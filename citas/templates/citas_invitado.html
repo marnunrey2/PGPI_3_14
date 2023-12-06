@@ -30,21 +30,6 @@
 {% endblock %}
 
 {% block content %}
-
-    <section class="hero">
-        {% if message %}
-        <ul class="message">
-            <li class="info">{{ message }}</li>
-        </ul>
-        {% endif %}
-        {% if success_message %}
-        <div class="mt-3">
-            <div class="alert alert-success" role="alert">
-                {{ success_message }}
-            </div>
-        </div>
-        {% endif %}
-    </section>
     
     <div class="container">
         <div class="login-container-usuario">
@@ -63,7 +48,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for hash, cita in datosCombinados %}
                     <tr>
                         <th scope="row">{{ cita.fecha }}</th>
                         <td>{{ cita.hora }}</td>
@@ -90,7 +74,6 @@
                         </td>
                         <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                     </tr>
-                    {% endfor %}
                 </tbody>
             </table>
         </div>
