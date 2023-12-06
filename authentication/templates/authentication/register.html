@@ -30,10 +30,6 @@
     <form method="post">
         {% csrf_token %}
         {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-                <div class="form-errors">
-                    {{ form.errors }}
-                </div>
             {% if form.first_name.errors %}
                 <div class="form-errors">
                     <span>Nombre: </span>{{ form.first_name.errors.0 }}
