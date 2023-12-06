@@ -30,35 +30,24 @@
     <form method="post">
         {% csrf_token %}
         {% if form.errors %}
+            <div class="alert alert-danger">
             {% if form.first_name.errors %}
-                <div class="form-errors">
-                    <span>Nombre: </span>{{ form.first_name.errors.0 }}
-                </div>
+                <span>Nombre: </span>{{ form.first_name.errors.0 }}
             {% endif %}
             {% if form.last_name.errors %}
-                <div class="form-errors">
-                    <span>Apellidos: </span>{{ form.last_name.errors.0 }}
-                </div>
+                <span>Apellidos: </span>{{ form.last_name.errors.0 }}
             {% endif %}
             {% if form.email.errors %}
-                <div class="form-errors">
-                    <span>Correo: </span>{{ form.email.errors.0 }}
-                </div>
+                <span>Correo: </span>{{ form.email.errors.0 }}
             {% endif %}
             {% if form.phone_number.errors %}
-                <div class="form-errors">
-                    <span>Teléfono: </span>{{ form.phone_number.errors.0 }}
-                </div>
+                <span>Teléfono: </span>{{ form.phone_number.errors.0 }}
             {% endif %}
             {% if form.password1.errors %}
-                <div class="form-errors">
-                    <span>Contraseña: </span>{{ form.password1.errors.0 }}
-                </div>
+                <span>Contraseña: </span>{{ form.password1.errors.0 }}
             {% endif %}
             {% if form.password2.errors %}
-                <div class="form-errors">
-                    <span>Contraseña confirmada: </span>{{ form.password2.errors.0 }}
-                </div>
+                <span>Contraseña confirmada: </span>{{ form.password2.errors.0 }}
             {% endif %}
             </div>
         {% endif %}
