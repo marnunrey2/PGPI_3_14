@@ -5,20 +5,65 @@
 
 {% block extrahead %}
 <!-- Custom CSS -->
+<style>
+    body {
+        background-color: rgba(255, 255, 255);
+    }
+    .login-container-usuario {
+        margin: 0 auto;
+        padding: 40px 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: auto;
+        height: auto;
+    }
+    .login-container-usuario h3, p {
+        text-align: center;
+        margin: 30 px;
+    }
+    .boton {
+        text-align: right;
+        margin-top: 10px; 
+        margin-bottom: 30px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <br>
-<a class="btn btn-primary" href="/admin_view/especialistas/add">Añadir especialista</a>
-    <br>
-    {% if especialistas %}
+
+    <section class="hero">
+        {% if message %}
+        <ul class="message">
+            <li class="info">{{ message }}</li>
+        </ul>
+        {% endif %}
+        {% if success_message %}
+        <div class="mt-3">
+            <div class="alert alert-success" role="alert">
+                {{ success_message }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    
+<div class="container">
+    <div class="login-container-usuario">
+        <h3><strong>Especialistas ofrecidos</strong></h3>
+        <div class="boton">
+            <a class="btn btn-primary" href="/admin_view/especialistas/add">Añadir especialista</a>
+        </div>
+        {% if especialistas %}
         <table class="table">
             <thead>
                 <tr class="table-secondary">
                     <th scope="col">Nombre</th>
-                    <th scope="col">Imagen</th>
+                    <th scope="col" style="text-align: center;">Imagen</th>
                     <th scope="col">Especialidades</th>
-                    <th scope="col">Eliminar especialista</th>
+                    <th scope="col" style="text-align: center;">Eliminar especialista</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,9 +71,9 @@
                 <tr>
                     <td>{{ especialista.nombre }}</td>
                     {% if especialista.imagen %}
-                    <td>Sí</td> 
+                    <td style="text-align: center;">Sí</td> 
                     {% else %}
-                    <td>No tiene</td> 
+                    <td style="text-align: center;">No tiene</td> 
                     {% endif %}
                     <td>
                     {% for servicio in especialista.especialidades.all %}
@@ -36,14 +81,16 @@
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
                     </td>
-                    <td><a href="/especialistas/{{especialista.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                    <td style="text-align: center;"><a href="/especialistas/{{especialista.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    {% else %}
-        <p>No hay especialistas.</p>
-    {% endif %}
+        {% else %}
+            <p style="margin-top: 30px;">No hay especialistas.</p>
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}
 

@@ -5,61 +5,110 @@
 
 {% block extrahead %}
 <!-- Custom CSS -->
+<style>
+    body {
+        background-color: rgba(255, 255, 255);
+    }
+    .login-container-usuario {
+        margin: 0 auto;
+        padding: 40px 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: auto;
+        height: auto;
+    }
+    .login-container-usuario h3, p {
+        text-align: center;
+        margin: 30 px;
+    }
+    .boton {
+        text-align: right;
+        margin-top: 10px; 
+        margin-bottom: 30px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    {% if reclamaciones %}
-        <table class="table">
-    <thead>
-        <tr class="table-secondary">
-            <th scope="col">Usuario</th>
-            <th scope="col">Invitado</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Servicio</th>
-            <th scope="col">Especialista</th>
-            <th scope="col">Mensaje</th>
-            <th scope="col">Eliminar reclamación</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for reclamacion in reclamaciones %}
-            <tr>
-                {% if reclamacion.cita.usuario %}
-                <td>{{ reclamacion.cita.usuario.email }}</td> 
-                {% else %}
-                <td>No aplica</td> 
-                {% endif %}
-                {% if reclamacion.cita.invitado %}
-                <td>{{ reclamacion.cita.invitado.email }}</td> 
-                {% else %}
-                <td>No aplica</td> 
-                {% endif %}
-                <td>{{ reclamacion.fecha }}</td>
-                <td>{{ reclamacion.cita.servicio.nombre }}</td>
-                <td>{{ reclamacion.cita.especialista.nombre }}</td>
-                <td>
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ reclamacion.id }}" aria-expanded="false" aria-controls="collapse{{ reclamacion.id }}">
-                        <span style="text-decoration: underline;">Ver</span>
-                    </button>
-                </td>
-                <td><a href="/reclamaciones/{{reclamacion.id}}/delete">{% bs_icon 'trash' %}</a></td>
-            </tr>
-            <tr>
-                <td colspan="7">
-                    <div class="accordion-collapse collapse" id="collapse{{ reclamacion.id }}">
-                        <div class="accordion-body">
-                            <p>{{ reclamacion.mensaje }}</p>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
-    {% else %}
-        <p>No hay reclamaciones.</p>
-    {% endif %}
+
+    <section class="hero">
+        {% if message %}
+        <ul class="message">
+            <li class="info">{{ message }}</li>
+        </ul>
+        {% endif %}
+        {% if success_message %}
+        <div class="mt-3">
+            <div class="alert alert-success" role="alert">
+                {{ success_message }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    
+    
+<div class="container">
+    <div class="login-container-usuario">
+        <h3><strong>Reclamaciones obtenidas</strong></h3>
+        {% if reclamaciones %}
+        <table class="table">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Invitado</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Especialista</th>
+                    <th scope="col">Mensaje</th>
+                    <th scope="col">Eliminar reclamación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reclamacion in reclamaciones %}
+                <tr>
+                    {% if reclamacion.cita.usuario %}
+                    <td>{{ reclamacion.cita.usuario.email }}</td> 
+                    {% else %}
+                    <td>No aplica</td> 
+                    {% endif %}
+                    {% if reclamacion.cita.invitado %}
+                    <td>{{ reclamacion.cita.invitado.email }}</td> 
+                    {% else %}
+                    <td>No aplica</td> 
+                    {% endif %}
+                    <td>{{ reclamacion.fecha }}</td>
+                    <td>{{ reclamacion.cita.servicio.nombre }}</td>
+                    <td>{{ reclamacion.cita.especialista.nombre }}</td>
+                    <td>
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ reclamacion.id }}" aria-expanded="false" aria-controls="collapse{{ reclamacion.id }}">
+                            <span style="text-decoration: underline;">Ver</span>
+                        </button>
+                    </td>
+                    <td><a href="/reclamaciones/{{reclamacion.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <div class="accordion-collapse collapse" id="collapse{{ reclamacion.id }}">
+                            <div class="accordion-body">
+                                <p>{{ reclamacion.mensaje }}</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+            <p style="margin-top: 30px;">No hay reclamaciones.</p>
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}
 

@@ -3,37 +3,74 @@
 {% load bootstrap_icons %}
 {% block title %}Citas{% endblock %}
 
-{% block extrahead %}{% endblock %}
+{% block extrahead %}
+<!-- Custom CSS -->
+<style>
+    body {
+        background-color: rgba(255, 255, 255);
+    }
+    .login-container-usuario {
+        text-align: center;
+        margin: 0 auto;
+        padding: 40px 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: auto;
+        height: auto;
+    }
+    .login-container-usuario h3, p {
+        text-align: center;
+        margin: 30 px;
+    }
+    .boton {
+        text-align: right;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- Rest of your HTML content -->
 
-<script>
-    function displayAlert(checksum) {
-        alert(checksum); // Display the passed checksum value
-    }
-</script>
-<!-- Button trigger modal -->
-    <br>
-<a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal">Crear cita</a>
+    <section class="hero">
+        {% if message %}
+        <ul class="message">
+            <li class="info">{{ message }}</li>
+        </ul>
+        {% endif %}
+        {% if success_message %}
+        <div class="mt-3">
+            <div class="alert alert-success" role="alert">
+                {{ success_message }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
 
 <!-- Modal -->
-    <br>
-<div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="citaModalLabel">Crear Cita</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-footer">
-        <a href="{% url 'admin_cita_servicio_add' %}" class="btn btn-primary">Crear según servicio</a>        
-        <a href="{% url 'admin_cita_especialista_add' %}" class="btn btn-secondary">Crear según especialista</a>
-      </div>
+    <div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="citaModalLabel">Crear según</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'admin_cita_servicio_add' %}" class="btn btn-primary">Servicio</a>        
+                <a href="{% url 'admin_cita_especialista_add' %}" class="btn btn-secondary">Especialista</a>
+            </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-    {% if citas %}
+
+{% if citas %}
+<div class="container">
+    <div class="login-container-usuario">
+        <h3><strong>Citas reservadas</strong></h3>
+        <div class="boton">
+            <a class="btn btn-primary" data-bs-toggle="modal" href="#citaModal" style="margin-top: 10px; margin-bottom: 30px;">Crear cita</a>
+        </div>
         <table class="table">
             <thead>
                 <tr class="table-secondary">
@@ -58,49 +95,61 @@
                     {% else %}
                     <td>No aplica</td> 
                     {% endif %}
+
                     {% if cita.invitado %}
                     <td>{{ cita.invitado.email }}</td>
                     {% else %}
                     <td>No aplica</td> 
                     {% endif %}
+
                     <td>{{ cita.fecha }}</td>
                     <td>{{ cita.hora }}</td>
                     <td>{{ cita.servicio.nombre }}</td>
                     <td>{{ cita.especialista.nombre }}</td>
                     <td>
-                                {% if cita.metodo_pago == "TA" %}
-                                    Tarjeta
-                                {% else %}
-                                    Efectivo
-                                {% endif %}
-                            </td>
+                        {% if cita.metodo_pago == "TA" %}
+                            Tarjeta
+                        {% else %}
+                            Efectivo
+                        {% endif %}
+                    </td>
                     <td>
-                                {% if cita.pagado %}
-                                    <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
-                                {% else %}
-                                    <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
-                                {% endif %}
-                            </td>
+                        {% if cita.pagado %}
+                            <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
+                        {% else %}
+                            <span class="text-danger">{% bs_icon 'x-circle-fill' %}</span>
+                        {% endif %}
+                    </td>
+
                     {% if cita.check_pago %}
-    <!-- Use single quotes to encapsulate the value passed to displayAlert -->
-    <td><button class="btn btn-primary" onclick="displayAlert('{{ cita.check_pago }}')">Checksum</button></td>
-{% else %}
-    <td><a class="nav-link disabled" href="#">No checksum</a></td>
-{% endif %}
+                    <td><button class="btn btn-primary" onclick="displayAlert('{{ cita.check_pago }}')">Checksum</button></td>
+                    {% else %}
+                    <td><a class="nav-link disabled" href="#">No checksum</a></td>
+                    {% endif %}
+
                     <td class="text-center align-middle">
-                      <a href="/admin_view/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
-                          {% bs_icon 'plus-circle' %}
-                      </a>
-                  </td>
+                        <a href="/admin_view/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
+                            {% bs_icon 'plus-circle' %}
+                        </a>
+                    </td>
+
                     <td><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>No hay citas.</p>
+        <p style="margin-top: 30px;">No hay citas.</p>
     {% endif %}
+    </div>
+</div>
 
+
+<script>
+    function displayAlert(checksum) {
+        alert(checksum); // Display the passed checksum value
+    }
+</script>
 
 {% endblock %}
 
