@@ -18,6 +18,7 @@ from .views import (
     AdminReclamacionView,
     AdminReclamacionAddView,
     reclamacion_delete,
+    cerrar_reclamacion,
 )
 
 
@@ -54,6 +55,11 @@ urlpatterns = [
         "especialistas/<int:especialista_id>/delete/",
         especialista_delete,
         name="especialista_delete",
+    ),
+    path(
+        "reclamaciones/cerrar_reclamacion/<int:reclamacion_id>/",
+        cerrar_reclamacion,
+        name="cerrar_reclamacion",
     ),
     path(
         "admin_view/reclamaciones",

@@ -89,6 +89,19 @@ def reclamacion_delete(request, reclamacion_id):
         return HttpResponseForbidden()
 
 
+def cerrar_reclamacion(request, reclamacion_id):
+    reclamacion = get_object_or_404(Reclamacion, id=reclamacion_id)
+
+    if request.method == "POST":
+        if reclamacion.estado == "Abierto":
+            reclamacion.estado = "Cerrado"
+        elif reclamacion.estado == "Cerrado":
+            reclamacion.estado = "Abierto"
+        reclamacion.save()
+
+    return redirect("/admin_view/reclamaciones")
+
+
 class AdminUsuarioView(APIView):
     def get(self, request):
         if request.user.is_staff:
