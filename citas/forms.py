@@ -37,7 +37,9 @@ class CitaServicioAddForm(forms.Form):
     telefono = forms.CharField(max_length=20, required=False)
     metodo_pago = forms.ChoiceField(
         choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
-        widget=forms.RadioSelect(attrs={"class": "payment-method"},),
+        widget=forms.RadioSelect(
+            attrs={"class": "payment-method"},
+        ),
         initial="EF",
     )
 
@@ -100,7 +102,9 @@ class CitaEspecialistaAddForm(forms.Form):
     hora = forms.ChoiceField(choices=[])
     metodo_pago = forms.ChoiceField(
         choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
-        widget=forms.RadioSelect(attrs={"class": "payment-method"}, ),
+        widget=forms.RadioSelect(
+            attrs={"class": "payment-method"},
+        ),
         initial="EF",
     )
 

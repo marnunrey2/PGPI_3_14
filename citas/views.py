@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from citas.models import Servicio, Especialista, Invitado, Cita
 from .utils import calculate_available_hours
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
@@ -273,8 +273,10 @@ def get_precio_id_por_servicio(request):
 
 
 def get_estado_id_por_servicio(request):
+    servicio_id = request.GET.get("servicio")
+    if not servicio_id:  # Check if the 'servicio' ID is empty
+        return HttpResponse("Disponible")  # Return a default value
     try:
-        servicio_id = request.GET.get("servicio")
         servicio = Servicio.objects.get(id=servicio_id)
         estado_agotado = servicio.agotado
         estado_texto = "Agotado" if estado_agotado else "Disponible"
@@ -295,7 +297,10 @@ def get_precio_id_por_servicio_string(id):
 def get_servicios_por_especialista(request):
     especialista_id = request.GET.get("especialista")
     servicios = Servicio.objects.filter(especialistas=especialista_id)
-    return render(request, "servicios_opciones.html", {"servicios": servicios})
+    options = '<option value="">-----</option>'
+    for servicio in servicios:
+        options += f'<option value="{servicio.id}">{servicio.nombre}</option>'
+    return HttpResponse(options)
 
 
 def get_horas_disponibles(request):
