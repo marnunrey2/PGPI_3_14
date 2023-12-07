@@ -238,6 +238,17 @@ class AdminServicioAddView(APIView):
             return redirect("home:home")
 
 
+def editar_estado_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+
+    if request.method == "POST":
+        nuevo_estado = request.POST.get("nuevo_estado")
+        servicio.agotado = nuevo_estado == "True"
+        servicio.save()
+
+    return redirect("/admin_view/servicios")
+
+
 class AdminEspecialistaAddView(APIView):
     def post(self, request):
         form = EspecialistaAddForm(request.POST)

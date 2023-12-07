@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from citas.models import Servicio, Especialista, Invitado, Cita
 from .utils import calculate_available_hours
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
@@ -270,6 +270,17 @@ def get_precio_id_por_servicio(request):
     except Exception as e:
         priceId = "No disponible"
     return render(request, "precio_id.html", {"priceId": priceId})
+
+
+def get_estado_id_por_servicio(request):
+    try:
+        servicio_id = request.GET.get("servicio")
+        servicio = Servicio.objects.get(id=servicio_id)
+        estado_agotado = servicio.agotado
+        estado_texto = "Agotado" if estado_agotado else "Disponible"
+    except Servicio.DoesNotExist:
+        estado_texto = "Disponible"  # Set default value to "Disponible" if the service ID is not available
+    return HttpResponse(estado_texto)
 
 
 def get_precio_id_por_servicio_string(id):
