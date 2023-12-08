@@ -1,4 +1,5 @@
 import base64
+from django.utils import timezone
 import os
 from django.shortcuts import render, redirect, get_object_or_404
 from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
@@ -9,14 +10,11 @@ from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
 from citas.models import Servicio, Especialista, Invitado, Cita
 from .utils import calculate_available_hours
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
 import os
-
-from payments import views
-from django.views.generic.base import TemplateView
 
 
 class CitaServicioAddView(APIView):
@@ -218,6 +216,20 @@ class CitaEspecialistaAddView(APIView):
         )
 
 
+class CitasView(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            citas_pasadas = Cita.objects.filter(fecha__lt=timezone.now())
+            citas_futuras = Cita.objects.filter(fecha__gte=timezone.now())
+            return render(
+                request,
+                "citas.html",
+                {"citas_pasadas": citas_pasadas, "citas_futuras": citas_futuras},
+            )
+        else:
+            return redirect("/")
+
+
 def consulta_email(request, **kwargs):
     encoded = kwargs.get("encoded", 0)
     decode = base64.b64decode(str(encoded)).decode("utf-8")
@@ -310,14 +322,13 @@ def get_horas_disponibles(request):
     return render(request, "horas_disponibles.html", {"horas": horas})
 
 
-def cita_delete(request, encoded):
-    decode = base64.b64decode(str(encoded)).decode("utf-8")
-    citaId = decode.replace("salt", "")
-    cita = get_object_or_404(Cita, pk=citaId)
+# HACER UN DELETE PARA SOLO INVITADOS CON EL HASH, PARA LOS DEMAS USUARIOS YA ESTA HECHO
+def cita_delete(request, cita_id):
+    cita = get_object_or_404(Cita, pk=cita_id)
 
     if request.user == cita.usuario:
         cita.delete()
-        return redirect("/")
+        return redirect("/citas")
     elif request.user.is_staff:
         cita.delete()
         return redirect("/admin_view/citas")
