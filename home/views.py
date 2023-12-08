@@ -23,9 +23,7 @@ def perfil(request):
 def servicios(request):
     servicios = Servicio.objects.all()
     for servicio in servicios:
-        print(servicio)
         servicio.precio = get_precio_por_servicio(servicio.id)
-        print(servicio.precio)
     context = {"servicios": servicios}
     return render(request, "home/home.html", context)
 

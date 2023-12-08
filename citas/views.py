@@ -19,10 +19,10 @@ from django.views.generic.base import TemplateView
 
 
 class CitaServicioAddView(APIView):
-    def post(self, request):
-        form = CitaServicioAddForm(request.POST)
+    def post(self, request, servicio_id):
+        servicio = get_object_or_404(Servicio, id=servicio_id)
+        form = CitaServicioAddForm(request.POST, servicio=servicio, user=request.user)
         if form.is_valid():
-            servicio_id = form.cleaned_data["servicio"].id
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
@@ -108,9 +108,12 @@ class CitaServicioAddView(APIView):
             return render(request, "cita_servicio_add.html", {"form": form, "msg": msg})
 
     def get(self, request, servicio_id):
-        form = CitaServicioAddForm(user=request.user)
         servicio = get_object_or_404(Servicio, id=servicio_id)
-        print(servicio)
+        form = CitaServicioAddForm(
+            servicio=servicio,
+            user=request.user,
+            initial_especialista=request.POST.get("especialista"),
+        )
         return render(
             request,
             "cita_servicio_add.html",
