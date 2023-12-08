@@ -122,11 +122,13 @@ class CitaServicioAddView(APIView):
 
 
 class CitaEspecialistaAddView(APIView):
-    def post(self, request):
-        form = CitaEspecialistaAddForm(request.POST)
+    def post(self, request, especialista_id):
+        especialista = get_object_or_404(Especialista, id=especialista_id)
+        form = CitaEspecialistaAddForm(
+            request.POST, especialista=especialista, user=request.user
+        )
         if form.is_valid():
             servicio_id = form.cleaned_data["servicio"].id
-            especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
             metodo_pago = form.cleaned_data["metodo_pago"]
@@ -208,17 +210,17 @@ class CitaEspecialistaAddView(APIView):
 
         else:
             msg = "Error en el formulario"
-            print(form.errors)
             return render(
                 request, "cita_especialista_add.html", {"form": form, "msg": msg}
             )
 
-    def get(self, request):
-        form = CitaEspecialistaAddForm(user=request.user)
+    def get(self, request, especialista_id):
+        especialista = get_object_or_404(Especialista, id=especialista_id)
+        form = CitaEspecialistaAddForm(especialista=especialista, user=request.user)
         return render(
             request,
             "cita_especialista_add.html",
-            {"form": form},
+            {"form": form, "especialista": especialista},
         )
 
 

@@ -99,47 +99,45 @@
                 Precio: <span id="precio-span">{{ form.precio.value }}</span>
             </div>
             <br>
-            
-            
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Pagar en efectivo</button>
             </section>
-            </form>
-            </div>
-            </div>
-            <script>
-                // Add JavaScript to update the price display dynamically when the service selection changes
-                const serviceSelect = document.querySelector('.service-select');
-                const precioSpan = document.getElementById('precio-span');
-                const estadoAgotadoSpan = document.getElementById('estado-agotado-span');   
-                const formContainer = document.querySelector('.login-container form'); // Added this line             
-                var selectedPriceId = "";
+        </form>
+    </div>
+</div>
+<script>
+    // Add JavaScript to update the price display dynamically when the service selection changes
+    const serviceSelect = document.querySelector('.service-select');
+    const precioSpan = document.getElementById('precio-span');
+    const estadoAgotadoSpan = document.getElementById('estado-agotado-span');   
+    const formContainer = document.querySelector('.login-container form'); // Added this line             
+    var selectedPriceId = "";
 
-                serviceSelect.addEventListener('change', async (e) => {
-                    const selectedServiceId = e.target.value;
-                    try {
-                        const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
-                        const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
-                        const responseEstado = await fetch(`/estado_id_servicio/?servicio=${selectedServiceId}`);
-                        const data = await response.text(); // Retrieve response as text
-                        selectedPriceId = await responseId.text();
-                        precioSpan.textContent = data.trim(); // Set the text content of precioSpan
+    serviceSelect.addEventListener('change', async (e) => {
+        const selectedServiceId = e.target.value;
+        try {
+            const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
+            const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
+            const responseEstado = await fetch(`/estado_id_servicio/?servicio=${selectedServiceId}`);
+            const data = await response.text(); // Retrieve response as text
+            selectedPriceId = await responseId.text();
+            precioSpan.textContent = data.trim(); // Set the text content of precioSpan
 
-                        // Update the "Estado Agotado" based on the responseEstado value
-                        const estadoData = await responseEstado.text();
-                        const estadoText = estadoData.trim();
-                        estadoAgotadoSpan.textContent = `Estado: ${estadoText}`;
-                        estadoAgotadoSpan.style.color = estadoText === 'Agotado' ? 'red' : '';
-                        if (estadoText === 'Agotado') {
-                            disableForm();
-                        } else {
-                            enableForm();
-                        }
+            // Update the "Estado Agotado" based on the responseEstado value
+            const estadoData = await responseEstado.text();
+            const estadoText = estadoData.trim();
+            estadoAgotadoSpan.textContent = `Estado: ${estadoText}`;
+            estadoAgotadoSpan.style.color = estadoText === 'Agotado' ? 'red' : '';
+            if (estadoText === 'Agotado') {
+                disableForm();
+            } else {
+                enableForm();
+            }
 
-                    } catch (error) {
-                        console.error('Error fetching price:', error);
-                    }
-                });
+        } catch (error) {
+            console.error('Error fetching price:', error);
+        }
+    });
     
 
      function updateButtonText() {

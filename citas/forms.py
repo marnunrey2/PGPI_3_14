@@ -41,6 +41,7 @@ class CitaServicioAddForm(forms.Form):
 
         super().__init__(*args, **kwargs)
         if servicio:
+            self.servicio = servicio
             self.fields["especialista"].queryset = Especialista.objects.filter(
                 especialidades=servicio
             )
@@ -49,12 +50,6 @@ class CitaServicioAddForm(forms.Form):
             self.initial["especialista"] = initial_especialista
         else:
             self.initial["especialista"] = None
-
-        if servicio:
-            self.servicio = servicio
-            self.fields["especialista"].queryset = Especialista.objects.filter(
-                especialidades__id=servicio.id
-            )
 
         if "fecha" in self.data and "especialista" in self.data:
             fecha = self.data.get("fecha")
@@ -72,16 +67,6 @@ class CitaServicioAddForm(forms.Form):
 
 
 class CitaEspecialistaAddForm(forms.Form):
-    especialista = forms.ModelChoiceField(
-        queryset=Especialista.objects.all(),
-        widget=forms.Select(
-            attrs={
-                "hx-get": "/servicios_opciones/",
-                "hx-target": "#id_servicio",
-                "class": "especialista-select",
-            }
-        ),
-    )
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.none(),
         widget=forms.Select(
@@ -118,16 +103,29 @@ class CitaEspecialistaAddForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
-        super().__init__(*args, **kwargs)
+        especialista = kwargs.pop("especialista", None)
+        initial_servicio = kwargs.pop("initial_servicio", None)
 
-        if "especialista" in self.data:
-            especialista_id = int(self.data.get("especialista"))
+        super().__init__(*args, **kwargs)
+        if especialista:
+            self.especialista = especialista
+            especialista_id = especialista.id
             self.fields["servicio"].queryset = Servicio.objects.filter(
                 especialistas=especialista_id
             )
-        if "fecha" in self.data and "especialista" in self.data:
+
+        if initial_servicio is not None:
+            self.initial["servicio"] = initial_servicio
+        else:
+            self.initial["servicio"] = None
+
+        print("fecha" in self.data)
+        print(especialista)
+
+        if "fecha" in self.data and especialista:
             fecha = self.data.get("fecha")
-            especialista_id = int(self.data.get("especialista"))
+            especialista_id = especialista.id
+            print(especialista_id)
             available_hours = [
                 (hour, hour)
                 for hour in calculate_available_hours(fecha, especialista_id)

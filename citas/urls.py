@@ -50,7 +50,7 @@ urlpatterns = [
         name="cita_servicio_add",
     ),
     path(
-        "citas/especialistas/add",
+        "citas/especialistas/add/<int:especialista_id>",
         CitaEspecialistaAddView.as_view(),
         name="cita_especialista_add",
     ),
