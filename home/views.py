@@ -16,16 +16,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from citas.views import format_price
 
 
-def HomeView(request):
-    hashes = []
-    usuario = request.user if request.user.is_authenticated else None
-    if usuario is not None:
-        for cita in Cita.objects.filter(usuario=usuario):
-            hashes.append(base64.b64encode(bytes(f'salt{cita.pk}', encoding='utf-8')).decode('utf-8'))
-    datosCombinados = zip(hashes,  Cita.objects.filter(usuario=usuario))
-    return render(request, "home/home.html", {"datosCombinados":datosCombinados})
-
-
 def perfil(request):
     return render(request, "home/perfil.html")
 
@@ -37,7 +27,7 @@ def servicios(request):
         servicio.precio = get_precio_por_servicio(servicio.id)
         print(servicio.precio)
     context = {"servicios": servicios}
-    return render(request, "home/servicios.html", context)
+    return render(request, "home/home.html", context)
 
 
 def especialistas(request):
@@ -75,6 +65,7 @@ def update_password(request):
                 messages.error(request, "Las contraseñas no coinciden.")
 
     return render(request, "home/perfil.html")
+
 
 def get_precio_por_servicio(id):
     stripe.api_key = settings.STRIPE_SECRET_KEY

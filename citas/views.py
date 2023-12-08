@@ -7,7 +7,6 @@ from django.shortcuts import render, redirect
 from PGPI_3_14 import settings
 from rest_framework.views import APIView
 from citas.models import Especialista, Invitado, Cita, Servicio
-from citas.models import Servicio, Especialista, Invitado, Cita
 from .utils import calculate_available_hours
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from sendgrid import SendGridAPIClient
@@ -108,12 +107,14 @@ class CitaServicioAddView(APIView):
             msg = "Error en el formulario"
             return render(request, "cita_servicio_add.html", {"form": form, "msg": msg})
 
-    def get(self, request):
+    def get(self, request, servicio_id):
         form = CitaServicioAddForm(user=request.user)
+        servicio = get_object_or_404(Servicio, id=servicio_id)
+        print(servicio)
         return render(
             request,
             "cita_servicio_add.html",
-            {"form": form},
+            {"form": form, "servicio": servicio},
         )
 
 

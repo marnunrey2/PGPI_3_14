@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.urls import path
 from .views import (
-    HomeView,
     servicios,
     especialistas,
     perfil,
@@ -13,8 +12,7 @@ from django.views.generic import TemplateView
 app_name = "home"
 
 urlpatterns = [
-    path("", HomeView, name="home"),
-    path("servicios/", servicios, name="servicios"),
+    path("", servicios, name="servicios"),
     path("especialistas/", especialistas, name="especialistas"),
     path(
         "about/",
