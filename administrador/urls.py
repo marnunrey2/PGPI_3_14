@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import (
     AdminCitaView,
     AdminServicioView,
+    editar_estado_servicio,
     servicio_delete,
     especialista_delete,
     AdminEspecialistaView,
@@ -18,6 +19,7 @@ from .views import (
     AdminReclamacionView,
     AdminReclamacionAddView,
     reclamacion_delete,
+    cerrar_reclamacion,
 )
 
 
@@ -56,9 +58,19 @@ urlpatterns = [
         name="especialista_delete",
     ),
     path(
+        "reclamaciones/cerrar_reclamacion/<int:reclamacion_id>/",
+        cerrar_reclamacion,
+        name="cerrar_reclamacion",
+    ),
+    path(
         "admin_view/reclamaciones",
         AdminReclamacionView.as_view(),
         name="admin_reclamacion",
+    ),
+    path(
+        "admin_view/servicios/editar_estado_servicio/<int:servicio_id>/",
+        editar_estado_servicio,
+        name="editar_estado_servicio",
     ),
     path(
         "admin_view/reclamaciones/<int:cita_id>/add",

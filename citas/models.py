@@ -12,6 +12,7 @@ class Servicio(models.Model):
     descripcion = models.TextField()
     imagen = models.ImageField(upload_to="servicios", null=True, blank=True)
     precioId = models.TextField(default="")
+    agotado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre

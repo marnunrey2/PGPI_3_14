@@ -64,6 +64,8 @@
                     <th scope="col">Descripcion</th>
                     <th scope="col" style="text-align: center;">Imagen</th>
                     <th scope="col">PrecioID</th>
+                    <th scope="col">Agotado</th>
+
                     <th scope="col" style="text-align: center;">Eliminar servicio</th>
                 </tr>
             </thead>
@@ -78,7 +80,23 @@
                     <td style="text-align: center;">No tiene</td> 
                     {% endif %}
                     <td>{{ servicio.precioId }}</td>
+                    <!-- {% if servicio.agotado %}
+                    <td>Sí</td> 
+                    {% else %}
+                    <td>No</td> 
+                    {% endif %}           -->
+                    <td>
+                        <form method="post" action="{% url 'editar_estado_servicio' servicio.id %}">
+                            {% csrf_token %}
+                            <select name="nuevo_estado">
+                                <option value="True" {% if servicio.agotado %}selected{% endif %}>Sí</option>
+                                <option value="False" {% if not servicio.agotado %}selected{% endif %}>No</option>
+                            </select>
+                            <button type="submit">Guardar</button>
+                        </form>
+                    </td>
                     <td style="text-align: center;"><a href="/servicios/{{servicio.id}}/delete">{% bs_icon 'trash' %}</a></td>
+
                 </tr>
                 {% endfor %}
             </tbody>

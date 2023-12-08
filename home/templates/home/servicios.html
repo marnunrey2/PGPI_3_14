@@ -52,6 +52,9 @@
             </div>
             <div class="card-footer text-muted">
                 {{ servicio.precio }}
+                {% if servicio.agotado %}
+                    AGOTADO
+                {% endif %}
             </div>
         </div>
         

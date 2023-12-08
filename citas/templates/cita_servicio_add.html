@@ -60,6 +60,11 @@
                 <label for="servicio">Servicio: </label>
                 {{ form.servicio }}
             </div>
+            <br>
+            <div id="estado-agotado-span">
+                Estado: <span id="estado-agotado-span"></span>
+            </div>
+            <br>
             <div class="form-group">
                 <label for="especialista">Especialista: </label>
                 {{ form.especialista }}
@@ -95,30 +100,48 @@
                 Precio: <span id="precio-span">{{ form.precio.value }}</span>
             </div>
             <br>
+            
+            
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Pagar en efectivo</button>
             </section>
-        </form>
-    </div>
-</div>
-<script>
-    // Add JavaScript to update the price display dynamically when the service selection changes
-    const serviceSelect = document.querySelector('.service-select');
-    const precioSpan = document.getElementById('precio-span');
-    var selectedPriceId = "";
+            </form>
+            </div>
+            </div>
+            <script>
+                // Add JavaScript to update the price display dynamically when the service selection changes
+                const serviceSelect = document.querySelector('.service-select');
+                const precioSpan = document.getElementById('precio-span');
+                const estadoAgotadoSpan = document.getElementById('estado-agotado-span');   
+                const formContainer = document.querySelector('.login-container form'); // Added this line             
+                var selectedPriceId = "";
 
-    serviceSelect.addEventListener('change', async (e) => {
-    const selectedServiceId = e.target.value;
-    try {
-        const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
-        const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
-        const data = await response.text(); // Retrieve response as text
-        selectedPriceId = await responseId.text();
-        precioSpan.textContent = data.trim(); // Set the text content of precioSpan
-    } catch (error) {
-        console.error('Error fetching price:', error);
-    }
-});
+                serviceSelect.addEventListener('change', async (e) => {
+                    const selectedServiceId = e.target.value;
+                    try {
+                        const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
+                        const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
+                        const responseEstado = await fetch(`/estado_id_servicio/?servicio=${selectedServiceId}`);
+                        const data = await response.text(); // Retrieve response as text
+                        selectedPriceId = await responseId.text();
+                        precioSpan.textContent = data.trim(); // Set the text content of precioSpan
+
+                        // Update the "Estado Agotado" based on the responseEstado value
+                        const estadoData = await responseEstado.text();
+                        const estadoText = estadoData.trim();
+                        estadoAgotadoSpan.textContent = `Estado: ${estadoText}`;
+                        estadoAgotadoSpan.style.color = estadoText === 'Agotado' ? 'red' : '';
+                        if (estadoText === 'Agotado') {
+                            disableForm();
+                        } else {
+                            enableForm();
+                        }
+
+                    } catch (error) {
+                        console.error('Error fetching price:', error);
+                    }
+                });
+    
 
      function updateButtonText() {
         paymentMethodRadios.forEach(radio => {
@@ -132,6 +155,21 @@
             }
         });
     }
+    function disableForm() {
+        // Disable or hide form fields when the estado is Agotado
+        const formInputs = formContainer.querySelectorAll('input, select:not([name="servicio"])');
+        formInputs.forEach(input => {
+            input.disabled = true;
+        });
+    }
+
+    function enableForm() {
+        // Enable form fields when the estado is not Agotado
+        const formInputs = formContainer.querySelectorAll('input, select:not([name="servicio"])');
+        formInputs.forEach(input => {
+            input.disabled = false;
+        });
+    }
 
     // Get all radio buttons within the payment method group
     const paymentMethodRadios = document.querySelectorAll('.payment-method');
@@ -143,6 +181,32 @@
     paymentMethodRadios.forEach(radio => {
         radio.addEventListener('change', updateButtonText);
     });
+
+    // Event listener for form submission
+    document.getElementById('citaForm').addEventListener('submit', function (event) {
+        // Check if the form is disabled
+        if (formIsDisabled()) {
+            // Prevent the default form submission
+            event.preventDefault();
+            displayErrorMessage('Este servicio está agotado. Por favor, seleccione otro servicio.');
+        }
+    });
+
+    // Function to check if the form is disabled
+    function formIsDisabled() {
+        return Array.from(formContainer.querySelectorAll('input, select')).some(input => input.disabled);
+    }
+    function displayErrorMessage(message) {
+        const errorContainer = document.createElement('div');
+        errorContainer.textContent = message;
+        errorContainer.style.color = 'red';
+        formContainer.appendChild(errorContainer);
+        setTimeout(() => {
+            errorContainer.remove(); 
+        }, 3000); 
+    }
+    
+  
 
     // Call the function initially to set the button text based on the initial value
     updateButtonText();

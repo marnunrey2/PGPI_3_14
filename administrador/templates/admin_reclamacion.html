@@ -65,6 +65,8 @@
                     <th scope="col">Servicio</th>
                     <th scope="col">Especialista</th>
                     <th scope="col">Mensaje</th>
+                    <th scope="col">Estado</th>
+
                     <th scope="col" style="text-align: center;">Eliminar reclamación</th>
                 </tr>
             </thead>
@@ -89,13 +91,26 @@
                             <span style="text-decoration: underline;">Ver</span>
                         </button>
                     </td>
+                    <td>{{ reclamacion.estado }}</td>
                     <td style="text-align: center;"><a href="/reclamaciones/{{reclamacion.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 <tr>
-                    <td colspan="7">
+                    <td colspan="9">
                         <div class="accordion-collapse collapse" id="collapse{{ reclamacion.id }}">
                             <div class="accordion-body">
                                 <p>{{ reclamacion.mensaje }}</p>
+                                {% if reclamacion.estado == 'Abierto' %}
+                                    <form method="post" action="{% url 'cerrar_reclamacion' reclamacion.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Cerrar Reclamación</button>
+                                    </form>
+                                {% endif %}
+                                {% if reclamacion.estado == 'Cerrado' %}
+                                    <form method="post" action="{% url 'cerrar_reclamacion' reclamacion.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Abrir Reclamación</button>
+                                    </form>
+                                {% endif %}
                             </div>
                         </div>
                     </td>

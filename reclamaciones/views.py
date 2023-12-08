@@ -21,8 +21,8 @@ class ReclamacionView(APIView):
 class ReclamacionAddView(APIView):
     def post(self, request, cita_encode):
         form = ReclamacionAddForm(request.POST)
-        decode =base64.b64decode(str(cita_encode)).decode('utf-8')
-        citaId =decode.replace("salt", "")
+        decode = base64.b64decode(str(cita_encode)).decode("utf-8")
+        citaId = decode.replace("salt", "")
         print(citaId)
         cita = get_object_or_404(Cita, pk=citaId)
         if form.is_valid():
@@ -38,11 +38,9 @@ class ReclamacionAddView(APIView):
             return render(request, "reclamacion_add.html", {"form": form, "msg": msg})
 
     def get(self, request, cita_encode):
-            decode =base64.b64decode(str(cita_encode)).decode('utf-8')
-            citaId =decode.replace("salt", "")
-            print(citaId)
-            cita = get_object_or_404(Cita, pk=citaId)
-            form = ReclamacionAddForm()
-            return render(
-                request, "reclamacion_add.html", {"form": form, "cita": cita}
-            )
+        decode = base64.b64decode(str(cita_encode)).decode("utf-8")
+        citaId = decode.replace("salt", "")
+        print(citaId)
+        cita = get_object_or_404(Cita, pk=citaId)
+        form = ReclamacionAddForm()
+        return render(request, "reclamacion_add.html", {"form": form, "cita": cita})

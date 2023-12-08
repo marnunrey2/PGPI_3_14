@@ -89,6 +89,19 @@ def reclamacion_delete(request, reclamacion_id):
         return HttpResponseForbidden()
 
 
+def cerrar_reclamacion(request, reclamacion_id):
+    reclamacion = get_object_or_404(Reclamacion, id=reclamacion_id)
+
+    if request.method == "POST":
+        if reclamacion.estado == "Abierto":
+            reclamacion.estado = "Cerrado"
+        elif reclamacion.estado == "Cerrado":
+            reclamacion.estado = "Abierto"
+        reclamacion.save()
+
+    return redirect("/admin_view/reclamaciones")
+
+
 class AdminUsuarioView(APIView):
     def get(self, request):
         if request.user.is_staff:
@@ -223,6 +236,17 @@ class AdminServicioAddView(APIView):
             return render(request, "admin_servicio_add.html", {"form": form})
         else:
             return redirect("home:home")
+
+
+def editar_estado_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+
+    if request.method == "POST":
+        nuevo_estado = request.POST.get("nuevo_estado")
+        servicio.agotado = nuevo_estado == "True"
+        servicio.save()
+
+    return redirect("/admin_view/servicios")
 
 
 class AdminEspecialistaAddView(APIView):
