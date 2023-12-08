@@ -18,7 +18,7 @@ class ReclamacionView(APIView):
             return redirect("home:home")
 
 
-class ReclamacionAddView(APIView):
+class ReclamacionInvitadoAddView(APIView):
     def post(self, request, cita_encode):
         form = ReclamacionAddForm(request.POST)
         decode = base64.b64decode(str(cita_encode)).decode("utf-8")
@@ -44,3 +44,44 @@ class ReclamacionAddView(APIView):
         cita = get_object_or_404(Cita, pk=citaId)
         form = ReclamacionAddForm()
         return render(request, "reclamacion_add.html", {"form": form, "cita": cita})
+
+
+class ReclamacionAddView(APIView):
+    def post(self, request, cita_id):
+        form = ReclamacionAddForm(request.POST)
+        cita = get_object_or_404(Cita, pk=cita_id)
+        if form.is_valid() and cita.usuario == request.user:
+            mensaje = form.cleaned_data["mensaje"]
+            Reclamacion.objects.create(
+                cita=cita,
+                mensaje=mensaje,
+                fecha=date.today(),
+            )
+            reclamaciones = Reclamacion.objects.filter(cita__usuario=request.user)
+            return render(
+                request,
+                "reclamaciones.html",
+                {
+                    "success_message": "Su reclamación ha sido enviada",
+                    "reclamaciones": reclamaciones,
+                },
+            )
+        else:
+            msg = "Error en el formulario"
+            return render(
+                request,
+                "reclamacion_add.html",
+                {"form": form, "msg": msg},
+            )
+
+    def get(self, request, cita_id):
+        if request.user.is_authenticated:
+            cita = get_object_or_404(Cita, pk=cita_id)
+            form = ReclamacionAddForm()
+            return render(
+                request,
+                "reclamacion_add.html",
+                {"form": form, "cita": cita},
+            )
+        else:
+            return redirect("home:home")

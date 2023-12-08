@@ -11,6 +11,7 @@ from .views import (
     consulta_email,
     CitaEspecialistaAddView,
     CitaServicioAddView,
+    CitasView,
 )
 from payments import views as views
 
@@ -40,10 +41,10 @@ urlpatterns = [
         "citas/especialistas/utils/create-custom-checkout-session/<str:param>/<str:ident>",
         views.create_custom_checkout_session,
     ),
-    path("citas/success/", views.SuccessView.as_view(), name="success"),  # new
+    path("citas/success/", views.SuccessView.as_view(), name="success"),
     path("citas/cancelled/", views.CancelledView.as_view(), name="cancelled"),
     path("citas/webhook/", views.stripe_webhook),
-    path("citas/<str:encoded>/delete/", cita_delete, name="cita_delete"),
+    path("citas/<str:cita_id>/delete/", cita_delete, name="cita_delete"),
     path(
         "citas/servicios/add",
         CitaServicioAddView.as_view(),
@@ -54,6 +55,7 @@ urlpatterns = [
         CitaEspecialistaAddView.as_view(),
         name="cita_especialista_add",
     ),
+    path("citas/", CitasView.as_view(), name="citas"),
     path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas1"),
     path(
         "citas/especialistas/add/<str:encoded>", consulta_email, name="consulta_citas2"
