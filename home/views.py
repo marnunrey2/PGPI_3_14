@@ -1,17 +1,14 @@
-import base64
-
 import stripe
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import update_session_auth_hash
 
 from PGPI_3_14 import settings
-from citas.models import Cita, Servicio, Especialista
+from citas.models import Servicio, Especialista
 from django.contrib import messages
 from authentication.forms import (
     UpdateProfileForm,
 )
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render
 
 from citas.views import format_price
 from django.db.models import Q
@@ -90,8 +87,12 @@ def servicios(request):
 
     for servicio in servicios:
         servicio.precio = get_precio_por_servicio(servicio.id)
-
-    return render(request, "home/home.html", {"servicios": servicios})
+    success_message = request.GET.get("key")
+    return render(
+        request,
+        "home/home.html",
+        {"servicios": servicios, "success_message": success_message},
+    )
 
 
 def especialistas(request):

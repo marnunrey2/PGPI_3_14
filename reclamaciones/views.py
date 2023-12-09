@@ -57,15 +57,11 @@ class ReclamacionAddView(APIView):
                 mensaje=mensaje,
                 fecha=date.today(),
             )
-            reclamaciones = Reclamacion.objects.filter(cita__usuario=request.user)
-            return render(
-                request,
-                "reclamaciones.html",
-                {
-                    "success_message": "Su reclamación ha sido enviada",
-                    "reclamaciones": reclamaciones,
-                },
-            )
+            my_data = {"success_message": "Su reclamacion ha sido creada correctamente"}
+
+            response = redirect("/reclamaciones")
+            response["Location"] += f'?key={my_data["success_message"]}'
+            return response
         else:
             msg = "Error en el formulario"
             return render(

@@ -97,9 +97,8 @@ class Cita(models.Model):
         self.clean()
         super().save(*args, **kwargs)
 
-
-def __str__(self):
-    return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre} el {self.fecha}"
+    def __str__(self):
+        return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre}"
 
 
 @receiver(pre_delete, sender=Cita)

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.admin",
     "home",
     "bootstrap4",
     "citas",
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     "reclamaciones",
     "django_bootstrap_icons",
     "payments",
+    "carrito",
 ]
 
 MIDDLEWARE = [
@@ -143,6 +145,7 @@ MODULES = [
     "administrador",
     "reclamaciones",
     "payments",
+    "carrito",
 ]
 
 STRIPE_PUBLISHABLE_KEY = "pk_test_51OFHhiEuWVOCbA5vAwXU4oXypAcEcn2qhZNpdhh68DTkIWSxIbTT37gYIgAR0iYukDaaSP0WY52JAuADB0CjDGW200ngjTREn5"

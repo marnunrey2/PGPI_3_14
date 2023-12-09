@@ -84,25 +84,28 @@ class CitaServicioAddView(APIView):
                     },
                 )
             else:
-                hashes = []
-                for cita in Cita.objects.filter(usuario=usuario):
-                    hashes.append(
-                        base64.b64encode(
-                            bytes(f"salt{cita.pk}", encoding="utf-8")
-                        ).decode("utf-8")
+                if request.user.is_authenticated:
+                    return render(
+                        request,
+                        "citas.html",
+                        {
+                            "citas": Cita.objects.filter(usuario=request.user),
+                            "success_message": "Su cita ha sido reservada correctamente",
+                        },
                     )
-                datosCombinados = zip(hashes, Cita.objects.filter(usuario=usuario))
-                return render(
-                    request,
-                    "home/home.html",
-                    {
-                        "datosCombinados": datosCombinados,
-                        "success_message": "Su cita ha sido reservada correctamente",
-                    },
-                )
+                else:
+                    return render(
+                        request,
+                        "home/home.html",
+                        {
+                            "servicios": Servicio.objects.all(),
+                            "success_message": "Su cita ha sido reservada correctamente. Consulte su correo para ver la cita.",
+                        },
+                    )
 
         else:
             msg = "Error en el formulario"
+            print(form.errors)
             return render(request, "cita_servicio_add.html", {"form": form, "msg": msg})
 
     def get(self, request, servicio_id):
@@ -110,7 +113,6 @@ class CitaServicioAddView(APIView):
         form = CitaServicioAddForm(
             servicio=servicio,
             user=request.user,
-            initial_especialista=request.POST.get("especialista"),
         )
         return render(
             request,
@@ -192,22 +194,24 @@ class CitaEspecialistaAddView(APIView):
                     },
                 )
             else:
-                hashes = []
-                for cita in Cita.objects.filter(usuario=usuario):
-                    hashes.append(
-                        base64.b64encode(
-                            bytes(f"salt{cita.pk}", encoding="utf-8")
-                        ).decode("utf-8")
+                if request.user.is_authenticated:
+                    return render(
+                        request,
+                        "citas.html",
+                        {
+                            "citas": Cita.objects.filter(usuario=request.user),
+                            "success_message": "Su cita ha sido reservada correctamente",
+                        },
                     )
-                datosCombinados = zip(hashes, Cita.objects.filter(usuario=usuario))
-                return render(
-                    request,
-                    "home/home.html",
-                    {
-                        "datosCombinados": datosCombinados,
-                        "success_message": "Su cita ha sido reservada correctamente",
-                    },
-                )
+                else:
+                    return render(
+                        request,
+                        "home/especialistas.html",
+                        {
+                            "especialistas": Especialista.objects.all(),
+                            "success_message": "Su cita ha sido reservada correctamente. Consulte su correo para ver la cita.",
+                        },
+                    )
 
         else:
             msg = "Error en el formulario"
@@ -282,6 +286,18 @@ def get_precio_por_servicio(request):
     except Exception as e:
         formated_price = "No disponible"
     return render(request, "precio.html", {"priceId": formated_price})
+
+
+def get_precio_por_servicio(id):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    try:
+        priceId = Servicio.objects.filter(id=id).get().precioId
+        price = stripe.Price.retrieve(priceId)
+        price_amount = price.get("unit_amount")
+        formated_price = format_price(price_amount)
+    except Exception as e:
+        formated_price = "No disponible"
+    return formated_price
 
 
 def get_precio_id_por_servicio(request):
