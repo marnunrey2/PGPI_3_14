@@ -24,4 +24,6 @@ urlpatterns = [
     path("", include("administrador.urls")),
     path("", include("reclamaciones.urls")),  # Citas routes
     path("checkout/", include("payments.urls")),
+    path("", include("carrito.urls")),
+    path("admin/", admin.site.urls),
 ]
