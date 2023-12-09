@@ -99,6 +99,7 @@ class CitaEspecialistaAddForm(forms.Form):
 
         if especialista:
             self.fields["especialista"].initial = especialista.id
+
             self.fields["servicio"].queryset = Servicio.objects.filter(
                 especialistas=especialista.id
             )

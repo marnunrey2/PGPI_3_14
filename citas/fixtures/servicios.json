@@ -49,7 +49,7 @@
     "fields": {
       "nombre": "Depilación",
       "descripcion": "Depilación con cera, láser, etc.",
-      "imagen": "servicios/depilación.png",  
+      "imagen": "servicios/depilacion.png",  
       "precioId": "price_1OK0pIEuWVOCbA5vVAl6Rlah"
     }
   }
