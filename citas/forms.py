@@ -110,6 +110,7 @@ class CitaEspecialistaAddForm(forms.Form):
         if especialista:
             self.especialista = especialista
             especialista_id = especialista.id
+            print(especialista_id)
             self.fields["servicio"].queryset = Servicio.objects.filter(
                 especialistas=especialista_id
             )
@@ -119,12 +120,10 @@ class CitaEspecialistaAddForm(forms.Form):
         else:
             self.initial["servicio"] = None
 
-        print("fecha" in self.data)
-        print(especialista)
+        print(especialista_id)
 
         if "fecha" in self.data and especialista:
             fecha = self.data.get("fecha")
-            especialista_id = especialista.id
             print(especialista_id)
             available_hours = [
                 (hour, hour)
