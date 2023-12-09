@@ -23,9 +23,6 @@ class CitaServicioAddForm(forms.Form):
     )
     hora = forms.ChoiceField(choices=[])
 
-    nombre = forms.CharField(max_length=100, required=False)
-    email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
     metodo_pago = forms.ChoiceField(
         choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
         widget=forms.RadioSelect(
@@ -34,22 +31,20 @@ class CitaServicioAddForm(forms.Form):
         initial="EF",
     )
 
+    nombre = forms.CharField(max_length=100, required=False)
+    email = forms.EmailField(required=False)
+    telefono = forms.CharField(max_length=20, required=False)
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         servicio = kwargs.pop("servicio", None)
-        initial_especialista = kwargs.pop("initial_especialista", None)
 
         super().__init__(*args, **kwargs)
-        if servicio:
-            self.servicio = servicio
-            self.fields["especialista"].queryset = Especialista.objects.filter(
-                especialidades=servicio
-            )
 
-        if initial_especialista is not None:
-            self.initial["especialista"] = initial_especialista
-        else:
-            self.initial["especialista"] = None
+        if servicio:
+            self.fields["especialista"].queryset = Especialista.objects.filter(
+                especialidades__id=servicio.id
+            )
 
         if "fecha" in self.data and "especialista" in self.data:
             fecha = self.data.get("fecha")
@@ -67,14 +62,9 @@ class CitaServicioAddForm(forms.Form):
 
 
 class CitaEspecialistaAddForm(forms.Form):
+    especialista = forms.CharField(widget=forms.HiddenInput(), label="")
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.none(),
-        widget=forms.Select(
-            attrs={
-                "hx-target": "#id_especialista",
-                "class": "service-select",
-            }
-        ),
     )
     fecha = forms.DateField(
         widget=forms.DateInput(
@@ -104,31 +94,20 @@ class CitaEspecialistaAddForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         especialista = kwargs.pop("especialista", None)
-        initial_servicio = kwargs.pop("initial_servicio", None)
 
         super().__init__(*args, **kwargs)
+
         if especialista:
-            self.especialista = especialista
-            especialista_id = especialista.id
+            self.fields["especialista"].initial = especialista.id
             self.fields["servicio"].queryset = Servicio.objects.filter(
-                especialistas=especialista_id
+                especialistas=especialista.id
             )
-
-        if initial_servicio is not None:
-            self.initial["servicio"] = initial_servicio
-        else:
-            self.initial["servicio"] = None
-
-        print("fecha" in self.data)
-        print(especialista)
 
         if "fecha" in self.data and especialista:
             fecha = self.data.get("fecha")
-            especialista_id = especialista.id
-            print(especialista_id)
             available_hours = [
                 (hour, hour)
-                for hour in calculate_available_hours(fecha, especialista_id)
+                for hour in calculate_available_hours(fecha, especialista.id)
             ]
             self.fields["hora"].choices = available_hours
 

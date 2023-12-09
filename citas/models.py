@@ -5,7 +5,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from home.views import get_precio_por_servicio
 
 
 class Servicio(models.Model):
@@ -99,7 +98,7 @@ class Cita(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre} coste de {get_precio_por_servicio(self.servicio.id)}"
+        return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre}"
 
 
 @receiver(pre_delete, sender=Cita)
