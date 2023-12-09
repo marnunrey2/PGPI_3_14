@@ -1,4 +1,4 @@
-from citas.models import Cita
+from citas.models import PreCita
 import stripe
 from PGPI_3_14 import settings
 from citas.models import Servicio
@@ -15,33 +15,35 @@ class Carrito:
         else:
             self.carrito = carrito
 
-    def agregar(self, cita):
-        cita_dict = {
-            "cita_id": cita.id,
-            "servicio": cita.servicio.id,
-            "especialista": cita.especialista.id,
-            "fecha": cita.fecha.strftime("%Y-%m-%d"),
-            "hora": cita.hora,
-            "acumulado": float(get_precio_numerico_por_servicio(cita.servicio.id)),
+    def agregar(self, precita):
+        precita_dict = {
+            "cita_id": precita.id,
+            "servicio": precita.servicio.nombre,
+            "especialista": precita.especialista.nombre,
+            "fecha": precita.fecha.strftime("%Y-%m-%d"),
+            "hora": precita.hora,
+            "acumulado": float(get_precio_numerico_por_servicio(precita.servicio.id)),
             "cantidad": 1,
         }
-        cita_id = str(cita.id)
-        if cita_id not in self.carrito.keys():
-            self.carrito[cita_id] = cita_dict
+        precita_id = str(precita.id)
+        if precita_id not in self.carrito.keys():
+            self.carrito[precita_id] = precita_dict
         self.guardar_carrito()
 
     def guardar_carrito(self):
         self.session["carrito"] = self.carrito
         self.session.modified = True
 
-    def eliminar(self, cita):
-        id = str(cita.id)
+    def eliminar(self, precita):
+        id = str(precita.id)
         if id in self.carrito:
-            Cita.objects.filter(id=id).delete()
+            PreCita.objects.filter(id=id).delete()
             del self.carrito[id]
             self.guardar_carrito()
 
     def limpiar(self):
+        for precita_id in self.carrito.keys():
+            PreCita.objects.filter(id=precita_id).delete()
         self.session["carrito"] = {}
         self.session.modified = True
 

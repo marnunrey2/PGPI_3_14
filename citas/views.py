@@ -8,7 +8,7 @@ import stripe
 from django.shortcuts import render, redirect
 from PGPI_3_14 import settings
 from rest_framework.views import APIView
-from citas.models import Especialista, Invitado, Cita, Servicio
+from citas.models import Especialista, Invitado, Cita, Servicio, PreCita
 from .utils import calculate_available_hours
 from django.http import HttpResponse, HttpResponseForbidden
 from sendgrid import SendGridAPIClient
@@ -27,18 +27,15 @@ class CitaServicioAddView(APIView):
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
 
-            cita = Cita.objects.create(
-                usuario=None,
-                invitado=None,
+            precita = PreCita.objects.create(
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
-                pagado=False,
             )
 
             carrito = Carrito(request)
-            carrito.agregar(cita)
+            carrito.agregar(precita)
 
             my_data = {"success_message": "Su cita ha sido añadida al carrito"}
             response = redirect("/carrito")
@@ -73,7 +70,7 @@ class CitaEspecialistaAddView(APIView):
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
 
-            cita = Cita.objects.create(
+            precita = PreCita.objects.create(
                 usuario=None,
                 invitado=None,
                 servicio_id=servicio_id,
@@ -83,7 +80,7 @@ class CitaEspecialistaAddView(APIView):
                 pagado=False,
             )
             carrito = Carrito(request)
-            carrito.agregar(cita)
+            carrito.agregar(precita)
 
             my_data = {"success_message": "Su cita ha sido añadida al carrito"}
             response = redirect("/carrito")

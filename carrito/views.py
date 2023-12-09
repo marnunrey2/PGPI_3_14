@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 import stripe
 from PGPI_3_14 import settings
 from carrito.Carrito import Carrito
-from citas.models import Cita, Servicio
+from citas.models import PreCita
 from home.views import format_price
 from rest_framework.views import APIView
 
@@ -17,8 +17,8 @@ class CarritoView(APIView):
 
 def eliminar_cita(request, cita_id):
     carrito = Carrito(request)
-    cita = get_object_or_404(Cita, pk=cita_id)
-    carrito.eliminar(cita)
+    precita = get_object_or_404(PreCita, pk=cita_id)
+    carrito.eliminar(precita)
     my_data = {"success_message": "Su cita ha sido eliminada del carrito"}
     response = redirect("/carrito")
     response["Location"] += f'?key={my_data["success_message"]}'
