@@ -8,7 +8,6 @@ from .views import (
     get_precio_id_por_servicio,
     cita_delete,
     get_servicios_por_especialista,
-    consulta_email,
     CitasView,
     CitaServicioAddView,
     CitaEspecialistaAddView,
@@ -46,10 +45,6 @@ urlpatterns = [
     path("citas/webhook/", views.stripe_webhook),
     path("citas/<str:cita_id>/delete/", cita_delete, name="cita_delete"),
     path("citas/", CitasView.as_view(), name="citas"),
-    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas1"),
-    path(
-        "citas/especialistas/add/<str:encoded>", consulta_email, name="consulta_citas2"
-    ),
     path(
         "citas/servicios/add/<int:servicio_id>",
         CitaServicioAddView.as_view(),

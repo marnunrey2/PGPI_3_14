@@ -2,12 +2,8 @@ import base64
 from django.utils import timezone
 import os
 from django.shortcuts import render, redirect, get_object_or_404
-from carrito import Carrito
-from citas.forms import (
-    CitaServicioAddForm,
-    CitaEspecialistaAddForm,
-    CitaServicioAddCarritoForm,
-)
+from carrito.Carrito import Carrito
+from citas.forms import CitaServicioAddCarritoForm, CitaEspecialistaAddCarritoForm
 import stripe
 from django.shortcuts import render, redirect
 from PGPI_3_14 import settings
@@ -19,109 +15,51 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
 import os
+from home.views import format_price
 
 
 class CitaServicioAddView(APIView):
     def post(self, request, servicio_id):
         servicio = get_object_or_404(Servicio, id=servicio_id)
-        form = CitaServicioAddForm(request.POST, servicio=servicio, user=request.user)
+        form = CitaServicioAddCarritoForm(request.POST, servicio=servicio)
         if form.is_valid():
             especialista_id = form.cleaned_data["especialista"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
-            metodo_pago = form.cleaned_data["metodo_pago"]
-
-            usuario = request.user if request.user.is_authenticated else None
-            invitado = None
-
-            if usuario is None:
-                nombre = form.cleaned_data["nombre"]
-                email = form.cleaned_data["email"]
-                telefono = form.cleaned_data["telefono"]
-
-                invitado = Invitado.objects.create(
-                    nombre=nombre, email=email, telefono=telefono
-                )
 
             cita = Cita.objects.create(
-                usuario=usuario,
-                invitado=invitado,
+                usuario=None,
+                invitado=None,
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
                 pagado=False,
-                metodo_pago=metodo_pago,
             )
-            if usuario is not None:
-                email = usuario.email
-            mailMessage = Mail(
-                from_email="aestheticarepgpi@gmail.com",
-                to_emails=email,
-            )
-            idEncode = f"salt{cita.pk}"
-            encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
-                "utf-8"
-            )
-            urlVerificar = f"{request.build_absolute_uri()}/{encoded}"
-            mailMessage.dynamic_template_data = {
-                "urlVerificar": urlVerificar,
-                "fecha": fecha,
-                "hora": hora,
-                "servicio": Servicio.objects.get(pk=servicio_id).nombre,
-                "especialista": Especialista.objects.get(pk=especialista_id).nombre,
-            }
-            mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
-            load_dotenv()
-            print(os.getenv("SENDGRID_API_KEY"))
-            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
-            response = sg.send(mailMessage)
-            if metodo_pago == "TA":
-                priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(
-                    request,
-                    "pay.html",
-                    {
-                        "priceId": priceId,
-                        "citaId": cita.id,
-                        "fecha": fecha,
-                        "hora": hora,
-                    },
-                )
-            else:
-                if request.user.is_authenticated:
-                    return render(
-                        request,
-                        "citas.html",
-                        {
-                            "citas": Cita.objects.filter(usuario=request.user),
-                            "success_message": "Su cita ha sido reservada correctamente",
-                        },
-                    )
-                else:
-                    return render(
-                        request,
-                        "home/home.html",
-                        {
-                            "servicios": Servicio.objects.all(),
-                            "success_message": "Su cita ha sido reservada correctamente. Consulte su correo para ver la cita.",
-                        },
-                    )
+
+            carrito = Carrito(request)
+            carrito.agregar(cita)
+
+            my_data = {"success_message": "Su cita ha sido añadida al carrito"}
+            response = redirect("/carrito")
+            response["Location"] += f'?key={my_data["success_message"]}'
+            return response
 
         else:
             msg = "Error en el formulario"
             print(form.errors)
-            return render(request, "cita_servicio_add.html", {"form": form, "msg": msg})
+            return render(
+                request, "cita_servicio_add_carrito.html", {"form": form, "msg": msg}
+            )
 
     def get(self, request, servicio_id):
         servicio = get_object_or_404(Servicio, id=servicio_id)
-        form = CitaServicioAddForm(
+        form = CitaServicioAddCarritoForm(
             servicio=servicio,
-            user=request.user,
         )
         return render(
             request,
-            "cita_servicio_add.html",
+            "cita_servicio_add_carrito.html",
             {"form": form, "servicio": servicio},
         )
 
@@ -129,138 +67,45 @@ class CitaServicioAddView(APIView):
 class CitaEspecialistaAddView(APIView):
     def post(self, request, especialista_id):
         especialista = get_object_or_404(Especialista, id=especialista_id)
-        form = CitaEspecialistaAddForm(
-            request.POST, especialista=especialista, user=request.user
-        )
+        form = CitaEspecialistaAddCarritoForm(request.POST, especialista=especialista)
         if form.is_valid():
             servicio_id = form.cleaned_data["servicio"].id
             fecha = form.cleaned_data["fecha"].strftime("%Y-%m-%d")
             hora = form.cleaned_data["hora"]
-            metodo_pago = form.cleaned_data["metodo_pago"]
-
-            usuario = request.user if request.user.is_authenticated else None
-            invitado = None
-
-            if usuario is None:
-                nombre = form.cleaned_data["nombre"]
-                email = form.cleaned_data["email"]
-                telefono = form.cleaned_data["telefono"]
-
-                invitado = Invitado.objects.create(
-                    nombre=nombre, email=email, telefono=telefono
-                )
 
             cita = Cita.objects.create(
-                usuario=usuario,
-                invitado=invitado,
+                usuario=None,
+                invitado=None,
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
                 pagado=False,
-                metodo_pago=metodo_pago,
             )
+            carrito = Carrito(request)
+            carrito.agregar(cita)
 
-            if usuario is not None:
-                email = usuario.email
-
-            mailMessage = Mail(
-                from_email="aestheticarepgpi@gmail.com",
-                to_emails=email,
-            )
-            idEncode = f"salt{cita.pk}"
-            encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
-                "utf-8"
-            )
-            urlVerificar = f"{request.build_absolute_uri()}/{encoded}"
-            mailMessage.dynamic_template_data = {
-                "urlVerificar": urlVerificar,
-                "fecha": fecha,
-                "hora": hora,
-                "servicio": Servicio.objects.get(pk=servicio_id).nombre,
-                "especialista": Especialista.objects.get(pk=especialista_id).nombre,
-            }
-            mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
-            load_dotenv()
-            print(os.getenv("SENDGRID_API_KEY"))
-            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
-            response = sg.send(mailMessage)
-
-            if metodo_pago == "TA":
-                priceId = get_precio_id_por_servicio_string(servicio_id)
-                return render(
-                    request,
-                    "pay.html",
-                    {
-                        "priceId": priceId,
-                        "citaId": cita.id,
-                        "fecha": fecha,
-                        "hora": hora,
-                    },
-                )
-            else:
-                if request.user.is_authenticated:
-                    return render(
-                        request,
-                        "citas.html",
-                        {
-                            "citas": Cita.objects.filter(usuario=request.user),
-                            "success_message": "Su cita ha sido reservada correctamente",
-                        },
-                    )
-                else:
-                    return render(
-                        request,
-                        "home/especialistas.html",
-                        {
-                            "especialistas": Especialista.objects.all(),
-                            "success_message": "Su cita ha sido reservada correctamente. Consulte su correo para ver la cita.",
-                        },
-                    )
+            my_data = {"success_message": "Su cita ha sido añadida al carrito"}
+            response = redirect("/carrito")
+            response["Location"] += f'?key={my_data["success_message"]}'
+            return response
 
         else:
             msg = "Error en el formulario"
             return render(
-                request, "cita_especialista_add.html", {"form": form, "msg": msg}
+                request,
+                "cita_especialista_add_carrito.html",
+                {"form": form, "msg": msg},
             )
 
     def get(self, request, especialista_id):
         especialista = get_object_or_404(Especialista, id=especialista_id)
-        form = CitaEspecialistaAddForm(especialista=especialista, user=request.user)
+        form = CitaEspecialistaAddCarritoForm(especialista=especialista)
         return render(
             request,
-            "cita_especialista_add.html",
+            "cita_especialista_add_carrito.html",
             {"form": form, "especialista": especialista},
         )
-
-
-def agregar_cita(request, cita_id):
-    carrito = Carrito(request)
-    cita = get_object_or_404(Cita, pk=cita_id)
-    carrito.agregar(cita)
-    my_data = {"success_message": "Su cita ha sido añadida al carrito"}
-    response = redirect("/")
-    response["Location"] += f'?key={my_data["success_message"]}'
-    return response
-
-
-def eliminar_cita(request, cita_id):
-    carrito = Carrito(request)
-    cita = get_object_or_404(Cita, pk=cita_id)
-    carrito.eliminar(cita)
-    my_data = {"success_message": "Su cita ha sido eliminada del carrito"}
-    response = redirect("/")
-    response["Location"] += f'?key={my_data["success_message"]}'
-    return response
-
-
-def limpiar_carrito(request):
-    carrito = Carrito(request)
-    carrito.limpiar()
-    my_data = {"success_message": "Su carrito ha sido limpiado"}
-    response = redirect("/")
-    response["Location"] += f'?key={my_data["success_message"]}'
-    return response
 
 
 class CitasView(APIView):

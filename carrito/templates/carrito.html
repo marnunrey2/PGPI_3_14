@@ -83,15 +83,15 @@
                         <td>{{ value.servicio }}</td>
                         <td>{{ value.especialista }}</td>
                         <td>{{ value.acumulado }}</td>
-                        <td style="text-align: center;"><a href="/carrito/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                        <td style="text-align: center;"><a href="/eliminar/carrito/{{value.cita_id}}">{% bs_icon 'trash' %}</a></td>
                     </tr>
                     {% endfor %}
                     <tr>
                         <th>Total:</th>
                         <td>{{ total_carrito }}€</td>
                     </tr>
-                    <a class="btn btn-secondary" href="">Limpiar carrito</a>
-                    <a class="btn btn-primary" href="">Pagar pedido</a>
+                    <a class="btn btn-secondary" href="/limpiar">Limpiar carrito</a>
+                    <a class="btn btn-primary" href="">Tramitar reserva</a>
                 </tbody>
             </table>
         {% else %}
