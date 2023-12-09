@@ -77,10 +77,15 @@ def servicios(request):
                         if servicio_precio <= precio:
                             servicios_ids.append(servicio.id)
 
+                    if servicios_ids.__len__() == 0:
+                        raise ValueError()
+
                     servicios = Servicio.objects.filter(id__in=servicios_ids)
 
                 except ValueError:
-                    message = "No  se encontraron servicios o especialistas que coincidan con la búsqueda."
+                    message = (
+                        "No  se encontraron servicios que coincidan con la búsqueda."
+                    )
                     return render(request, "home/home.html", {"message": message})
 
     for servicio in servicios:
