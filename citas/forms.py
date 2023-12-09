@@ -62,7 +62,7 @@ class CitaServicioAddForm(forms.Form):
 
 
 class CitaEspecialistaAddForm(forms.Form):
-    especialista = forms.CharField(widget=forms.HiddenInput(), label="")
+    especialista = forms.CharField(widget=forms.HiddenInput(), label="", required=False)
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.none(),
     )
@@ -99,7 +99,6 @@ class CitaEspecialistaAddForm(forms.Form):
 
         if especialista:
             self.fields["especialista"].initial = especialista.id
-
             self.fields["servicio"].queryset = Servicio.objects.filter(
                 especialistas=especialista.id
             )
