@@ -115,3 +115,41 @@ class CitaEspecialistaAddForm(forms.Form):
             del self.fields["nombre"]
             del self.fields["email"]
             del self.fields["telefono"]
+
+
+class CitaServicioAddCarritoForm(forms.Form):
+    especialista = forms.ModelChoiceField(
+        queryset=Especialista.objects.none(),
+    )
+    fecha = forms.DateField(
+        widget=forms.DateInput(
+            format="%Y-%m-%d",
+            attrs={
+                "type": "date",
+                "hx-get": "/horas_disponibles/",
+                "hx-include": "#id_especialista",
+                "hx-target": "#id_hora",
+            },
+        ),
+        input_formats=["%Y-%m-%d"],
+    )
+    hora = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        servicio = kwargs.pop("servicio", None)
+
+        super().__init__(*args, **kwargs)
+
+        if servicio:
+            self.fields["especialista"].queryset = Especialista.objects.filter(
+                especialidades__id=servicio.id
+            )
+
+        if "fecha" in self.data and "especialista" in self.data:
+            fecha = self.data.get("fecha")
+            especialista_id = int(self.data.get("especialista"))
+            available_hours = [
+                (hour, hour)
+                for hour in calculate_available_hours(fecha, especialista_id)
+            ]
+            self.fields["hora"].choices = available_hours

@@ -2,7 +2,12 @@ import base64
 from django.utils import timezone
 import os
 from django.shortcuts import render, redirect, get_object_or_404
-from citas.forms import CitaServicioAddForm, CitaEspecialistaAddForm
+from carrito import Carrito
+from citas.forms import (
+    CitaServicioAddForm,
+    CitaEspecialistaAddForm,
+    CitaServicioAddCarritoForm,
+)
 import stripe
 from django.shortcuts import render, redirect
 from PGPI_3_14 import settings
@@ -229,6 +234,35 @@ class CitaEspecialistaAddView(APIView):
         )
 
 
+def agregar_cita(request, cita_id):
+    carrito = Carrito(request)
+    cita = get_object_or_404(Cita, pk=cita_id)
+    carrito.agregar(cita)
+    my_data = {"success_message": "Su cita ha sido añadida al carrito"}
+    response = redirect("/")
+    response["Location"] += f'?key={my_data["success_message"]}'
+    return response
+
+
+def eliminar_cita(request, cita_id):
+    carrito = Carrito(request)
+    cita = get_object_or_404(Cita, pk=cita_id)
+    carrito.eliminar(cita)
+    my_data = {"success_message": "Su cita ha sido eliminada del carrito"}
+    response = redirect("/")
+    response["Location"] += f'?key={my_data["success_message"]}'
+    return response
+
+
+def limpiar_carrito(request):
+    carrito = Carrito(request)
+    carrito.limpiar()
+    my_data = {"success_message": "Su carrito ha sido limpiado"}
+    response = redirect("/")
+    response["Location"] += f'?key={my_data["success_message"]}'
+    return response
+
+
 class CitasView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
@@ -257,22 +291,6 @@ def get_especialistas_por_servicio(request):
     return render(
         request, "especialistas_opciones.html", {"especialistas": especialistas}
     )
-
-
-def format_price(price_amount):
-    try:
-        # Convert the price amount to a string
-        price_str = str(price_amount)
-
-        # Separate the first two digits from the last two digits with a comma
-        formatted_price = f"{price_str[:-2]},{price_str[-2:]}"
-
-        # Append Euro symbol at the end
-        formatted_price += " €"
-    except Exception as e:
-        formatted_price = "No disponible"
-
-    return formatted_price
 
 
 def get_precio_por_servicio(request):

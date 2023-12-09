@@ -9,9 +9,9 @@ from .views import (
     cita_delete,
     get_servicios_por_especialista,
     consulta_email,
-    CitaEspecialistaAddView,
-    CitaServicioAddView,
     CitasView,
+    CitaServicioAddView,
+    CitaEspecialistaAddView,
 )
 from payments import views as views
 
@@ -45,6 +45,11 @@ urlpatterns = [
     path("citas/cancelled/", views.CancelledView.as_view(), name="cancelled"),
     path("citas/webhook/", views.stripe_webhook),
     path("citas/<str:cita_id>/delete/", cita_delete, name="cita_delete"),
+    path("citas/", CitasView.as_view(), name="citas"),
+    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas1"),
+    path(
+        "citas/especialistas/add/<str:encoded>", consulta_email, name="consulta_citas2"
+    ),
     path(
         "citas/servicios/add/<int:servicio_id>",
         CitaServicioAddView.as_view(),
@@ -55,12 +60,8 @@ urlpatterns = [
         CitaEspecialistaAddView.as_view(),
         name="cita_especialista_add",
     ),
-    path("citas/", CitasView.as_view(), name="citas"),
-    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas1"),
-    path(
-        "citas/especialistas/add/<str:encoded>", consulta_email, name="consulta_citas2"
-    ),
 ]
+
 
 from django.conf.urls.static import static
 
