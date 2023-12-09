@@ -155,8 +155,10 @@ class CitaEspecialistaAddView(APIView):
                 pagado=False,
                 metodo_pago=metodo_pago,
             )
+
             if usuario is not None:
                 email = usuario.email
+
             mailMessage = Mail(
                 from_email="aestheticarepgpi@gmail.com",
                 to_emails=email,
@@ -178,6 +180,7 @@ class CitaEspecialistaAddView(APIView):
             print(os.getenv("SENDGRID_API_KEY"))
             sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             response = sg.send(mailMessage)
+
             if metodo_pago == "TA":
                 priceId = get_precio_id_por_servicio_string(servicio_id)
                 return render(

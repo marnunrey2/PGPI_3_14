@@ -56,9 +56,10 @@
             </div>
             {% endif %}
             <h2>Haga su reserva</h2>
-            <p>
-                Servicio: {{ servicio }}
-            </p>
+            <div class="form-group">
+                <label for="servicio">Servicio: </label>  
+                <input type="text" class="form-control" id="servicio" name="servicio" placeholder="{{ servicio }}" readonly> 
+            </div>
             <br>
             <div id="estado-agotado-span">
                 Estado: <span id="estado-agotado-span"></span>
@@ -107,7 +108,7 @@
 </div>
 <script>
     // Add JavaScript to update the price display dynamically when the service selection changes
-    const serviceSelect = document.querySelector('.service-select');
+    const serviceSelect = document.getElementById('servicio');
     const precioSpan = document.getElementById('precio-span');
     const estadoAgotadoSpan = document.getElementById('estado-agotado-span');   
     const formContainer = document.querySelector('.login-container form'); // Added this line             

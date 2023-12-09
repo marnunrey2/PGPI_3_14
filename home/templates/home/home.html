@@ -57,6 +57,11 @@
         <h1><strong><em>Bienvenidos a AesthetiCare</em></strong></h1>
         <p>Seleccione el servicio que desea y se añadirá a la cesta</p>
             
+        <form method="get" class="d-flex">
+            <input class="form-control me-sm-2" type="search" name="q" placeholder="Busca por servicio, especialista o precio">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        
         {% for servicio in servicios %}
 
         {% if servicio.agotado %}
