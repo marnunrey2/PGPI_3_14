@@ -3,6 +3,7 @@ from .models import Cita, Especialista
 
 
 def calculate_available_hours(fecha, especialista_id):
+    print(especialista_id)
     appointment_duration = timedelta(hours=1)
     available_hours = []
 

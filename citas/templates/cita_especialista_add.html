@@ -28,6 +28,22 @@
 {% endblock %}
 
 {% block content %}
+
+    <section class="hero">
+        {% if message %}
+        <ul class="message">
+            <li class="info">{{ message }}</li>
+        </ul>
+        {% endif %}
+        {% if success_message %}
+        <div class="mt-3">
+            <div class="alert alert-success" role="alert">
+                {{ success_message }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
 <div class="container">
     <div class="login-container">
         <br>
@@ -41,10 +57,9 @@
             </div>
             {% endif %}
             <h2>Haga su reserva</h2>
-            <div class="form-group">
-                <label for="especialista">Especialista: </label>
-                {{ form.especialista }}
-            </div>
+            <p>
+                Especialista: {{ especialista }}
+            </p>
             <div class="form-group">
                 <label for="servicio">Servicio: </label>
                 {{ form.servicio }}
