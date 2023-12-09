@@ -46,12 +46,12 @@ urlpatterns = [
     path("citas/webhook/", views.stripe_webhook),
     path("citas/<str:cita_id>/delete/", cita_delete, name="cita_delete"),
     path(
-        "citas/servicios/add",
+        "citas/servicios/add/<int:servicio_id>",
         CitaServicioAddView.as_view(),
         name="cita_servicio_add",
     ),
     path(
-        "citas/especialistas/add",
+        "citas/especialistas/add/<int:especialista_id>",
         CitaEspecialistaAddView.as_view(),
         name="cita_especialista_add",
     ),
