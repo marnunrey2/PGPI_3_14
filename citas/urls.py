@@ -56,10 +56,7 @@ urlpatterns = [
         name="cita_especialista_add",
     ),
     path("citas/", CitasView.as_view(), name="citas"),
-    path("citas/servicios/add/<str:encoded>", consulta_email, name="consulta_citas1"),
-    path(
-        "citas/especialistas/add/<str:encoded>", consulta_email, name="consulta_citas2"
-    ),
+    path("citas/<str:encoded>", consulta_email, name="consulta_email"),
 ]
 
 from django.conf.urls.static import static

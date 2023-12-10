@@ -58,7 +58,7 @@ class CitaServicioAddView(APIView):
             encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
                 "utf-8"
             )
-            urlVerificar = f"{request.build_absolute_uri()}/{encoded}"
+            urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}"
             mailMessage.dynamic_template_data = {
                 "urlVerificar": urlVerificar,
                 "fecha": fecha,
@@ -68,7 +68,7 @@ class CitaServicioAddView(APIView):
             }
             mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
             load_dotenv()
-            print(os.getenv("SENDGRID_API_KEY"))
+            #print(os.getenv("SENDGRID_API_KEY"))
             sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             response = sg.send(mailMessage)
             if metodo_pago == "TA":
@@ -167,7 +167,8 @@ class CitaEspecialistaAddView(APIView):
             encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
                 "utf-8"
             )
-            urlVerificar = f"{request.build_absolute_uri()}/{encoded}"
+            
+            urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}"
             mailMessage.dynamic_template_data = {
                 "urlVerificar": urlVerificar,
                 "fecha": fecha,
@@ -177,7 +178,7 @@ class CitaEspecialistaAddView(APIView):
             }
             mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
             load_dotenv()
-            print(os.getenv("SENDGRID_API_KEY"))
+            #print(os.getenv("SENDGRID_API_KEY"))
             sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             response = sg.send(mailMessage)
 

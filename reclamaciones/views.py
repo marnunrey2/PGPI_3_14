@@ -18,8 +18,9 @@ class ReclamacionView(APIView):
             return redirect("home:home")
 
 
-class ReclamacionInvitadoAddView(APIView):
-    def post(self, request, cita_encode):
+class ReclamacionAddView(APIView):
+    def post(self, request, **kwargs):
+        cita_encode = kwargs.get("cita_encode", 0)
         form = ReclamacionAddForm(request.POST)
         decode = base64.b64decode(str(cita_encode)).decode("utf-8")
         citaId = decode.replace("salt", "")
@@ -32,52 +33,19 @@ class ReclamacionInvitadoAddView(APIView):
                 mensaje=mensaje,
                 fecha=date.today(),
             )
-            return redirect("/reclamaciones")
+            my_data = {"success_message": "Su reclamacion ha sido creada correctamente"}
+            response = redirect("/")
+            response["Location"] += f'?key={my_data["success_message"]}'
+            return response
         else:
             msg = "Error en el formulario"
             return render(request, "reclamacion_add.html", {"form": form, "msg": msg})
 
-    def get(self, request, cita_encode):
+    def get(self, request, **kwargs):
+        cita_encode = kwargs.get("cita_encode", 0)
         decode = base64.b64decode(str(cita_encode)).decode("utf-8")
         citaId = decode.replace("salt", "")
         print(citaId)
         cita = get_object_or_404(Cita, pk=citaId)
         form = ReclamacionAddForm()
         return render(request, "reclamacion_add.html", {"form": form, "cita": cita})
-
-
-class ReclamacionAddView(APIView):
-    def post(self, request, cita_id):
-        form = ReclamacionAddForm(request.POST)
-        cita = get_object_or_404(Cita, pk=cita_id)
-        if form.is_valid() and cita.usuario == request.user:
-            mensaje = form.cleaned_data["mensaje"]
-            Reclamacion.objects.create(
-                cita=cita,
-                mensaje=mensaje,
-                fecha=date.today(),
-            )
-            my_data = {"success_message": "Su reclamacion ha sido creada correctamente"}
-
-            response = redirect("/reclamaciones")
-            response["Location"] += f'?key={my_data["success_message"]}'
-            return response
-        else:
-            msg = "Error en el formulario"
-            return render(
-                request,
-                "reclamacion_add.html",
-                {"form": form, "msg": msg},
-            )
-
-    def get(self, request, cita_id):
-        if request.user.is_authenticated:
-            cita = get_object_or_404(Cita, pk=cita_id)
-            form = ReclamacionAddForm()
-            return render(
-                request,
-                "reclamacion_add.html",
-                {"form": form, "cita": cita},
-            )
-        else:
-            return redirect("home:home")

@@ -2,7 +2,6 @@ from django.urls import path
 from .views import (
     ReclamacionView,
     ReclamacionAddView,
-    ReclamacionInvitadoAddView,
 )
 
 urlpatterns = [
@@ -12,13 +11,8 @@ urlpatterns = [
         name="reclamaciones",
     ),
     path(
-        "reclamaciones/<str:cita_id>/add",
-        ReclamacionAddView.as_view(),
-        name="reclamacion_add",
-    ),
-    path(
         "reclamaciones/<str:cita_encode>/add",
-        ReclamacionInvitadoAddView.as_view(),
+        ReclamacionAddView.as_view(),
         name="reclamacion_add",
     ),
 ]
