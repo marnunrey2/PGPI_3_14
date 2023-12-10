@@ -116,7 +116,7 @@
 <div class="container">
     <div class="login-container-usuario">
         <h3><strong>Aquí puede ver sus citas pasadas</strong></h3>
-        {% if citas %}
+        {% if citas_pasadas %}
             <table class="table">
                 <thead>
                     <tr class="table-secondary">
@@ -131,7 +131,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cita in citas %}
+                    {% for cita in citas_pasadas %}
                     <tr>
                         <th>{{ cita.fecha }}</th>
                         <td>{{ cita.hora }}</td>
