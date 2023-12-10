@@ -1,4 +1,5 @@
 import base64
+import datetime
 from django.utils import timezone
 import os
 from django.shortcuts import render, redirect, get_object_or_404
@@ -212,9 +213,13 @@ def get_horas_disponibles(request):
     return render(request, "horas_disponibles.html", {"horas": horas})
 
 
-# HACER UN DELETE PARA SOLO INVITADOS CON EL HASH, PARA LOS DEMAS USUARIOS YA ESTA HECHO
 def cita_delete(request, cita_id):
     cita = get_object_or_404(Cita, pk=cita_id)
+    if ((cita.fecha -datetime.date.today()).days<=1):
+        my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
+        response = redirect("/")
+        response["Location"] += f'?key={my_data["success_message"]}'
+        return response
 
     if request.user == cita.usuario:
         cita.delete()
@@ -224,3 +229,16 @@ def cita_delete(request, cita_id):
         return redirect("/admin_view/citas")
     else:
         return HttpResponseForbidden()
+
+def cita_delete_invitado(request, **kwargs):
+    cita_encode = kwargs.get("encoded", 0)
+    decode = base64.b64decode(str(cita_encode)).decode("utf-8")
+    citaId = decode.replace("salt", "")
+    cita = get_object_or_404(Cita, pk=citaId)
+    if ((cita.fecha -datetime.date.today()).days<=1):
+        my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
+        response = redirect("/")
+        response["Location"] += f'?key={my_data["success_message"]}'
+        return response
+    cita.delete()
+    return redirect("/")

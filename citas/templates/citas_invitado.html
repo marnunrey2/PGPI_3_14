@@ -68,11 +68,16 @@
                             {% endif %}
                         </td>
                         <td class="text-center align-middle">
-                            <a href="/reclamaciones/{{hash}}/add" class="d-flex justify-content-center align-items-center h-100">
+                            <a href="/reclamaciones/{{hash}}/addhash" class="d-flex justify-content-center align-items-center h-100">
                                 {% bs_icon 'plus-circle' %}
                             </a>
                         </td>
-                        <td style="text-align: center;"><a href="/citas/{{hash}}/delete">{% bs_icon 'trash' %}</a></td>
+                        {% if not user.is_authenticated %}
+                        <td style="text-align: center;"><a href="/citas/{{hash}}/deleteinvitado">{% bs_icon 'trash' %}</a></td>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                        <td style="text-align: center;"><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                        {% endif %}
                     </tr>
                 </tbody>
             </table>

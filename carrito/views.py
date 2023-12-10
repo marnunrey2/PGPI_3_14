@@ -1,11 +1,17 @@
+import base64
 from django.shortcuts import get_object_or_404, render, redirect
 import stripe
 from PGPI_3_14 import settings
 from carrito.Carrito import Carrito
 from carrito.forms import TramitarReservaForm
 from citas.models import Cita, Especialista, Invitado, PreCita, Servicio
+from citas.views import get_precio_por_servicio
 from home.views import format_price
 from rest_framework.views import APIView
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from dotenv import load_dotenv
+import os
 
 
 class CarritoView(APIView):
@@ -39,8 +45,39 @@ class CarritoView(APIView):
                     pagado=False,
                     metodo_pago=metodo_pago,
                 )
+                idEncode = f"salt{cita.pk}"
+                encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
+                "utf-8"
+                )
+                urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}/"
+                urlCitas = f"{request.META['HTTP_HOST']}/citas/"
+                if usuario is not None:
+                    email = usuario.email
+                mailMessage = Mail(
+                    from_email="aestheticarepgpi@gmail.com",
+                    to_emails=email,
+                )
+            
+                mailMessage.dynamic_template_data = {
+                    "urlVerificar": urlVerificar,
+                    "urlCitas":urlCitas,
+                    "fecha": str(precita.fecha),
+                    "hora": str(precita.hora),
+                    "servicio": servicio.nombre,
+                    "especialista": especialista.nombre,
+                    "precio": get_precio_por_servicio(servicio.id),
+                    "usuario": usuario is not None
+                }
+                mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
+                load_dotenv()
+                #print(os.getenv("SENDGRID_API_KEY"))
+                sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+                response = sg.send(mailMessage)
             carrito = Carrito(request)
             carrito.limpiar()
+            
+            
+
             if request.user.is_authenticated:
                 my_data = {"success_message": "Su compra ha sido completada"}
                 response = redirect("/citas")

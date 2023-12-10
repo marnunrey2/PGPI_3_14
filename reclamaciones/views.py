@@ -32,7 +32,7 @@ class ReclamacionInvitadoAddView(APIView):
                 mensaje=mensaje,
                 fecha=date.today(),
             )
-            return redirect("/reclamaciones")
+            return redirect("/")
         else:
             msg = "Error en el formulario"
             return render(request, "reclamacion_add.html", {"form": form, "msg": msg})
