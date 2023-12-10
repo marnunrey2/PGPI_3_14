@@ -63,6 +63,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col" style="text-align: center;">Imagen</th>
                     <th scope="col">Especialidades</th>
+                    <th scope="col">Agotado</th>
                     <th scope="col" style="text-align: center;">Eliminar especialista</th>
                 </tr>
             </thead>
@@ -80,6 +81,16 @@
                         {{ servicio.nombre }}
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'editar_estado_especialista' especialista.id %}">
+                            {% csrf_token %}
+                            <select name="nuevo_estado">
+                                <option value="True" {% if especialista.agotado %}selected{% endif %}>Sí</option>
+                                <option value="False" {% if not especialista.agotado %}selected{% endif %}>No</option>
+                            </select>
+                            <button type="submit">Guardar</button>
+                        </form>
                     </td>
                     <td style="text-align: center;"><a href="/especialistas/{{especialista.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>

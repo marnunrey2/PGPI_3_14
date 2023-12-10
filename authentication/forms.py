@@ -20,7 +20,14 @@ class UpdateProfileForm(UserChangeForm):
             "first_name",
             "last_name",
             "email",
+            "phone_number",
         )
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get("phone_number")
+        if not phone_number:
+            raise forms.ValidationError("Debe ingresar un teléfono")
+        return phone_number
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
