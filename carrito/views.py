@@ -49,7 +49,8 @@ class CarritoView(APIView):
                 encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
                 "utf-8"
                 )
-                urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}"
+                urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}/"
+                urlCitas = f"{request.META['HTTP_HOST']}/citas/"
                 if usuario is not None:
                     email = usuario.email
                 mailMessage = Mail(
@@ -59,6 +60,7 @@ class CarritoView(APIView):
             
                 mailMessage.dynamic_template_data = {
                     "urlVerificar": urlVerificar,
+                    "urlCitas":urlCitas,
                     "fecha": str(precita.fecha),
                     "hora": str(precita.hora),
                     "servicio": servicio.nombre,
