@@ -5,7 +5,7 @@ from .utils import calculate_available_hours
 from django.shortcuts import get_object_or_404
 
 
-class CitaServicioAddForm(forms.Form):
+class CitaServicioAddCarritoForm(forms.Form):
     especialista = forms.ModelChoiceField(
         queryset=Especialista.objects.none(),
     )
@@ -23,20 +23,7 @@ class CitaServicioAddForm(forms.Form):
     )
     hora = forms.ChoiceField(choices=[])
 
-    metodo_pago = forms.ChoiceField(
-        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
-        widget=forms.RadioSelect(
-            attrs={"class": "payment-method"},
-        ),
-        initial="EF",
-    )
-
-    nombre = forms.CharField(max_length=100, required=False)
-    email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
-
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
         servicio = kwargs.pop("servicio", None)
 
         super().__init__(*args, **kwargs)
@@ -55,13 +42,8 @@ class CitaServicioAddForm(forms.Form):
             ]
             self.fields["hora"].choices = available_hours
 
-        if user and user.is_authenticated:
-            del self.fields["nombre"]
-            del self.fields["email"]
-            del self.fields["telefono"]
 
-
-class CitaEspecialistaAddForm(forms.Form):
+class CitaEspecialistaAddCarritoForm(forms.Form):
     especialista = forms.CharField(widget=forms.HiddenInput(), label="", required=False)
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.none(),
@@ -79,20 +61,8 @@ class CitaEspecialistaAddForm(forms.Form):
         input_formats=["%Y-%m-%d"],
     )
     hora = forms.ChoiceField(choices=[])
-    metodo_pago = forms.ChoiceField(
-        choices=(("EF", "Efectivo"), ("TA", "Tarjeta")),
-        widget=forms.RadioSelect(
-            attrs={"class": "payment-method"},
-        ),
-        initial="EF",
-    )
-
-    nombre = forms.CharField(max_length=100, required=False)
-    email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
         especialista = kwargs.pop("especialista", None)
 
         super().__init__(*args, **kwargs)
@@ -110,8 +80,3 @@ class CitaEspecialistaAddForm(forms.Form):
                 for hour in calculate_available_hours(fecha, especialista.id)
             ]
             self.fields["hora"].choices = available_hours
-
-        if user and user.is_authenticated:
-            del self.fields["nombre"]
-            del self.fields["email"]
-            del self.fields["telefono"]

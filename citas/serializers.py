@@ -1,4 +1,4 @@
-from authentication.serializers import UserSerializer
+from authentication.serializers import UsuarioSerializer
 from rest_framework import serializers
 
 from .models import Cita, Especialista, Invitado, Servicio
@@ -23,7 +23,7 @@ class InvitadoSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CitaSerializer(serializers.HyperlinkedModelSerializer):
-    usuario = UserSerializer(many=False)
+    usuario = UsuarioSerializer(many=False)
     invitado = InvitadoSerializer(many=False)
     servicio = ServicioSerializer(many=False)
     especialista = EspecialistaSerializer(many=False)

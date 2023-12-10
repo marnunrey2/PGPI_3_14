@@ -10,7 +10,6 @@ from authentication.forms import (
 )
 from django.shortcuts import render
 
-from citas.views import format_price
 from django.db.models import Q
 from fuzzywuzzy import fuzz
 
@@ -142,3 +141,19 @@ def get_precio_por_servicio(id):
     except Exception as e:
         formated_price = "No disponible"
     return formated_price
+
+
+def format_price(price_amount):
+    try:
+        # Convert the price amount to a string
+        price_str = str(price_amount)
+
+        # Separate the first two digits from the last two digits with a comma
+        formatted_price = f"{price_str[:-2]},{price_str[-2:]}"
+
+        # Append Euro symbol at the end
+        formatted_price += " €"
+    except Exception as e:
+        formatted_price = "No disponible"
+
+    return formatted_price

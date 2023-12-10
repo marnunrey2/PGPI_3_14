@@ -36,6 +36,45 @@ class Invitado(models.Model):
         return self.nombre
 
 
+class PreCita(models.Model):
+    servicio = models.ForeignKey("Servicio", on_delete=models.CASCADE)
+    especialista = models.ForeignKey("Especialista", on_delete=models.CASCADE)
+    fecha = models.DateField()
+    hora = models.TimeField()
+
+    def clean(self):
+        # Check if the selected servicio is offered by the chosen especialista
+        if self.servicio not in self.especialista.especialidades.all():
+            raise ValidationError("El servicio no es ofrecido por el especialista.")
+
+        existing_appointments = Cita.objects.filter(
+            especialista=self.especialista,
+            fecha=self.fecha,
+            hora=self.hora,
+        ).exclude(
+            pk=self.pk
+        )  # Exclude the current appointment if it's an update
+        if existing_appointments.exists():
+            raise ValidationError(
+                "Ya hay una cita programada con este especialista en este horario."
+            )
+        if type(self.fecha) == str:
+            self.fecha = datetime.strptime(self.fecha, "%Y-%m-%d").date()
+
+        if self.fecha < datetime.today().date() or (
+            self.fecha == datetime.today().date() and self.hora < datetime.now().time()
+        ):
+            raise ValidationError("La fecha no puede ser anterior a la actual.")
+
+    def save(self, *args, **kwargs):
+        # Run the clean method before saving
+        self.clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Cita {self.pk} - {self.servicio.nombre} con {self.especialista.nombre}"
+
+
 class Cita(models.Model):
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
