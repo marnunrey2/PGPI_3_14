@@ -65,7 +65,8 @@ class CarritoView(APIView):
                     "hora": str(precita.hora),
                     "servicio": servicio.nombre,
                     "especialista": especialista.nombre,
-                    "precio": get_precio_por_servicio(servicio.id)
+                    "precio": get_precio_por_servicio(servicio.id),
+                    "usuario": usuario is not None
                 }
                 mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
                 load_dotenv()
