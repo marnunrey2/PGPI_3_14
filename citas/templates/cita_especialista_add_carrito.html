@@ -109,7 +109,7 @@
 
 
     // Agregar el evento change al menú desplegable de servicio
-    serviceSelect.addEventListener('input', async (e) => {
+    servicioSelect.addEventListener('input', async (e) => {
         const selectedServiceId = e.target.value;
         try {
             const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
@@ -118,10 +118,64 @@
             const data = await response.text();
             precioSpan.textContent = data.trim();
 
+            // Update the "Estado Agotado" based on the responseEstado value
+            const estadoData = await responseEstado.text();
+            const estadoText = estadoData.trim();
+            estadoAgotadoSpan.textContent = `Estado: ${estadoText}`;
+            estadoAgotadoSpan.style.color = estadoText === 'Agotado' ? 'red' : '';
+            if (estadoText === 'Agotado') {
+                disableForm();
+            } else {
+                enableForm();
+            }
+
         } catch (error) {
             console.error('Error fetching price:', error);
         }
     });
+
+    function disableForm() {
+        // Disable or hide form fields when the estado is Agotado
+        const formInputs = formContainer.querySelectorAll('input, select');
+        formInputs.forEach(input => {
+            input.disabled = true;
+        });
+        document.querySelector('[name="servicio"]').disabled = false;
+        document.querySelector('[name="especialista"]').disabled = false;
+    }
+
+    function enableForm() {
+        // Enable form fields when the estado is not Agotado
+        const formInputs = formContainer.querySelectorAll('input, select');
+        formInputs.forEach(input => {
+            input.disabled = false;
+        });
+    }
+
+    document.getElementById('citaForm').addEventListener('submit', function (event) {
+        // Check if the form is disabled
+        if (formIsDisabled()) {
+            // Prevent the default form submission
+            event.preventDefault();
+            displayErrorMessage('Este servicio está agotado. Por favor, seleccione otro servicio.');
+        }
+    });
+    // Function to check if the form is disabled
+    function formIsDisabled() {
+        return Array.from(formContainer.querySelectorAll('input, select')).some(input => input.disabled);
+    }
+
+
+    function displayErrorMessage(message) {
+        const errorContainer = document.createElement('div');
+        errorContainer.textContent = message;
+        errorContainer.style.color = 'red';
+        formContainer.appendChild(errorContainer);
+        setTimeout(() => {
+            errorContainer.remove(); 
+        }, 3000); 
+    }
+    
 
 </script>
 {% endblock %}

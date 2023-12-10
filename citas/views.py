@@ -163,7 +163,7 @@ def get_precio_por_servicio(id):
         formated_price = format_price(price_amount)
     except Exception as e:
         formated_price = "No disponible"
-    return formated_price
+    return HttpResponse(formated_price)
 
 
 def get_precio_id_por_servicio(request):
@@ -184,6 +184,19 @@ def get_estado_id_por_servicio(request):
         estado_agotado = servicio.agotado
         estado_texto = "Agotado" if estado_agotado else "Disponible"
     except Servicio.DoesNotExist:
+        estado_texto = "Disponible"  # Set default value to "Disponible" if the service ID is not available
+    return HttpResponse(estado_texto)
+
+
+def get_estado_id_por_especialista(request):
+    especialista_id = request.GET.get("especialista")
+    if not especialista_id:  # Check if the 'servicio' ID is empty
+        return HttpResponse("Disponible")  # Return a default value
+    try:
+        especialista = Especialista.objects.get(id=especialista_id)
+        estado_agotado = especialista.agotado
+        estado_texto = "No Disponible" if estado_agotado else "Disponible"
+    except Especialista.DoesNotExist:
         estado_texto = "Disponible"  # Set default value to "Disponible" if the service ID is not available
     return HttpResponse(estado_texto)
 
