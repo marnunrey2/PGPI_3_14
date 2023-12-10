@@ -78,6 +78,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "carrito.context_processor.total_carrito",
             ],
         },
     },
@@ -147,6 +148,8 @@ MODULES = [
     "payments",
     "carrito",
 ]
+
+SESSION_COOKIE_AGE = 600
 
 STRIPE_PUBLISHABLE_KEY = "pk_test_51OFHhiEuWVOCbA5vAwXU4oXypAcEcn2qhZNpdhh68DTkIWSxIbTT37gYIgAR0iYukDaaSP0WY52JAuADB0CjDGW200ngjTREn5"
 STRIPE_SECRET_KEY = "sk_test_51OFHhiEuWVOCbA5vL1GzekaWCPVzKYSizRhCosLrsZMpgxXWouLlFYAlayYBVaBpUF5YItdeXoPoka1Oh7OB7w5200HIL5ctEs"
