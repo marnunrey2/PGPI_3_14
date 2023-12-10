@@ -59,46 +59,88 @@
         </div>
         {% endif %}
     </section>
-    
-<div class="container">
-    <div class="login-container-usuario">
-        <h3><strong>Aquí puede ver su carrito</strong></h3>
-        {% if request.session.carrito.items %}
-            <table class="table">
-                <thead>
-                    <tr class="table-secondary">
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Hora</th>
-                        <th scope="col">Servicio</th>
-                        <th scope="col">Especialista</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col" style="text-align: center;">Eliminar del carrito</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key,value in request.session.carrito.items %}
-                    <tr>
-                        <th>{{ value.fecha }}</th>
-                        <td>{{ value.hora }}</td>
-                        <td>{{ value.servicio }}</td>
-                        <td>{{ value.especialista }}</td>
-                        <td>{{ value.acumulado }}</td>
-                        <td style="text-align: center;"><a href="/eliminar/carrito/{{value.cita_id}}">{% bs_icon 'trash' %}</a></td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <th>Total:</th>
-                        <td>{{ total_carrito }}€</td>
-                    </tr>
-                    <a class="btn btn-secondary" href="/limpiar">Limpiar carrito</a>
-                    <a class="btn btn-primary" href="">Tramitar reserva</a>
-                </tbody>
-            </table>
-        {% else %}
-            <p style="margin-top: 30px;">No tiene citas en su carrito</p>
-        {% endif %}
+    <div class="container">
+        <div class="login-container-usuario">
+            <h3><strong>Aquí puede ver su carrito</strong></h3>
+            {% if request.session.carrito.items %}
+                <a class="btn btn-secondary" href="/limpiar">Limpiar carrito</a>
+                <table class="table">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Hora</th>
+                            <th scope="col">Servicio</th>
+                            <th scope="col">Especialista</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col" style="text-align: center;">Eliminar del carrito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key,value in request.session.carrito.items %}
+                            <tr>
+                                <th>{{ value.fecha }}</th>
+                                <td>{{ value.hora }}</td>
+                                <td>{{ value.servicio }}</td>
+                                <td>{{ value.especialista }}</td>
+                                <td>{{ value.acumulado }}</td>
+                                <td style="text-align: center;"><a href="/eliminar/carrito/{{value.cita_id}}">{% bs_icon 'trash' %}</a></td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th>Total:</th>
+                            <td>{{ total_carrito }}€</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"> <!-- Use colspan to span across all columns -->
+                                <form id="tramitarForm" method="post">
+                                    {% csrf_token %}
+                                    {% if form.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            <div class="form-errors">
+                                                {{ form.errors }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% csrf_token %}
+                                    {% if form.errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <div class="form-errors">
+                                            {{ form.errors }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-group">
+                                        <label for="metodo_pago">Métodos de pago: </label>
+                                        {{ form.metodo_pago }}
+                                    </div>
+                                    {% if not user.is_authenticated %}
+                                    <div class="form-group">
+                                        <label for="first_name">Nombre</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Introduzca nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="Correo electrónico">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone_number">Telefono</label>
+                                        <input type="tel" class="form-control" id="phone_number" name="phone_number" pattern="[0-9]{9}" placeholder="123456789">
+                                    </div>
+                                    {% endif %}
+                                    <section class="form-confirmation">
+                                        <button id="submit" type="submit" class="btn btn-success btn-block">Tramitar reserva</button>
+                                    </section>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="margin-top: 30px;">No tiene citas en su carrito</p>
+            {% endif %}
+        </div>
     </div>
-</div>
+
 
 {% endblock %}
 

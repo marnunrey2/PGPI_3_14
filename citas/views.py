@@ -71,13 +71,10 @@ class CitaEspecialistaAddView(APIView):
             hora = form.cleaned_data["hora"]
 
             precita = PreCita.objects.create(
-                usuario=None,
-                invitado=None,
                 servicio_id=servicio_id,
                 especialista_id=especialista_id,
                 fecha=fecha,
                 hora=hora,
-                pagado=False,
             )
             carrito = Carrito(request)
             carrito.agregar(precita)
@@ -108,12 +105,20 @@ class CitaEspecialistaAddView(APIView):
 class CitasView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            citas_pasadas = Cita.objects.filter(fecha__lt=timezone.now())
-            citas_futuras = Cita.objects.filter(fecha__gte=timezone.now())
+            citas_pasadas = Cita.objects.filter(
+                fecha__lt=timezone.now(), usuario=request.user
+            )
+            citas_futuras = Cita.objects.filter(
+                fecha__gte=timezone.now(), usuario=request.user
+            )
             return render(
                 request,
                 "citas.html",
-                {"citas_pasadas": citas_pasadas, "citas_futuras": citas_futuras},
+                {
+                    "citas_pasadas": citas_pasadas,
+                    "citas_futuras": citas_futuras,
+                    "success_message": request.GET.get("key"),
+                },
             )
         else:
             return redirect("/")
