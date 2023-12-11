@@ -100,7 +100,7 @@
                             {% if cita.metodo_pago == "TA" %}
                         <button id="submit" class="btn btn-primary" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Reintentar</button>
                         {% else %}
-                        <button class="btn btn-primary">Pagar ahora</button>
+                        <button id="submit" class="btn btn-primary" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Pagar ahora</button>
                         {% endif %}
                         {% endif %}
 
