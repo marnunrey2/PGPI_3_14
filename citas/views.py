@@ -133,6 +133,7 @@ def consulta_email(request, **kwargs):
     return render(request, "citas_invitado.html", {"cita": cita, "hash": encoded})
 
 
+
 def get_especialistas_por_servicio(request):
     servicio_id = request.GET.get("servicio")
     especialistas = Especialista.objects.filter(especialidades__id=servicio_id)
@@ -215,7 +216,7 @@ def get_horas_disponibles(request):
 
 def cita_delete(request, cita_id):
     cita = get_object_or_404(Cita, pk=cita_id)
-    if ((cita.fecha -datetime.date.today()).days<=1):
+    if ((cita.fecha - datetime.date.today()).days <= 1):
         my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
         response = redirect("/")
         response["Location"] += f'?key={my_data["success_message"]}'
@@ -230,15 +231,33 @@ def cita_delete(request, cita_id):
     else:
         return HttpResponseForbidden()
 
+
 def cita_delete_invitado(request, **kwargs):
     cita_encode = kwargs.get("encoded", 0)
     decode = base64.b64decode(str(cita_encode)).decode("utf-8")
     citaId = decode.replace("salt", "")
     cita = get_object_or_404(Cita, pk=citaId)
-    if ((cita.fecha -datetime.date.today()).days<=1):
+    if ((cita.fecha - datetime.date.today()).days <= 1):
         my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
         response = redirect("/")
         response["Location"] += f'?key={my_data["success_message"]}'
         return response
     cita.delete()
     return redirect("/")
+
+
+def cita_toogle_payment(request, cita_id):
+    # Obtener la cita específica por su ID
+    cita = get_object_or_404(Cita, pk=cita_id)
+    # Cambiar el estado de pago de la cita
+    if cita.pagado:  # Si está pagado, cambia a no pagado
+        cita.pagado = False
+        pago_status = "no pagado"
+    else:  # Si no está pagado, cambia a pagado
+        cita.pagado = True
+        pago_status = "pagado"
+    # Guardar los cambios en la cita
+    cita.save()
+    # Redirigir a alguna página o devolver una respuesta según lo necesites
+    return redirect("/admin_view/citas")
+

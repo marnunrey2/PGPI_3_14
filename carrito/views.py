@@ -5,7 +5,7 @@ from PGPI_3_14 import settings
 from carrito.Carrito import Carrito
 from carrito.forms import TramitarReservaForm
 from citas.models import Cita, Especialista, Invitado, PreCita, Servicio
-from citas.views import get_precio_por_servicio
+from citas.views import get_precio_por_servicio, get_precio_id_por_servicio, get_precio_id_por_servicio_string
 from home.views import format_price
 from rest_framework.views import APIView
 from sendgrid import SendGridAPIClient
@@ -29,6 +29,8 @@ class CarritoView(APIView):
                 invitado = Invitado.objects.create(
                     nombre=nombre, email=email, telefono=telefono
                 )
+            citasids= []
+            precioids = []
             for precita_id, precita_data in carrito.items():
                 precita = PreCita.objects.get(id=precita_id)
                 servicio = get_object_or_404(Servicio, nombre=precita.servicio)
@@ -45,6 +47,8 @@ class CarritoView(APIView):
                     pagado=False,
                     metodo_pago=metodo_pago,
                 )
+                citasids.append(cita.id)
+                precioids.append(get_precio_id_por_servicio_string(servicio.id))
                 idEncode = f"salt{cita.pk}"
                 encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
                 "utf-8"
@@ -53,43 +57,52 @@ class CarritoView(APIView):
                 urlCitas = f"{request.META['HTTP_HOST']}/citas/"
                 if usuario is not None:
                     email = usuario.email
-                mailMessage = Mail(
-                    from_email="aestheticarepgpi@gmail.com",
-                    to_emails=email,
-                )
-            
-                mailMessage.dynamic_template_data = {
-                    "urlVerificar": urlVerificar,
-                    "urlCitas":urlCitas,
-                    "fecha": str(precita.fecha),
-                    "hora": str(precita.hora),
-                    "servicio": servicio.nombre,
-                    "especialista": especialista.nombre,
-                    "precio": get_precio_por_servicio(servicio.id),
-                    "usuario": usuario is not None
-                }
-                mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
-                load_dotenv()
-                #print(os.getenv("SENDGRID_API_KEY"))
-                sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
-                response = sg.send(mailMessage)
+                try:
+                    mailMessage = Mail(
+                        from_email="aestheticarepgpi@gmail.com",
+                        to_emails=email,
+                    )
+
+                    mailMessage.dynamic_template_data = {
+                        "urlVerificar": urlVerificar,
+                        "urlCitas":urlCitas,
+                        "fecha": str(precita.fecha),
+                        "hora": str(precita.hora),
+                        "servicio": servicio.nombre,
+                        "especialista": especialista.nombre,
+                        "precio": get_precio_por_servicio(servicio.id),
+                        "usuario": usuario is not None
+                    }
+                    mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
+                    load_dotenv()
+                    #print(os.getenv("SENDGRID_API_KEY"))
+                    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+                    response = sg.send(mailMessage)
+                except Exception as e:
+                    print(e)
             carrito = Carrito(request)
             carrito.limpiar()
             
             
 
             if request.user.is_authenticated:
-                my_data = {"success_message": "Su compra ha sido completada"}
-                response = redirect("/citas")
-                response["Location"] += f'?key={my_data["success_message"]}'
-                return response
+                if metodo_pago == "TA":
+                    return pago_tarjeta(request, precioids, citasids)
+                else:
+                    my_data = {"success_message": "Su compra ha sido completada"}
+                    response = redirect("/citas")
+                    response["Location"] += f'?key={my_data["success_message"]}'
+                    return response
             else:
-                my_data = {
-                    "success_message": "Su compra ha sido completada, se le ha enviado un correo con los detalles de su reserva"
-                }
-                response = redirect("/")
-                response["Location"] += f'?key={my_data["success_message"]}'
-                return response
+                if metodo_pago == "TA":
+                    return pago_tarjeta(request, precioids, citasids)
+                else:
+                    my_data = {
+                        "success_message": "Su compra ha sido completada, se le ha enviado un correo con los detalles de su reserva"
+                    }
+                    response = redirect("/")
+                    response["Location"] += f'?key={my_data["success_message"]}'
+                    return response
         else:
             msg = "Error en el formulario"
             print(form.errors)
@@ -125,3 +138,9 @@ def limpiar_carrito(request):
     response = redirect("/carrito")
     response["Location"] += f'?key={my_data["success_message"]}'
     return response
+
+def pago_tarjeta(request,priceIds,citasIds):
+    try:
+        return render(request, "pay.html",{"priceId":priceIds,"citasId":citasIds })
+    except Exception as e:
+        print(e)

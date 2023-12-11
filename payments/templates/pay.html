@@ -30,9 +30,9 @@
     <section class="section">
       <div class="container">
         <div class="login-container">
-          <strong><p>Proceder al pago telemático de la cita para el: </p></strong>
-          <p>{{ fecha }}</p>
-          <p>{{ hora }}</p>
+          <strong><p>Proceder al pago telemático de la cita/citas: </p></strong>
+          <p>{{ priceId }}</p>
+          <p>{{ citaId }}</p>
           <button class="btn btn-primary" id="submit">Pagar ahora</button>
         </div>
       </div>
@@ -54,7 +54,7 @@
           // Get Checkout Session ID
             const priceId = "{{ priceId }}";
             const citaId = "{{ citaId }}";
-          fetch(`utils/create-custom-checkout-session/${priceId}/${citaId}`) //This is an example. Change this to utils/create-custom-checkout-session/"id" for production
+          fetch(`utils/create-checkout-session/${priceId}/${citaId}`) //This is an example. Change this to utils/create-custom-checkout-session/"id" for production
         .then((result) => {
           if (!result.ok) {
             throw new Error('Network response was not ok');

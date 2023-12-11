@@ -1,6 +1,7 @@
 import stripe
 from django.conf import settings  # new
 from django.http.response import JsonResponse, HttpResponse  # new
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt  # new
 from django.views.generic.base import TemplateView
 from datetime import datetime
@@ -34,7 +35,7 @@ class SuccessView(TemplateView):
             cita = Cita.objects.get(id=ident)
 
             cita.pagado = True
-            cita.check_pago = "PAGO CORRECTO || " + date_time + " || ID="+checkout_session_id
+            cita.check_pago = "PAGO CORRECTO || " + date_time + " || ID=" + checkout_session_id
             cita.save()
         except Exception as e:
             print("Mal excepcion ident")
@@ -69,7 +70,7 @@ class CancelledView(TemplateView):
             cita = Cita.objects.get(id=ident)
 
             cita.pagado = False
-            cita.check_pago = "PAGO CANCELADO O NO CORRECTO || " + date_time + " || ID="+checkout_session_id
+            cita.check_pago = "PAGO CANCELADO O NO CORRECTO || " + date_time + " || ID=" + checkout_session_id
             cita.save()
         except Exception as e:
             print("Mal excepcion ident")
@@ -104,7 +105,11 @@ def create_checkout_session(request):
                 mode='payment',
                 line_items=[
                     {
-                        'price': 'price_1OG1ZJEuWVOCbA5vnPPiMhSm',  # Aquí va el id del producto de stripe
+                        'price': 'price_1OK0pIEuWVOCbA5vVAl6Rlah',
+                        'quantity': 1,
+                    },
+                    {
+                        'price': 'price_1OK0hPEuWVOCbA5vyjXlc39P',
                         'quantity': 1,
                     }
                 ]
@@ -120,18 +125,20 @@ def create_custom_checkout_session(request, param, ident):
         domain_url = 'http://localhost:8000/checkout/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
+            items = []
+            for i in range(len(param)):
+                line_item = {
+                    'price': param[i],
+                    'quantity': 1,
+                }
+                items.append(line_item)
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
-                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}&ident='+ident,
-                cancel_url=domain_url + 'cancelled?session_id={CHECKOUT_SESSION_ID}&ident='+ident,
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}&ident=' + ident,
+                cancel_url=domain_url + 'cancelled?session_id={CHECKOUT_SESSION_ID}&ident=' + ident,
                 payment_method_types=['card'],
                 mode='payment',
-                line_items=[
-                    {
-                        'price': param,
-                        'quantity': 1,
-                    }
-                ]
+                line_items=items
             )
             json_response = JsonResponse({'ident': ident, 'sessionId': checkout_session['id']})
             print(json_response)

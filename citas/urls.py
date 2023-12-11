@@ -12,7 +12,7 @@ from .views import (
     get_servicios_por_especialista,
     CitasView,
     CitaServicioAddView,
-    CitaEspecialistaAddView,
+    CitaEspecialistaAddView, cita_toogle_payment,
 )
 from payments import views as views
 
@@ -46,6 +46,7 @@ urlpatterns = [
     path("citas/cancelled/", views.CancelledView.as_view(), name="cancelled"),
     path("citas/webhook/", views.stripe_webhook),
     path("citas/<str:cita_id>/delete/", cita_delete, name="cita_delete"),
+    path("citas/<str:cita_id>/tooglepayment/", cita_toogle_payment, name="cita_toogle_payment"),
     path("citas/<str:encoded>/deleteinvitado", cita_delete_invitado),
     path("citas/", CitasView.as_view(), name="citas"),
     path(

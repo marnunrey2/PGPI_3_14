@@ -86,9 +86,6 @@
                 <label for="hora">Hora: </label>
                 {{ form.hora }}
             </div>
-            <div id="precio-display">
-                Precio: <span id="precio-span">{{ form.precio.value }}</span>
-            </div>
             <br>
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Agregar al carrito</button>
@@ -107,21 +104,6 @@
     const especialistaSelect = document.querySelector('[name="especialista"]'); // Selector del menú desplegable de especialista
     const servicioSelect = document.querySelector('[name="servicio"]'); // Selector del menú desplegable de servicio
 
-
-    // Agregar el evento change al menú desplegable de servicio
-    serviceSelect.addEventListener('input', async (e) => {
-        const selectedServiceId = e.target.value;
-        try {
-            const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
-            const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
-            const responseEstado = await fetch(`/estado_id_servicio/?servicio=${selectedServiceId}`);
-            const data = await response.text();
-            precioSpan.textContent = data.trim();
-
-        } catch (error) {
-            console.error('Error fetching price:', error);
-        }
-    });
 
 </script>
 {% endblock %}

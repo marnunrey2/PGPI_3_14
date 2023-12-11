@@ -110,10 +110,12 @@
                                         </div>
                                     </div>
                                     {% endif %}
+                                    <br>
                                     <div class="form-group">
                                         <label for="metodo_pago">Métodos de pago: </label>
                                         {{ form.metodo_pago }}
                                     </div>
+                                    <br>
                                     {% if not user.is_authenticated %}
                                     <div class="form-group">
                                         <label for="first_name">Nombre</label>
@@ -127,6 +129,7 @@
                                         <label for="phone_number">Telefono</label>
                                         <input type="tel" class="form-control" id="phone_number" name="phone_number" pattern="[0-9]{9}" placeholder="123456789">
                                     </div>
+                                        <br>
                                     {% endif %}
                                     <section class="form-confirmation">
                                         <button id="submit" type="submit" class="btn btn-success btn-block">Tramitar reserva</button>

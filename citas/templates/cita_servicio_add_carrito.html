@@ -78,9 +78,6 @@
                 {{ form.hora }}
             </div>
             <br>
-            <div id="precio-display">
-                Precio: <span id="precio-span">{{ form.precio.value }}</span>
-            </div>
             <br>
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Agregar al carrito</button>
@@ -95,21 +92,6 @@
     const estadoAgotadoSpan = document.getElementById('estado-agotado-span');   
     const formContainer = document.querySelector('.login-container form'); // Added this line             
     var selectedPriceId = "";
-
-    serviceSelect.addEventListener('change', async (e) => {
-        const selectedServiceId = e.target.value;
-        try {
-            const response = await fetch(`/precio_servicio/?servicio=${selectedServiceId}`);
-            const responseId = await fetch(`/precio_id_servicio/?servicio=${selectedServiceId}`);
-            const responseEstado = await fetch(`/estado_id_servicio/?servicio=${selectedServiceId}`);
-            const data = await response.text(); // Retrieve response as text
-            selectedPriceId = await responseId.text();
-            precioSpan.textContent = data.trim(); // Set the text content of precioSpan
-
-        } catch (error) {
-            console.error('Error fetching price:', error);
-        }
-    });
 
 </script>
 
