@@ -98,9 +98,9 @@
                             <p>Ya pagada</p>
                         {% else %}
                             {% if cita.metodo_pago == "TA" %}
-                        <button id="submit" class="btn btn-primary" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Reintentar</button>
+                        <button id="submit" class="btn btn-primary submit-btn" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Reintentar</button>
                         {% else %}
-                        <button id="submit" class="btn btn-primary" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Pagar ahora</button>
+                        <button id="submit" class="btn btn-primary submit-btn" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Pagar ahora</button>
                         {% endif %}
                         {% endif %}
 
@@ -191,7 +191,7 @@
         console.log(stripe);
 
         $(document).ready(function() {
-        $('#submit').click(function() {
+        $('.submit-btn').click(function() {
             console.log("Sanity check!");
 
             // Get data attributes from the #submit button
