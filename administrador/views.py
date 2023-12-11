@@ -363,12 +363,10 @@ class AdminInvitadoAddView(APIView):
         if form.is_valid() and request.user.is_staff:
             nombre = form.cleaned_data["nombre"]
             email = form.cleaned_data["email"]
-            telefono = form.cleaned_data["telefono"]
 
             Invitado.objects.create(
                 nombre=nombre,
                 email=email,
-                telefono=telefono,
             )
 
             return redirect("/admin_view/invitados")

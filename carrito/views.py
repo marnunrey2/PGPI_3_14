@@ -25,10 +25,7 @@ class CarritoView(APIView):
             if usuario is None:
                 nombre = form.cleaned_data["nombre"]
                 email = form.cleaned_data["email"]
-                telefono = form.cleaned_data["telefono"]
-                invitado = Invitado.objects.create(
-                    nombre=nombre, email=email, telefono=telefono
-                )
+                invitado = Invitado.objects.create(nombre=nombre, email=email)
             for precita_id, precita_data in carrito.items():
                 precita = PreCita.objects.get(id=precita_id)
                 servicio = get_object_or_404(Servicio, nombre=precita.servicio)
@@ -47,7 +44,7 @@ class CarritoView(APIView):
                 )
                 idEncode = f"salt{cita.pk}"
                 encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
-                "utf-8"
+                    "utf-8"
                 )
                 urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}/"
                 urlCitas = f"{request.META['HTTP_HOST']}/citas/"
@@ -57,26 +54,24 @@ class CarritoView(APIView):
                     from_email="aestheticarepgpi@gmail.com",
                     to_emails=email,
                 )
-            
+
                 mailMessage.dynamic_template_data = {
                     "urlVerificar": urlVerificar,
-                    "urlCitas":urlCitas,
+                    "urlCitas": urlCitas,
                     "fecha": str(precita.fecha),
                     "hora": str(precita.hora),
                     "servicio": servicio.nombre,
                     "especialista": especialista.nombre,
                     "precio": get_precio_por_servicio(servicio.id),
-                    "usuario": usuario is not None
+                    "usuario": usuario is not None,
                 }
                 mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
                 load_dotenv()
-                #print(os.getenv("SENDGRID_API_KEY"))
+                # print(os.getenv("SENDGRID_API_KEY"))
                 sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
                 response = sg.send(mailMessage)
             carrito = Carrito(request)
             carrito.limpiar()
-            
-            
 
             if request.user.is_authenticated:
                 my_data = {"success_message": "Su compra ha sido completada"}

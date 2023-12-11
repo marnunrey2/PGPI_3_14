@@ -31,7 +31,6 @@ class Especialista(models.Model):
 class Invitado(models.Model):
     nombre = models.CharField(max_length=255)
     email = models.EmailField()
-    telefono = models.CharField(max_length=255)
 
     def __str__(self):
         return self.nombre

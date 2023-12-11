@@ -12,7 +12,6 @@ class TramitarReservaForm(forms.Form):
 
     nombre = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(required=False)
-    telefono = forms.CharField(max_length=20, required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -20,4 +19,3 @@ class TramitarReservaForm(forms.Form):
         if user and user.is_authenticated:
             del self.fields["nombre"]
             del self.fields["email"]
-            del self.fields["telefono"]

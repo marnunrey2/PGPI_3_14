@@ -56,23 +56,38 @@
             </div>
             {% endif %}
             <h2>Haga su reserva</h2>
+
             <div class="form-group">
                 <label for="servicio">Servicio: </label>  
                 <input type="text" class="form-control" id="servicio" name="servicio" placeholder="{{ servicio }}" readonly> 
             </div>
+            {% if servicio.agotado %}
+
+            <br>
+            <div id="estado-agotado-span">
+                Estado: <span id="estado-agotado-span"></span>
+            <div style="color:red">
+                NO DISPONIBLE
+            </div>
+            <br>
+
+            {% else %}
+            <div class="form-group">
+                <label for="especialista">Especialista: </label>
+                {{ form.especialista }}
+            </div>
+
             <br>
             <div id="estado-agotado-span">
                 Estado: <span id="estado-agotado-span"></span>
             </div>
             <br>
-            <div class="form-group">
-                <label for="especialista">Especialista: </label>
-                {{ form.especialista }}
-            </div>
+
             <div class="form-group">
                 <label for="fecha">Fecha: </label>
                 {{ form.fecha }}
             </div>
+            
             <div class="form-group">
                 <label for="hora">Hora: </label>
                 {{ form.hora }}
@@ -81,6 +96,7 @@
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Agregar al carrito</button>
             </section>
+            {% endif %}
         </form>
     </div>
 </div>
