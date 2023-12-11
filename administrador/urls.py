@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import (
     AdminCitaView,
     AdminServicioView,
+    editar_estado_especialista,
     editar_estado_servicio,
     servicio_delete,
     especialista_delete,
@@ -71,6 +72,11 @@ urlpatterns = [
         "admin_view/servicios/editar_estado_servicio/<int:servicio_id>/",
         editar_estado_servicio,
         name="editar_estado_servicio",
+    ),
+    path(
+        "admin_view/especialistas/editar_estado_especialista/<int:especialista_id>/",
+        editar_estado_especialista,
+        name="editar_estado_especialista",
     ),
     path(
         "admin_view/reclamaciones/<int:cita_id>/add",

@@ -22,6 +22,7 @@ class Especialista(models.Model):
     nombre = models.CharField(max_length=255)
     imagen = models.ImageField(upload_to="especialistas", null=True, blank=True)
     especialidades = models.ManyToManyField("Servicio", related_name="especialistas")
+    agotado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre
@@ -30,7 +31,6 @@ class Especialista(models.Model):
 class Invitado(models.Model):
     nombre = models.CharField(max_length=255)
     email = models.EmailField()
-    telefono = models.CharField(max_length=255)
 
     def __str__(self):
         return self.nombre

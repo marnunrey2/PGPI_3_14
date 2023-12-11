@@ -27,10 +27,7 @@ class CarritoView(APIView):
             if usuario is None:
                 nombre = form.cleaned_data["nombre"]
                 email = form.cleaned_data["email"]
-                telefono = form.cleaned_data["telefono"]
-                invitado = Invitado.objects.create(
-                    nombre=nombre, email=email, telefono=telefono
-                )
+                invitado = Invitado.objects.create(nombre=nombre, email=email)
             citasids = []
             precioids = []
             textPayment = ""

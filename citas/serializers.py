@@ -19,7 +19,7 @@ class EspecialistaSerializer(serializers.HyperlinkedModelSerializer):
 class InvitadoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Invitado
-        fields = ("nombre", "email", "telefono")
+        fields = ("nombre", "email")
 
 
 class CitaSerializer(serializers.HyperlinkedModelSerializer):

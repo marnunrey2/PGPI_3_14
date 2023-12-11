@@ -33,7 +33,6 @@ class RegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=150, required=True)
     email = forms.EmailField(max_length=254, required=True)
-    phone_number = forms.CharField(max_length=10, required=True)
 
     class Meta:
         model = User
@@ -41,7 +40,6 @@ class RegisterForm(UserCreationForm):
             "first_name",
             "last_name",
             "email",
-            "phone_number",
             "password1",
             "password2",
         ]

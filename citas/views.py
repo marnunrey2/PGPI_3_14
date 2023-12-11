@@ -189,6 +189,19 @@ def get_estado_id_por_servicio(request):
     return HttpResponse(estado_texto)
 
 
+def get_estado_id_por_especialista(request):
+    especialista_id = request.GET.get("especialista")
+    if not especialista_id:  # Check if the 'servicio' ID is empty
+        return HttpResponse("Disponible")  # Return a default value
+    try:
+        especialista = Especialista.objects.get(id=especialista_id)
+        estado_agotado = especialista.agotado
+        estado_texto = "No Disponible" if estado_agotado else "Disponible"
+    except Especialista.DoesNotExist:
+        estado_texto = "Disponible"  # Set default value to "Disponible" if the service ID is not available
+    return HttpResponse(estado_texto)
+
+
 def get_precio_id_por_servicio_string(id):
     try:
         price_id = Servicio.objects.filter(id=id).get().precioId
@@ -216,8 +229,10 @@ def get_horas_disponibles(request):
 
 def cita_delete(request, cita_id):
     cita = get_object_or_404(Cita, pk=cita_id)
-    if ((cita.fecha - datetime.date.today()).days <= 1):
-        my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
+    if (cita.fecha - datetime.date.today()).days <= 1:
+        my_data = {
+            "success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"
+        }
         response = redirect("/")
         response["Location"] += f'?key={my_data["success_message"]}'
         return response
@@ -237,8 +252,10 @@ def cita_delete_invitado(request, **kwargs):
     decode = base64.b64decode(str(cita_encode)).decode("utf-8")
     citaId = decode.replace("salt", "")
     cita = get_object_or_404(Cita, pk=citaId)
-    if ((cita.fecha - datetime.date.today()).days <= 1):
-        my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
+    if (cita.fecha - datetime.date.today()).days <= 1:
+        my_data = {
+            "success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"
+        }
         response = redirect("/")
         response["Location"] += f'?key={my_data["success_message"]}'
         return response

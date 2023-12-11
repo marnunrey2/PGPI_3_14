@@ -61,7 +61,6 @@
                 <tr class="table-secondary">
                     <th scope="col">Nombre</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Teléfono</th>
                     <th scope="col" style="text-align: center;">Eliminar especialista</th>
                 </tr>
             </thead>
@@ -70,7 +69,6 @@
                 <tr>
                     <td>{{ invitado.nombre }}</td>
                     <td>{{ invitado.email }}</td>
-                    <td>{{ invitado.telefono }}</td>
                     <td style="text-align: center;"><a href="/invitados/{{invitado.id}}/delete">{% bs_icon 'trash' %}</a></td>
                 </tr>
                 {% endfor %}
