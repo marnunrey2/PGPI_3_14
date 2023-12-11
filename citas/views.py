@@ -163,7 +163,7 @@ def get_precio_por_servicio(id):
         formated_price = format_price(price_amount)
     except Exception as e:
         formated_price = "No disponible"
-    return HttpResponse(formated_price)
+    return formated_price
 
 
 def get_precio_id_por_servicio(request):
@@ -228,8 +228,10 @@ def get_horas_disponibles(request):
 
 def cita_delete(request, cita_id):
     cita = get_object_or_404(Cita, pk=cita_id)
-    if ((cita.fecha -datetime.date.today()).days<=1):
-        my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
+    if (cita.fecha - datetime.date.today()).days <= 1:
+        my_data = {
+            "success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"
+        }
         response = redirect("/")
         response["Location"] += f'?key={my_data["success_message"]}'
         return response
@@ -243,13 +245,16 @@ def cita_delete(request, cita_id):
     else:
         return HttpResponseForbidden()
 
+
 def cita_delete_invitado(request, **kwargs):
     cita_encode = kwargs.get("encoded", 0)
     decode = base64.b64decode(str(cita_encode)).decode("utf-8")
     citaId = decode.replace("salt", "")
     cita = get_object_or_404(Cita, pk=citaId)
-    if ((cita.fecha -datetime.date.today()).days<=1):
-        my_data = {"success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"}
+    if (cita.fecha - datetime.date.today()).days <= 1:
+        my_data = {
+            "success_message": "No se puede cancelar citas cuando queda menos de 1 día para ella"
+        }
         response = redirect("/")
         response["Location"] += f'?key={my_data["success_message"]}'
         return response
