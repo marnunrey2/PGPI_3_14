@@ -35,6 +35,7 @@ class SuccessView(TemplateView):
                 # Perform actions using the ident value
                 # Fetch the Cita object and update the properties based on the ident value if needed
                 cita = Cita.objects.get(id=ident)
+                cita.metodo_pago = "TA"
                 cita.pagado = True
                 cita.check_pago = "PAGO CORRECTO || " + date_time + " || ID=" + checkout_session_id
                 cita.save()
@@ -68,6 +69,7 @@ class CancelledView(TemplateView):
                 # Perform actions using the ident value
                 # Fetch the Cita object and update the properties based on the ident value if needed
                 cita = Cita.objects.get(id=ident)
+                cita.metodo_pago = "TA"
                 cita.pagado = False
                 cita.check_pago = "PAGO CANCELADO O NO CORRECTO || " + date_time + " || ID=" + checkout_session_id
                 cita.save()
