@@ -4,6 +4,7 @@
 {% block title %}Mis citas{% endblock %}
 
 {% block extrahead %}
+    <script src="https://js.stripe.com/v3/"></script>
 <!-- Custom CSS -->
 <style>
     body {
@@ -72,6 +73,7 @@
                         <th scope="col">Servicio</th>
                         <th scope="col">Especialista</th>
                         <th scope="col">Método de pago</th>
+                        <th scope="col">Pagar ahora</th>
                         <th scope="col" style="text-align: center;">Pagado</th>
                         <th scope="col" style="text-align: center;">Poner reclamación</th>
                         <th scope="col" style="text-align: center;">Eliminar cita</th>
@@ -91,6 +93,18 @@
                                 Efectivo
                             {% endif %}
                         </td>
+                    <td>
+                        {% if cita.pagado %}
+                            <p>Ya pagada</p>
+                        {% else %}
+                            {% if cita.metodo_pago == "TA" %}
+                        <button id="submit" class="btn btn-primary submit-btn" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Reintentar</button>
+                        {% else %}
+                        <button id="submit" class="btn btn-primary submit-btn" data-cita-id="{{ cita.id }}" data-price-id="{{ cita.servicio.precioId }}">Pagar ahora</button>
+                        {% endif %}
+                        {% endif %}
+
+                    </td>
                         <td style="text-align: center;">
                             {% if cita.pagado %}
                                 <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
@@ -168,6 +182,66 @@
         {% endif %}
     </div>
 </div>
+<script>
+      fetch("utils/config/")
+      .then((result) => { return result.json(); })
+      .then((data) => {
+        // Initialize Stripe.js
+        const stripe = Stripe(data.publicKey);
+        console.log(stripe);
+
+        $(document).ready(function() {
+        $('.submit-btn').click(function() {
+            console.log("Sanity check!");
+
+            // Get data attributes from the #submit button
+            const citaId = $(this).data('cita-id');
+            const priceId = $(this).data('price-id');
+
+            // Create arrays for priceIds and citasIds
+            const priceIds = [];
+            const citasIds = [];
+
+            // Push the values into respective arrays
+            citasIds.push(citaId);
+            priceIds.push(priceId);
+
+            // Create a dictionary containing lists of priceIds and citasIds
+            const docs = {
+                'priceIds': priceIds,
+                'citasIds': citasIds
+            };
+
+            console.log(docs); // Check the generated dictionary in the console
+
+            // Now try sending this data to the server via AJAX to identify any syntax errors or issues
+            // Replace this fetch with your actual server endpoint for creating the checkout session
+            fetch("utils/create-custom-checkout-session/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(docs) // Sending data as JSON string
+            })
+            .then((result) => {
+                console.log(result);
+                if (!result.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return result.json();
+            })
+            .then((data) => {
+                console.log(data); // Check the response in the console
+                return stripe.redirectToCheckout({ sessionId: data.sessionId });
+            })
+            .catch((error) => {
+                console.error('Fetch error:', error);
+            });
+        });
+    });
+        });
+</script>
 
 {% endblock %}
 

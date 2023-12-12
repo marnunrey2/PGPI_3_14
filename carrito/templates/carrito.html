@@ -110,10 +110,12 @@
                                         </div>
                                     </div>
                                     {% endif %}
+                                    <br>
                                     <div class="form-group">
                                         <label for="metodo_pago">Métodos de pago: </label>
                                         {{ form.metodo_pago }}
                                     </div>
+                                    <br>
                                     {% if not user.is_authenticated %}
                                     <div class="form-group">
                                         <label for="first_name">Nombre</label>

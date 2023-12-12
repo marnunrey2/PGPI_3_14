@@ -260,3 +260,19 @@ def cita_delete_invitado(request, **kwargs):
         return response
     cita.delete()
     return redirect("/")
+
+
+def cita_toogle_payment(request, cita_id):
+    # Obtener la cita específica por su ID
+    cita = get_object_or_404(Cita, pk=cita_id)
+    # Cambiar el estado de pago de la cita
+    if cita.pagado:  # Si está pagado, cambia a no pagado
+        cita.pagado = False
+        pago_status = "no pagado"
+    else:  # Si no está pagado, cambia a pagado
+        cita.pagado = True
+        pago_status = "pagado"
+    # Guardar los cambios en la cita
+    cita.save()
+    # Redirigir a alguna página o devolver una respuesta según lo necesites
+    return redirect("/admin_view/citas")

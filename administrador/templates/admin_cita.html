@@ -83,6 +83,7 @@
                     <th scope="col">Método pago</th>
                     <th scope="col">Pagado</th>
                     <th scope="col">Checksum</th>
+                    <th scope="col">Cambiar pago</th>
                     <th scope="col">Poner reclamación</th>
                     <th scope="col" style="text-align: center;">Eliminar cita</th>
                 </tr>
@@ -128,12 +129,20 @@
                     {% endif %}
 
                     <td class="text-center align-middle">
+                        <a href="/citas/{{cita.id}}/tooglepayment" class="d-flex justify-content-center align-items-center h-100">
+                            {% bs_icon 'wallet2' %}
+                    </td>
+
+                    <td class="text-center align-middle">
                         <a href="/admin_view/reclamaciones/{{cita.id}}/add" class="d-flex justify-content-center align-items-center h-100">
                             {% bs_icon 'plus-circle' %}
                         </a>
                     </td>
 
-                    <td style="text-align: center;"><a href="/citas/{{cita.id}}/delete">{% bs_icon 'trash' %}</a></td>
+                    <td class="text-center align-middle">
+                        <a href="/citas/{{cita.id}}/delete" class="d-flex justify-content-center align-items-center h-100">
+                            {% bs_icon 'trash' %}</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

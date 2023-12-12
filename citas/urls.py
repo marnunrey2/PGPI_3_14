@@ -13,7 +13,7 @@ from .views import (
     get_servicios_por_especialista,
     CitasView,
     CitaServicioAddView,
-    CitaEspecialistaAddView,
+    CitaEspecialistaAddView, cita_toogle_payment,
 )
 from payments import views as views
 
@@ -33,6 +33,7 @@ urlpatterns = [
     path("precio_servicio/", get_precio_por_servicio, name="precio"),
     path("precio_id_servicio/", get_precio_id_por_servicio, name="precioid"),
     path("estado_id_servicio/", get_estado_id_por_servicio, name="estado_servicio"),
+    path("citas/utils/config/", views.stripe_config),
     path(
         "estado_id_especialista/",
         get_estado_id_por_especialista,
@@ -40,7 +41,7 @@ urlpatterns = [
     ),
     path("citas/servicios/utils/config/", views.stripe_config),
     path(
-        "citas/servicios/utils/create-custom-checkout-session/<str:param>/<str:ident>",
+        "citas/utils/create-custom-checkout-session/",
         views.create_custom_checkout_session,
     ),
     path("citas/especialistas/utils/config/", views.stripe_config),
@@ -52,6 +53,7 @@ urlpatterns = [
     path("citas/cancelled/", views.CancelledView.as_view(), name="cancelled"),
     path("citas/webhook/", views.stripe_webhook),
     path("citas/<str:cita_id>/delete/", cita_delete, name="cita_delete"),
+    path("citas/<str:cita_id>/tooglepayment/", cita_toogle_payment, name="cita_toogle_payment"),
     path("citas/<str:encoded>/deleteinvitado", cita_delete_invitado),
     path("citas/", CitasView.as_view(), name="citas"),
     path(

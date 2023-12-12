@@ -58,9 +58,16 @@
             {% endif %}
             <h2>Haga su reserva</h2>
 
+            <div class="form-group" style="display: none;">
+                <label for="especialista">Especialista: </label>
+                {{ form.especialista }}
+            </div>
+
+            <input type="hidden" id="id_especialista" name="especialista" value="{{ especialista.id }}">
+
             <div class="form-group">
-                <label for="especialista">Especialista: </label>  
-                <input type="text" class="form-control" id="especialista" name="especialista" placeholder="{{ especialista }}" readonly> 
+                <label for="especialista">Especialista: </label>
+                <input type="text" class="form-control" id="especialista" name="especialista" placeholder="{{ especialista }}" readonly>
             </div>
 
             {% if especialista.agotado %}
@@ -71,10 +78,11 @@
             <div style="color:red">
                 NO DISPONIBLE
             </div>
+            </div>
             <br>
 
             {% else %}
-            
+
             <div class="form-group">
                 <label for="servicio">Servicio: </label>
                 {{ form.servicio }}
@@ -95,11 +103,10 @@
                 <label for="hora">Hora: </label>
                 {{ form.hora }}
             </div>
-            
+            <br>
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Agregar al carrito</button>
             </section>
-                
             {% endif %}
         </form>
     </div>
@@ -173,8 +180,5 @@
             errorContainer.remove();
         }, 3000);
     }
-
-    
-
 </script>
 {% endblock %}
