@@ -58,6 +58,13 @@
             {% endif %}
             <h2>Haga su reserva</h2>
 
+            <div class="form-group" style="display: none;">
+                <label for="especialista">Especialista: </label>
+                {{ form.especialista }}
+            </div>
+
+            <input type="hidden" id="id_especialista" name="especialista" value="{{ especialista.id }}">
+
             <div class="form-group">
                 <label for="especialista">Especialista: </label>
                 <input type="text" class="form-control" id="especialista" name="especialista" placeholder="{{ especialista }}" readonly>
