@@ -67,7 +67,7 @@ urlpatterns = [
         name="cita_especialista_add",
     ),
     path("citas/", CitasView.as_view(), name="citas"),
-    path("citas/<str:encoded>", consulta_email, name="consulta_email"),
+    path("citas/<str:encoded>/", consulta_email, name="consulta_email"),
 ]
 
 
