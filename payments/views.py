@@ -94,7 +94,7 @@ def stripe_config(request):
 @csrf_exempt
 def create_checkout_session(request):
     if request.method == 'POST':
-        domain_url = 'http://localhost:8000/checkout/'
+        domain_url = request.build_absolute_uri('/checkout/')
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             checkout_session = stripe.checkout.Session.create(
@@ -126,7 +126,7 @@ def create_custom_checkout_session(request):
         data = json.loads(request.body)
         priceIds = data['priceIds']
         citasIds = data['citasIds']
-        domain_url = 'http://localhost:8000/checkout/'
+        domain_url = request.build_absolute_uri('/checkout/')
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             items = []
@@ -177,24 +177,5 @@ def stripe_webhook(request):
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         print("Payment was successful.")
-
-
-    else:
-        try:
-            print("Bien no payment")
-            ident = json_response.json().get('ident')
-            if ident:
-                print("Bien ident no payment")
-                # Perform actions using the ident value
-                # Fetch the Cita object and update the properties based on the ident value if needed
-                # For example:
-                cita = Cita.objects.get(id=ident)
-                cita.pagado = False
-                cita.check_pago = json_response
-                cita.save()
-            else:
-                print("Ident not found in JSON response")
-        except Exception as e:
-            print(f"Error processing ident: {str(e)}")
 
     return HttpResponse(status=200)
