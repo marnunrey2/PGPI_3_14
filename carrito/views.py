@@ -5,7 +5,11 @@ from PGPI_3_14 import settings
 from carrito.Carrito import Carrito
 from carrito.forms import TramitarReservaForm
 from citas.models import Cita, Especialista, Invitado, PreCita, Servicio
-from citas.views import get_precio_por_servicio, get_precio_id_por_servicio, get_precio_id_por_servicio_string
+from citas.views import (
+    get_precio_por_servicio,
+    get_precio_id_por_servicio,
+    get_precio_id_por_servicio_string,
+)
 from home.views import format_price
 from rest_framework.views import APIView
 from sendgrid import SendGridAPIClient
@@ -25,11 +29,8 @@ class CarritoView(APIView):
             if usuario is None:
                 nombre = form.cleaned_data["nombre"]
                 email = form.cleaned_data["email"]
-                telefono = form.cleaned_data["telefono"]
-                invitado = Invitado.objects.create(
-                    nombre=nombre, email=email, telefono=telefono
-                )
-            citasids= []
+                invitado = Invitado.objects.create(nombre=nombre, email=email)
+            citasids = []
             precioids = []
             for precita_id, precita_data in carrito.items():
                 precita = PreCita.objects.get(id=precita_id)
@@ -51,7 +52,7 @@ class CarritoView(APIView):
                 precioids.append(get_precio_id_por_servicio_string(servicio.id))
                 idEncode = f"salt{cita.pk}"
                 encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
-                "utf-8"
+                    "utf-8"
                 )
                 urlVerificar = f"{request.META['HTTP_HOST']}/citas/{encoded}/"
                 urlCitas = f"{request.META['HTTP_HOST']}/citas/"
@@ -65,25 +66,23 @@ class CarritoView(APIView):
 
                     mailMessage.dynamic_template_data = {
                         "urlVerificar": urlVerificar,
-                        "urlCitas":urlCitas,
+                        "urlCitas": urlCitas,
                         "fecha": str(precita.fecha),
                         "hora": str(precita.hora),
                         "servicio": servicio.nombre,
                         "especialista": especialista.nombre,
                         "precio": get_precio_por_servicio(servicio.id),
-                        "usuario": usuario is not None
+                        "usuario": usuario is not None,
                     }
                     mailMessage.template_id = "d-268e15e8ae4f4753b248b5b279a81c9d"
                     load_dotenv()
-                    #print(os.getenv("SENDGRID_API_KEY"))
+                    # print(os.getenv("SENDGRID_API_KEY"))
                     sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
                     response = sg.send(mailMessage)
                 except Exception as e:
                     print(e)
             carrito = Carrito(request)
             carrito.limpiar()
-            
-            
 
             if request.user.is_authenticated:
                 if metodo_pago == "TA":
@@ -139,8 +138,9 @@ def limpiar_carrito(request):
     response["Location"] += f'?key={my_data["success_message"]}'
     return response
 
-def pago_tarjeta(request,priceIds,citasIds):
+
+def pago_tarjeta(request, priceIds, citasIds):
     try:
-        return render(request, "pay.html",{"priceId":priceIds,"citasId":citasIds })
+        return render(request, "pay.html", {"priceId": priceIds, "citasId": citasIds})
     except Exception as e:
         print(e)

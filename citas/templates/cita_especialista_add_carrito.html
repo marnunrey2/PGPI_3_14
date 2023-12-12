@@ -57,31 +57,40 @@
             </div>
             {% endif %}
             <h2>Haga su reserva</h2>
-            <div class="form-group" style="display: none;">
-                <label for="especialista">Especialista: </label>
-                {{ form.especialista }}
-            </div>
-            
-            <input type="hidden" id="id_especialista" name="especialista" value="{{ especialista.id }}">
-            
+
             <div class="form-group">
-                <label for="servicio">Especialista: </label>
-                <input type="text" class="form-control" id="especialista" name="especialista" placeholder="{{ especialista }}" readonly>
+                <label for="especialista">Especialista: </label>  
+                <input type="text" class="form-control" id="especialista" name="especialista" placeholder="{{ especialista }}" readonly> 
             </div>
+
+            {% if especialista.agotado %}
+
+            <br>
+            <div id="estado-agotado-span">
+                Estado: <span id="estado-agotado-span"></span>
+            <div style="color:red">
+                NO DISPONIBLE
+            </div>
+            <br>
+
+            {% else %}
             
             <div class="form-group">
                 <label for="servicio">Servicio: </label>
                 {{ form.servicio }}
             </div>
+
             <br>
             <div id="estado-agotado-span">
                 Estado: <span id="estado-agotado-span"></span>
             </div>
             <br>
+
             <div class="form-group">
                 <label for="fecha">Fecha: </label>
                 {{ form.fecha }}
             </div>
+
             <div class="form-group">
                 <label for="hora">Hora: </label>
                 {{ form.hora }}
@@ -90,20 +99,85 @@
             <section class="form-confirmation">
                 <button id="submit" type="submit" class="btn btn-success btn-block">Agregar al carrito</button>
             </section>
+                
+            {% endif %}
         </form>
     </div>
 </div>
 </div>
 <script>
-    const serviceSelect = document.querySelector('.service-select'); // Selector del menú desplegable de servicio
-    const precioSpan = document.getElementById('precio-span'); // Selector del span de precio
-    const paymentMethodRadios = document.querySelectorAll('.payment-method'); // Selector de los botones de radio de método de pago
-    const paymentButton = document.querySelector('#submit'); // Selector del botón de envío
-    const estadoAgotadoSpan = document.getElementById('estado-agotado-span');   
-    const formContainer = document.querySelector('.login-container form'); // Added this line 
-    const especialistaSelect = document.querySelector('[name="especialista"]'); // Selector del menú desplegable de especialista
-    const servicioSelect = document.querySelector('[name="servicio"]'); // Selector del menú desplegable de servicio
+    const serviceSelect = document.querySelector('[name="servicio"]');
+    const estadoAgotadoSpan = document.getElementById('estado-agotado-span');
+    const formContainer = document.querySelector('.login-container form');
+    const especialistaSelect = document.querySelector('[name="especialista"]');
+    const servicioSelect = document.querySelector('[name="servicio"]');
 
+<<<<<<< HEAD
+=======
+    // Agregar el evento change al menú desplegable de servicio
+    servicioSelect.addEventListener('change', async (e) => {
+        const selectedServiceId = e.target.value;
+        try {
+            const responseEstado = await fetch(`/estado_id_servicio/?servicio=${selectedServiceId}`);
+            const estadoData = await responseEstado.text();
+            const estadoText = estadoData.trim();
+            estadoAgotadoSpan.textContent = `Estado: ${estadoText}`;
+            estadoAgotadoSpan.style.color = estadoText === 'Agotado' ? 'red' : '';
+            if (estadoText === 'Agotado') {
+                disableForm();
+            } else {
+                enableForm();
+            }
 
+        } catch (error) {
+            console.error('Error fetching estado:', error);
+        }
+    });
+
+    function disableForm() {
+        // Disable or hide form fields when the estado is Agotado
+        const formInputs = formContainer.querySelectorAll('input, select');
+        formInputs.forEach(input => {
+            input.disabled = true;
+        });
+        document.querySelector('[name="servicio"]').disabled = false;
+        document.querySelector('[name="especialista"]').disabled = false;
+    }
+
+    function enableForm() {
+        // Enable form fields when the estado is not Agotado
+        const formInputs = formContainer.querySelectorAll('input, select');
+        formInputs.forEach(input => {
+            input.disabled = false;
+        });
+    }
+
+    document.getElementById('citaForm').addEventListener('submit', function (event) {
+        // Check if the form is disabled
+        if (formIsDisabled()) {
+            // Prevent the default form submission
+            event.preventDefault();
+            displayErrorMessage('Este servicio está agotado. Por favor, seleccione otro servicio.');
+        }
+    });
+
+    // Function to check if the form is disabled
+    function formIsDisabled() {
+        return Array.from(formContainer.querySelectorAll('input, select')).some(input => input.disabled);
+    }
+
+    function displayErrorMessage(message) {
+        const errorContainer = document.createElement('div');
+        errorContainer.textContent = message;
+        errorContainer.style.color = 'red';
+        formContainer.appendChild(errorContainer);
+        setTimeout(() => {
+            errorContainer.remove();
+        }, 3000);
+    }
+
+    
+
+>>>>>>> develop
 </script>
 {% endblock %}

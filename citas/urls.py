@@ -2,6 +2,7 @@ from django.conf import settings
 from django.urls import path
 from .views import (
     get_especialistas_por_servicio,
+    get_estado_id_por_especialista,
     get_estado_id_por_servicio,
     get_horas_disponibles,
     get_precio_por_servicio,
@@ -32,6 +33,11 @@ urlpatterns = [
     path("precio_servicio/", get_precio_por_servicio, name="precio"),
     path("precio_id_servicio/", get_precio_id_por_servicio, name="precioid"),
     path("estado_id_servicio/", get_estado_id_por_servicio, name="estado_servicio"),
+    path(
+        "estado_id_especialista/",
+        get_estado_id_por_especialista,
+        name="estado_especialista",
+    ),
     path("citas/servicios/utils/config/", views.stripe_config),
     path(
         "citas/servicios/utils/create-custom-checkout-session/<str:param>/<str:ident>",
