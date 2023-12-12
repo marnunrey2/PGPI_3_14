@@ -45,7 +45,7 @@
     </section>
 
 <div class="container">
-    < class="login-container">
+    <div class="login-container">
         <br>
         <form id="citaForm" method="post">
             {% csrf_token %}
@@ -112,11 +112,6 @@
     const especialistaSelect = document.querySelector('[name="especialista"]');
     const servicioSelect = document.querySelector('[name="servicio"]');
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 2963e1beaae346a072072b244ab70237248370b8
     // Agregar el evento change al menú desplegable de servicio
     servicioSelect.addEventListener('change', async (e) => {
         const selectedServiceId = e.target.value;
@@ -178,12 +173,5 @@
             errorContainer.remove();
         }, 3000);
     }
-
-
-<<<<<<< HEAD
->>>>>>> develop
-=======
-
->>>>>>> 2963e1beaae346a072072b244ab70237248370b8
 </script>
 {% endblock %}
