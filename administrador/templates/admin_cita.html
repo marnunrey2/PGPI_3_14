@@ -114,7 +114,7 @@
                             Efectivo
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="text-center align-middle">
                         {% if cita.pagado %}
                             <span class="text-success">{% bs_icon 'check-circle-fill' %}</span>
                         {% else %}
@@ -123,9 +123,9 @@
                     </td>
 
                     {% if cita.check_pago %}
-                    <td><button class="btn btn-primary" onclick="displayAlert('{{ cita.check_pago }}')">Checksum</button></td>
+                    <td class="text-center align-middle"><button class="btn btn-primary" onclick="displayAlert('{{ cita.check_pago }}')">Checksum</button></td>
                     {% else %}
-                    <td><a class="nav-link disabled" href="#">No checksum</a></td>
+                    <td class="text-center align-middle"><a class="nav-link disabled" href="#">No checksum</a></td>
                     {% endif %}
 
                     <td class="text-center align-middle">
