@@ -33,6 +33,7 @@ urlpatterns = [
     path("precio_servicio/", get_precio_por_servicio, name="precio"),
     path("precio_id_servicio/", get_precio_id_por_servicio, name="precioid"),
     path("estado_id_servicio/", get_estado_id_por_servicio, name="estado_servicio"),
+    path("citas/utils/config/", views.stripe_config),
     path(
         "estado_id_especialista/",
         get_estado_id_por_especialista,
@@ -40,7 +41,7 @@ urlpatterns = [
     ),
     path("citas/servicios/utils/config/", views.stripe_config),
     path(
-        "citas/servicios/utils/create-custom-checkout-session/<str:param>/<str:ident>",
+        "citas/utils/create-custom-checkout-session/",
         views.create_custom_checkout_session,
     ),
     path("citas/especialistas/utils/config/", views.stripe_config),

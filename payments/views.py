@@ -1,3 +1,5 @@
+import json
+
 import stripe
 from django.conf import settings  # new
 from django.http.response import JsonResponse, HttpResponse  # new
@@ -21,29 +23,28 @@ class SuccessView(TemplateView):
 
         # Retrieve query parameters from the URL
         checkout_session_id = self.request.GET.get('session_id')
-        ident = self.request.GET.get('ident')
+        ident_string = self.request.GET.get('ident')
         now = datetime.now()  # current date and time
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
-        try:
-            print("Bien ident")
-            # Perform actions using the ident value
-            # Fetch the Cita object and update the properties based on the ident value if needed
-            # For example:
-            # Convert 'ident' to an integer before using it in the query
-            ident = int(ident)
-            cita = Cita.objects.get(id=ident)
+        # Convert 'ident' from string to list
+        ident_list = json.loads(ident_string)
 
-            cita.pagado = True
-            cita.check_pago = "PAGO CORRECTO || " + date_time + " || ID=" + checkout_session_id
-            cita.save()
-        except Exception as e:
-            print("Mal excepcion ident")
-            print(f"Error processing ident: {str(e)}")
+        for ident in ident_list:
+            try:
+                # Perform actions using the ident value
+                # Fetch the Cita object and update the properties based on the ident value if needed
+                cita = Cita.objects.get(id=ident)
+                cita.metodo_pago = "TA"
+                cita.pagado = True
+                cita.check_pago = "PAGO CORRECTO || " + date_time + " || ID=" + checkout_session_id
+                cita.save()
+            except Exception as e:
+                print(f"Error processing ident: {str(e)}")
 
         # Add parameters to the context to pass them to the template
         context['checkout_session_id'] = checkout_session_id
-        context['ident'] = ident
+        context['ident'] = ident_list
 
         return context
 
@@ -56,29 +57,28 @@ class CancelledView(TemplateView):
 
         # Retrieve query parameters from the URL
         checkout_session_id = self.request.GET.get('session_id')
-        ident = self.request.GET.get('ident')
+        ident_string = self.request.GET.get('ident')
         now = datetime.now()  # current date and time
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
-        try:
-            print("Bien cancel ident")
-            # Perform actions using the ident value
-            # Fetch the Cita object and update the properties based on the ident value if needed
-            # For example:
-            # Convert 'ident' to an integer before using it in the query
-            ident = int(ident)
-            cita = Cita.objects.get(id=ident)
+        # Convert 'ident' from string to list
+        ident_list = json.loads(ident_string)
 
-            cita.pagado = False
-            cita.check_pago = "PAGO CANCELADO O NO CORRECTO || " + date_time + " || ID=" + checkout_session_id
-            cita.save()
-        except Exception as e:
-            print("Mal excepcion ident")
-            print(f"Error processing ident: {str(e)}")
+        for ident in ident_list:
+            try:
+                # Perform actions using the ident value
+                # Fetch the Cita object and update the properties based on the ident value if needed
+                cita = Cita.objects.get(id=ident)
+                cita.metodo_pago = "TA"
+                cita.pagado = False
+                cita.check_pago = "PAGO CANCELADO O NO CORRECTO || " + date_time + " || ID=" + checkout_session_id
+                cita.save()
+            except Exception as e:
+                print(f"Error processing ident: {str(e)}")
 
         # Add parameters to the context to pass them to the template
         context['checkout_session_id'] = checkout_session_id
-        context['ident'] = ident
+        context['ident'] = ident_list
 
         return context
 
@@ -93,7 +93,7 @@ def stripe_config(request):
 
 @csrf_exempt
 def create_checkout_session(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         domain_url = 'http://localhost:8000/checkout/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
@@ -120,32 +120,36 @@ def create_checkout_session(request):
 
 
 @csrf_exempt
-def create_custom_checkout_session(request, param, ident):
-    if request.method == 'GET':
+def create_custom_checkout_session(request):
+    if request.method == 'POST':
+        print(request.body)
+        data = json.loads(request.body)
+        priceIds = data['priceIds']
+        citasIds = data['citasIds']
         domain_url = 'http://localhost:8000/checkout/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             items = []
-            for i in range(len(param)):
+            for i in range(len(priceIds)):
                 line_item = {
-                    'price': param[i],
+                    'price': priceIds[i],
                     'quantity': 1,
                 }
                 items.append(line_item)
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
-                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}&ident=' + ident,
-                cancel_url=domain_url + 'cancelled?session_id={CHECKOUT_SESSION_ID}&ident=' + ident,
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}&ident=' + str(citasIds),
+                cancel_url=domain_url + 'cancelled?session_id={CHECKOUT_SESSION_ID}&ident=' + str(citasIds),
                 payment_method_types=['card'],
                 mode='payment',
                 line_items=items
             )
-            json_response = JsonResponse({'ident': ident, 'sessionId': checkout_session['id']})
+            json_response = JsonResponse({'ident': citasIds, 'sessionId': checkout_session['id']})
             print(json_response)
             print("Bien json")
             return json_response
         except Exception as e:
-            json_response = JsonResponse({'ident': ident, 'error': str(e)})
+            json_response = JsonResponse({'ident': citasIds, 'error': str(e)})
             print(json_response)
             print("Mal json")
             return json_response

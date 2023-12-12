@@ -1,4 +1,6 @@
 import base64
+import json
+
 from django.shortcuts import get_object_or_404, render, redirect
 import stripe
 from PGPI_3_14 import settings
@@ -32,6 +34,7 @@ class CarritoView(APIView):
                 invitado = Invitado.objects.create(nombre=nombre, email=email)
             citasids = []
             precioids = []
+            textPayment = ""
             for precita_id, precita_data in carrito.items():
                 precita = PreCita.objects.get(id=precita_id)
                 servicio = get_object_or_404(Servicio, nombre=precita.servicio)
@@ -49,7 +52,18 @@ class CarritoView(APIView):
                     metodo_pago=metodo_pago,
                 )
                 citasids.append(cita.id)
+                print("CITAID")
+                print(cita.id)
+                print(citasids)
                 precioids.append(get_precio_id_por_servicio_string(servicio.id))
+                textPayment += (
+                    servicio.nombre
+                    + " - "
+                    + precita.fecha.strftime("%d/%m/%Y")
+                    + " - "
+                    + precita.hora.strftime("%H:%M")
+                    + "\n\n"
+                )
                 idEncode = f"salt{cita.pk}"
                 encoded = base64.b64encode(bytes(idEncode, encoding="utf-8")).decode(
                     "utf-8"
@@ -86,7 +100,7 @@ class CarritoView(APIView):
 
             if request.user.is_authenticated:
                 if metodo_pago == "TA":
-                    return pago_tarjeta(request, precioids, citasids)
+                    return pago_tarjeta(request, precioids, citasids, texto=textPayment)
                 else:
                     my_data = {"success_message": "Su compra ha sido completada"}
                     response = redirect("/citas")
@@ -94,7 +108,7 @@ class CarritoView(APIView):
                     return response
             else:
                 if metodo_pago == "TA":
-                    return pago_tarjeta(request, precioids, citasids)
+                    return pago_tarjeta(request, precioids, citasids, texto=textPayment)
                 else:
                     my_data = {
                         "success_message": "Su compra ha sido completada, se le ha enviado un correo con los detalles de su reserva"
@@ -139,8 +153,11 @@ def limpiar_carrito(request):
     return response
 
 
-def pago_tarjeta(request, priceIds, citasIds):
+def pago_tarjeta(request, priceIds, citasIds, texto):
     try:
-        return render(request, "pay.html", {"priceId": priceIds, "citasId": citasIds})
+        dict = {"priceIds": priceIds, "citasIds": citasIds}
+        data_string = json.dumps(dict)
+
+        return render(request, "pay.html", {"dict": data_string, "texto": texto})
     except Exception as e:
         print(e)
