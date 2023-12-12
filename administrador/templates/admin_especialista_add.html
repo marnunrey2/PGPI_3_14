@@ -44,7 +44,7 @@
 
 <div class="container">
     <div class="login-container">
-        <form method="post">
+        <form method="post"enctype="multipart/form-data">
             {% csrf_token %}
             {% if form.errors %}
             <div class="alert alert-danger" role="alert">

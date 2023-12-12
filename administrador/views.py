@@ -270,7 +270,6 @@ class AdminEspecialistaAddView(APIView):
                 imagen = request.FILES["imagen"]
             else:
                 imagen = None
-
             especialidades = form.cleaned_data["especialidades"]
             especialista = Especialista.objects.create(
                 nombre=nombre,
