@@ -1,12 +1,11 @@
-# docker-compose.yml
-version: '3.10'
+version: '3'
 
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py loaddata servicios.json && python manage.py loaddata especialistas.json && python manage.py runserver 0.0.0.0:8000"
+    container_name: pgpi_app
     volumes:
-      - .:/code
+      - .:/pgpi
     ports:
-      - 8000:8000
-    container_name: aestheticare_app
+      - "8000:8000"
